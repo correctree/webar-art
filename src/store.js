@@ -1,0 +1,3 @@
+const DB='webar-art-targets';
+export async function database(){return new Promise((resolve,reject)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>r.result.createObjectStore('targets');r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}
+export async function targetStore(value){const db=await database();try{return await new Promise((resolve,reject)=>{const tx=db.transaction('targets',value?'readwrite':'readonly');const r=value?tx.objectStore('targets').put(value,'mk1008-v1'):tx.objectStore('targets').get('mk1008-v1');let result;r.onsuccess=()=>result=r.result;tx.oncomplete=()=>resolve(result);tx.onerror=()=>reject(tx.error);});}finally{db.close();}}
