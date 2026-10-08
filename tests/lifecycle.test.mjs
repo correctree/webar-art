@@ -4,7 +4,22 @@ async function harness({defer=false,deny=false}={}){
  let resolveStart,stops=0,loops=0;
  class Adapter{async initialize(_,__,cb){this.cb=cb;return {scene:{},group:{},camera:{},renderer:{setAnimationLoop(){loops++},render(){}}};}async start(){if(deny)throw {name:'NotAllowedError'};if(defer)await new Promise(r=>resolveStart=r);}stop(){stops++;}}
  let code=await readFile(new URL('../src/app.js',import.meta.url),'utf8');code=code.replace(/^import .*;\n/gm,'').replace("await import('./artwork-view.js')",'await artwork()');
- const doc={getElementById:k=>nodes.get(k),addEventListener(){},hidden:false};
+ const classes=new Set(),details={open:false},buttons={prepend(){}};
+ const doc={
+ getElementById:k=>nodes.get(k),
+ addEventListener(){},hidden:false,
+ body:{classList:{toggle(name,force){
+ const enabled=force===undefined?!classes.has(name):force;
+ if(enabled)classes.add(name);else classes.delete(name);
+ return enabled;
+ }}},
+ createElement(){return {}},
+ querySelector(selector){
+ if(selector==='main details')return details;
+ if(selector==='main .buttons')return buttons;
+ throw new Error('Unexpected selector: '+selector);
+ }
+ };
  const run=new Function('MindARAdapter','TrackingState','errorMessage','targetStore','document','navigator','isSecureContext','fetch','URL','addEventListener','artwork',code);
  run(Adapter,TrackingState,errorMessage,async()=>new Blob(['target']),doc,{mediaDevices:{getUserMedia(){}}},true,async()=>({ok:false}),{createObjectURL:()=> 'blob:test',revokeObjectURL(){}},()=>{},async()=>({createArtwork:()=>({update(){},dispose(){}})}));
  return {nodes,get stops(){return stops},get loops(){return loops},release(){resolveStart()},async pending(){for(let i=0;i<10;i++)await Promise.resolve();}};
