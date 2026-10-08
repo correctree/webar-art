@@ -3,7 +3,9 @@ import {TrackingState,errorMessage} from './state.js';
 import {targetStore} from './store.js';
 const $=id=>document.getElementById(id),state=new TrackingState();let adapter,view,url,busy=false,running=false,cancel=false;
 const labels={idle:'黒枠なしの作品を映してください',starting:'カメラを準備しています…',searching:'認識中：作品全体を映してください',tracking:'追跡中',reacquired:'再取得：追跡中',lost:'見失いました：作品へカメラを戻してください',stopped:'カメラを終了しました',error:'エラー'};
-function status(type,detail){state.event(type);$('status').textContent=detail||labels[state.value];$('diagnostics').textContent=`状態 ${state.value} / 取得 ${state.found} / 見失い ${state.lost}
+function status(type,detail){state.event(type);
+document.body.classList.toggle('ar-active',
+ ['searching','tracking','reacquired','lost'].includes(state.value));$('status').textContent=detail||labels[state.value];$('diagnostics').textContent=`状態 ${state.value} / 取得 ${state.found} / 見失い ${state.lost}
 画像追跡：MindAR 1.2.5 / 描画：WebGL
 WebGPU API ${'gpu' in navigator?'あり':'なし'} / WebXR API ${'xr' in navigator?'あり':'なし'}
 APIの存在は空間AR対応を保証しません`;}
@@ -20,3 +22,13 @@ $('start').onclick=async()=>{if(busy||running)return;busy=true;cancel=false;$('s
  }catch(e){cleanup();status('error',errorMessage(e));}finally{busy=false;if(cancel){cleanup();status('stopped');}$('start').disabled=running;$('stop').disabled=!running;}};
 $('stop').onclick=stop;for(const k of ['size','x','y','angle'])$(k).oninput=update;
 addEventListener('pagehide',stop);document.addEventListener('visibilitychange',()=>{if(document.hidden&&(running||busy))stop();});status('idle');
+
+const uiToggle=document.createElement('button');
+uiToggle.id='ui-toggle';
+uiToggle.textContent='設定';
+uiToggle.onclick=()=>{
+ const opened=document.body.classList.toggle('ar-settings');
+ document.querySelector('main details').open=opened;
+ uiToggle.textContent=opened?'閉じる':'設定';
+};
+document.querySelector('main .buttons').prepend(uiToggle);
