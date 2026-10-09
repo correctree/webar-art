@@ -46,7 +46,7 @@ export class XRAdapter {
             {event: 'reality.imagescanning', process: guard(() => this.onStatus?.('scanning'))},
           ]},
       ]);
-      xr.run({canvas: this.canvas, allowedDevices: xr.XrConfig.device().ANY,
+      xr.run({canvas: this.canvas, allowedDevices: this.mode === 'world' ? xr.XrConfig.device().MOBILE : xr.XrConfig.device().ANY,
         cameraConfig: {direction: xr.XrConfig.camera().BACK}});
     } catch (error) { this.fail(error); }
   }
