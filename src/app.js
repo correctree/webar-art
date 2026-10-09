@@ -64,7 +64,7 @@ function frame() {
   if (mode === 'world' && placing && now - lastHitTime > 120) {
     lastHitTime = now;
     const hit = worldStatus === 'NORMAL' ? adapter.hitTest(.5, .5) : null;
-    reticle.visible = !!hit;
+    reticle.visible = !!hit; updatePlacementGuide(hit);
     if (hit) reticle.position.copy(hit.position);
   }
 }
@@ -97,7 +97,7 @@ function imageEvent(event, detail) {
 }
 function closeSettings() { $('settings-panel').hidden = true; $('settings').setAttribute('aria-expanded', 'false'); }
 function stop(message) {
-  active = false;
+  active = false; updatePlacementGuide(null);
   try { adapter?.stop(); } catch (error) { message ||= errorText(error); }
   adapter = null;
   if (context) {
@@ -117,7 +117,7 @@ $('start').addEventListener('click', () => {
   if (mode === 'image' && !target) { updateStart(); return; }
   active = true; placing = true; worldStatus = 'LIMITED'; imageFound = imageLost = 0; imageVisible = false;
   $('size').value = '1'; $('hud').hidden = false; $('replace').hidden = mode !== 'world';
-  document.body.classList.add('active'); status('カメラを開始しています…'); resize();
+  document.body.classList.add('active'); status('カメラを開始しています…'); resize(); updatePlacementGuide(null);
   adapter = new XRAdapter(xr, {canvas, mode, target, name, onScene: initScene, onFrame: frame,
     onStatus: trackingStatus, onImage: imageEvent, onError: error => stop(errorText(error))});
   adapter.start();
@@ -144,7 +144,7 @@ function tap(point) {
     const hit = adapter.hitTest(point.x, point.y);
     if (!hit) { status('この場所には配置できません。模様のある床や机へ向けて再度タップしてください。'); return; }
     anchor.position.copy(hit.position); anchor.quaternion.identity(); anchor.scale.setScalar(1); anchor.visible = true;
-    placing = false; reticle.visible = false;
+    placing = false; reticle.visible = false; updatePlacementGuide(null);
     status('配置しました。作品をタップすると動きが切り替わります。'); diagnostic(); return;
   }
   if (!anchor.visible) return;
@@ -203,3 +203,31 @@ if (preparation[2].status === 'fulfilled') xr = preparation[2].value;
 loading = false; updateStart();
 for (const result of preparation) if (result.status === 'rejected') { $('setup-status').textContent = errorText(result.reason); }
 if (preparation[1].status === 'rejected') { loading = true; $('start').disabled = true; }
+
+function updatePlacementGuide(hit) {
+  let guide = document.getElementById('placement-guide');
+  if (!guide) {
+    guide = document.createElement('section');
+    guide.id = 'placement-guide';
+    guide.setAttribute('role', 'status');
+    guide.innerHTML = '<strong></strong><p></p>';
+    document.body.append(guide);
+  }
+  guide.hidden = !active || mode !== 'world' || !placing ||
+    !$('settings-panel').hidden;
+  if (guide.hidden) return;
+
+  const ready = !!hit;
+  guide.classList.toggle('ready', ready);
+  const title = ready ? '配置できます' :
+    worldStatus === 'NORMAL' ?
+      '配置する場所を探しています' : '空間を確認しています';
+  const message = ready ?
+    '輪の近くをタップすると作品を置けます。' :
+    '模様のある床や机に向け、左右へゆっくりカメラを動かしてください。配置できる場所が見つかるまでお待ちください。';
+
+  const heading = guide.querySelector('strong');
+  const paragraph = guide.querySelector('p');
+  if (heading.textContent !== title) heading.textContent = title;
+  if (paragraph.textContent !== message) paragraph.textContent = message;
+}
