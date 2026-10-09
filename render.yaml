@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: webar-art-studio
+    runtime: docker
+    autoDeploy: false
+    healthCheckPath: /health
+    envVars:
+      - key: APP_ORIGIN
+        sync: false
+      - key: GITHUB_CLIENT_ID
+        sync: false
+      - key: GITHUB_CLIENT_SECRET
+        sync: false
+      - key: GITHUB_OWNER
+        value: correctree
+      - key: GITHUB_REPO
+        value: webar-art
+      - key: GITHUB_ALLOWED_LOGINS
+        value: correctree

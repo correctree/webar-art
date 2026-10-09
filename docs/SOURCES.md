@@ -22,3 +22,10 @@
   https://github.com/8thwall/8thwall
 
 公式API仕様を使った実装。実機での追跡精度、対応OS全組合せ、元SDKバイナリの動作はここで確認していません。
+
+## Marker Studio公式資料
+- MindAR: https://github.com/hiukim/mind-ar-js
+- ブラウザコンパイラ: https://github.com/hiukim/mind-ar-js/blob/master/examples/image-tracking/compile.html
+- GitHub App user authentication: https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/authenticating-as-a-user-with-a-github-app
+- Git trees: https://docs.github.com/en/rest/git/trees
+- GitHub Pages deployment: https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages

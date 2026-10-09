@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "type": "sprite-sheet",
+  "source": "157.gif",
+  "image": "157-sprite.png",
+  "frameWidth": 1920,
+  "frameHeight": 1080,
+  "columns": 4,
+  "rows": 2,
+  "frames": 5,
+  "loop": true,
+  "transparent": true,
+  "origin": "top-left"
+}

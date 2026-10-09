@@ -1,0 +1,90 @@
+{
+  "version": 1,
+  "id": "demo",
+  "title": "GLB・動画・Sprite 同時再生",
+  "revision": "demo-030",
+  "marker": {
+    "image": "marker.jpg",
+    "target": "marker.mind",
+    "aspect": 1
+  },
+  "objects": [
+    {
+      "id": "gem",
+      "kind": "glb",
+      "src": "sample.glb",
+      "name": "立体作品",
+      "position": [
+        -0.3,
+        0.15,
+        0.2
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0.3,
+        0.3,
+        0.3
+      ]
+    },
+    {
+      "id": "film",
+      "kind": "video",
+      "src": "sample.webm",
+      "name": "透過動画",
+      "position": [
+        0.28,
+        0.15,
+        0.05
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0.32,
+        0.32,
+        0.32
+      ],
+      "fallback": {
+        "src": "sample-safari.mp4",
+        "packedAlpha": true
+      },
+      "loop": true
+    },
+    {
+      "id": "sprite",
+      "kind": "sprite",
+      "src": "sprite.png",
+      "name": "157 Sprite",
+      "position": [
+        0,
+        -0.28,
+        0.03
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "sprite": {
+        "frameWidth": 480,
+        "frameHeight": 270,
+        "columns": 4,
+        "rows": 2,
+        "frames": 5,
+        "fps": 12,
+        "loop": true
+      }
+    }
+  ]
+}

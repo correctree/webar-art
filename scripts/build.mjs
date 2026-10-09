@@ -28,7 +28,7 @@ export async function build(root = fileURLToPath(new URL('..', import.meta.url))
   await cp(at('node_modules/three/LICENSE'), at('dist/licenses/three.txt'));
   await cp(at('node_modules/@8thwall/engine-binary/LICENSE'), at('dist/licenses/8thwall-engine.txt'));
   await writeFile(at('dist/.nojekyll'), '');
-  await writeFile(at('dist/build-info.json'), JSON.stringify({version: '0.2.0', targetReady, engine: '1.0.0', three: '0.160.1'}, null, 2));
+  await writeFile(at('dist/build-info.json'), JSON.stringify({version: '0.3.0', targetReady, engine: '1.0.0', three: '0.160.1'}, null, 2));
   console.log(`Build passed: dist/ / 画像AR ${targetReady ? '準備済み' : '未準備（空間ARのみ。npm run target:prepare で準備）'}`);
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) build().catch(error => { console.error(error.message); process.exitCode = 1; });
