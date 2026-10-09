@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WebAR Art — 空間配置</title>
+
+  <script type="module"
+    src="https://cdn.jsdelivr.net/npm/@google/model-viewer@4.3.1/dist/model-viewer.min.js">
+  </script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: #eee;
+      color: #222;
+    }
+
+    model-viewer {
+      display: block;
+      width: 100%;
+      height: 80dvh;
+      background: #eee;
+    }
+
+    p {
+      margin: 16px;
+      line-height: 1.6;
+    }
+
+    button {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 14px 24px;
+      border: 0;
+      border-radius: 12px;
+      background: #222;
+      color: white;
+      font-size: 16px;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <model-viewer
+    id="art"
+    src="./artworks/sample.glb"
+    alt="WebAR Artの作品"
+    camera-controls
+    ar
+    ar-modes="webxr scene-viewer quick-look"
+    ar-placement="floor"
+    shadow-intensity="1">
+
+    <button slot="ar-button">
+      空間に置く
+    </button>
+  </model-viewer>
+
+  <p id="message" role="status">
+    作品を読み込んでいます。
+  </p>
+
+  <script>
+    const art = document.querySelector('#art');
+    const message = document.querySelector('#message');
+
+    art.addEventListener('load', () => {
+      message.textContent =
+        '「空間に置く」を押し、AR画面の案内に沿って床や机へ向けてください。';
+    });
+
+    art.addEventListener('error', () => {
+      message.textContent =
+        '作品を読み込めませんでした。ファイルと通信を確認してください。';
+    });
+
+    art.addEventListener('ar-status', ({detail}) => {
+      if (detail.status === 'failed') {
+        message.textContent =
+          'ARを開始できませんでした。この画面で3D作品を鑑賞できます。';
+      }
+    });
+  </script>
+</body>
+</html>
