@@ -7,7 +7,7 @@ await cp('public/artworks','dist/artworks',{recursive:true});
 await mkdir('dist/licenses',{recursive:true});
 for(const pkg of ['mind-ar','jszip','qrcode']){
  let found=false;
- for(const name of ['LICENSE','LICENSE.txt','LICENSE.md','LICENSE.markdown','LICENSE-MIT']){
+ for(const name of ['LICENSE','LICENSE.txt','LICENSE.md','LICENSE.markdown','LICENSE-MIT','license','license.txt','license.md','license.markdown']){
   try{await access('node_modules/'+pkg+'/'+name);}catch{continue;}
   await cp('node_modules/'+pkg+'/'+name,'dist/licenses/'+pkg+'.txt');found=true;break;
  }
