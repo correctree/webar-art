@@ -1,1 +1,13 @@
-{"name":"webar-art","version":"0.1.0","private":true,"type":"module","scripts":{"build":"node scripts/build.mjs","dev":"python3 -m http.server 8080","test":"node --test tests/*.test.mjs"},"engines":{"node":">=20"}}
+{
+  "name": "webar-art", "version": "0.2.0", "private": true, "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs", "test": "node --test tests/*.test.mjs",
+    "dev": "npm run build && python3 -m http.server 8080 --directory dist",
+    "target:prepare": "node scripts/prepare-target.mjs",
+    "target:import": "node scripts/import-target.mjs",
+    "install:repo": "node scripts/install-repo.mjs"
+  },
+  "dependencies": {"three": "0.160.1", "@8thwall/engine-binary": "1.0.0"},
+  "devDependencies": {"@8thwall/image-target-cli": "1.0.0"},
+  "engines": {"node": ">=20"}
+}
