@@ -4,7 +4,7 @@ import {fileURLToPath} from 'node:url';
 const source = fileURLToPath(new URL('..', import.meta.url));
 const destination = resolve(process.argv[2] || '');
 const replace = ['src', 'scripts', 'tests', 'package.json', 'package-lock.json', 'index.html', 'print.html', 'README.md', 'TEST_REPORT.md', '.github/workflows/pages.yml'];
-const copy = ['src', 'scripts', 'tests', 'package.json', 'index.html', 'print.html', 'README.md', 'TEST_REPORT.md', 'docs', 'public', '.github/workflows/pages.yml'];
+const copy = ['src', 'scripts', 'tests', 'package.json', 'index.html', 'print.html', 'README.md', 'TEST_REPORT.md', 'docs', 'public/artworks/sample.glb', 'public/targets/mk_1008.jpg', '.github/workflows/pages.yml'];
 try {
   if (!process.argv[2] || destination === source) throw new Error('使い方：npm run install:repo -- "$HOME/webar-art-0.1"');
   await stat(resolve(destination, '.git'));
