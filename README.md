@@ -1,9 +1,10 @@
-# WebAR Art 0.3.0 — Marker Studio
-PCブラウザでマーカーと複合作品を制作し、GitHub Pagesへ公開してiPhoneで再生します。
+# WebAR Art 0.4.0 — Interactive Marker Studio
+PCブラウザで複数マーカー・シーン・タップと音の反応を制作し、GitHub Pagesへ公開してiPhoneで再生します。
 
 入口:
 - studio.html: PC編集、マーカー生成、GLB・動画・Sprite、公開とQR
-- ar.html?scene=demo: 同梱マーカーARの3形式デモ
+- ar.html?scene=demo-interactive: タップ・音・2シーンの3形式デモ
+- ar.html?scene=demo: 従来0.3のデモ
 - space.html: 実機で成功した従来のAR Quick Look空間配置
 - index.html: 既存8th Wall 0.2プレイヤー
 
@@ -18,3 +19,5 @@ Three.js・MindAR・JSZip: MIT。QRCode: MIT。
 旧プレイヤーの著作権・免責・ライセンス表示を維持しています。
 添付されたマーカーと157 Spriteはユーザー提供素材です。このパッケージは権利を再許諾しません。
 新しい動画デモは生成したテスト素材です。
+
+0.3 ZIPは0.4へ自動変換。マーカーは8枚登録、同時追跡2枚。シーン12個、全体48作品。音声入力・顔・手の追跡は今後の版で追加します。

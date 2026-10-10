@@ -6,7 +6,7 @@ import {requiredAssets} from '../studio/schema.js';
 const scene=JSON.parse(await readFile(new URL('../public/scenes/demo/scene.json',import.meta.url)));
 const files=requiredAssets(scene).map(name=>({name,content:Buffer.from('fixture').toString('base64')}));
 const json=data=>new Response(JSON.stringify(data),{status:200,headers:{'Content-Type':'application/json'}});
-function fixture({failBlob=false,run='success',revision=scene.revision,deployed=true}={}){const calls=[];const fetcher=async(url,options={})=>{url=String(url);calls.push({url,options});
+function fixture({failBlob=false,run='success',revision=scene.revision,deployed=true,manifest=scene,missing=null}={}){const calls=[];const fetcher=async(url,options={})=>{url=String(url);calls.push({url,options});
  if(url.includes('/git/ref/heads/'))return json({object:{sha:'parent'}});
  if(url.endsWith('/git/commits/parent'))return json({tree:{sha:'old-tree'}});
  if(url.endsWith('/git/blobs'))return failBlob?new Response('',{status:403}):json({sha:'blob'});
@@ -17,12 +17,14 @@ function fixture({failBlob=false,run='success',revision=scene.revision,deployed=
  if(url.includes('/actions/runs?'))return json({workflow_runs:[{path:'.github/workflows/pages.yml',head_sha:'commit',id:1,run_attempt:1,status:run==='running'?'in_progress':'completed',conclusion:run,html_url:'https://github.com/correctree/webar-art/actions/runs/1'}]});
  if(url.includes('/deployments?'))return json([{id:1,sha:'commit'}]);
  if(url.includes('/deployments/1/statuses'))return json([{state:deployed?'success':'failure'}]);
- if(url.includes('github.io')&&url.includes('scene.json'))return json({...scene,revision});
+ if(url.includes('github.io')&&url.includes('scene.json'))return json({...manifest,revision});
  if(url.includes('github.io')&&url.includes('ar.html'))return new Response('<title>WebAR Art</title>');
- if(url.includes('github.io')&&options.method==='HEAD')return new Response('');
+ if(url.includes('github.io')&&options.method==='HEAD')return new Response('',{status:url.endsWith('/'+missing)?404:200});
  if(url.endsWith('/repos/correctree/webar-art'))return json({permissions:{push:true}});
  throw new Error('Unexpected request: '+url);};return{calls,publisher:new GitHubPublisher({owner:'correctree',repo:'webar-art',fetcher})};}
 test('publishes all assets atomically using parent tree and a non-force ref update',async()=>{const f=fixture();const job=await f.publisher.publish('secret-fixture',{scene,files});assert.equal(job.sha,'commit');const tree=JSON.parse(f.calls.find(c=>c.url.endsWith('/git/trees')).options.body);assert.equal(tree.base_tree,'old-tree');assert.equal(tree.tree.length,files.length+1);assert.ok(tree.tree.every(e=>e.path.startsWith('public/scenes/demo/')));assert.equal(tree.tree.at(-1).path,'public/scenes/demo/scene.json');const ref=JSON.parse(f.calls.find(c=>c.url.includes('/git/refs/heads/')).options.body);assert.equal(ref.force,false);});
 test('asset upload failure never advances the repository ref',async()=>{const f=fixture({failBlob:true});await assert.rejects(f.publisher.publish('secret-fixture',{scene,files}),/403/);assert.ok(!f.calls.some(c=>c.options.method==='PATCH'));});
 test('QR-ready result requires completed workflow, successful matching deployment and matching published revision',async()=>{const job={sha:'commit',pagesURL:'https://correctree.github.io/webar-art/',sceneId:'demo',revision:scene.revision};for(const options of [{run:'running'},{deployed:false},{revision:'old'}]){const f=fixture(options);const result=await f.publisher.status('secret-fixture',job);assert.notEqual(result.state,'ready');assert.equal(result.url,undefined);}const f=fixture();const result=await f.publisher.status('secret-fixture',job);assert.equal(result.state,'ready');assert.equal(result.url,'https://correctree.github.io/webar-art/ar.html?scene=demo');assert.ok(!result.url.includes('secret-fixture'));});
 test('workflow failure is reported without presenting a public QR',async()=>{const f=fixture({run:'failure'});const result=await f.publisher.status('fixture',{sha:'commit'});assert.equal(result.state,'failed');assert.equal(result.url,undefined);});
+
+test('0.4 publication waits for sound and all-scene assets before QR-ready',async()=>{const p=JSON.parse(await readFile(new URL('../public/scenes/demo-interactive/scene.json',import.meta.url)));const job={sha:'commit',pagesURL:'https://correctree.github.io/webar-art/',sceneId:p.id,revision:p.revision};const f=fixture({manifest:p,revision:p.revision});const result=await f.publisher.status('fixture',job);assert.equal(result.state,'ready');const heads=f.calls.filter(c=>c.options.method==='HEAD').map(c=>c.url.split('/').at(-1));assert.deepEqual(heads.sort(),requiredAssets(p).sort());const missing=fixture({manifest:p,revision:p.revision,missing:'tap.wav'});assert.equal((await missing.publisher.status('fixture',job)).state,'verifying');const files=requiredAssets(p).map(name=>({name,content:'eA=='}));await f.publisher.publish('fixture',{scene:p,files});const tree=JSON.parse(f.calls.find(c=>c.url.endsWith('/git/trees')).options.body);assert.ok(tree.tree.some(e=>e.path.endsWith('/tap.wav')));});

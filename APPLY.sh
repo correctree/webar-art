@@ -17,13 +17,13 @@ npm install --ignore-scripts
 npm test
 npm run build
 node scripts/check-studio-dist.mjs
-FILES=(.github/workflows/pages.yml LICENSE-MIT src scripts tests studio publisher package.json package-lock.json index.html print.html studio.html ar.html vite.studio.config.mjs public/scenes/demo README.md README_SETUP_JA.md TEST_REPORT.md docs .gitignore .dockerignore .env.example Dockerfile render.yaml APPLY.sh)
+FILES=(.github/workflows/pages.yml LICENSE-MIT src scripts tests studio publisher package.json package-lock.json index.html print.html studio.html ar.html vite.studio.config.mjs public/scenes/demo public/scenes/demo-interactive README.md README_SETUP_JA.md TEST_REPORT.md docs .gitignore .dockerignore .env.example Dockerfile render.yaml APPLY.sh)
 git add -- "${FILES[@]}"
 if ! git diff --cached --quiet -- "${FILES[@]}"; then
-  git commit --only -m "Add marker authoring studio, mixed media AR and GitHub publisher" -- "${FILES[@]}"
+  git commit --only -m "Add WebAR Art 0.4 interactions, multiple markers and scenes" -- "${FILES[@]}"
 fi
 git push
-echo '初回プログラムをGitHubへ送信しました。Actionsの公開完了後、ar.html?scene=demo をiPhoneで確認できます。'
+echo '初回プログラムをGitHubへ送信しました。Actionsの公開完了後、ar.html?scene=demo-interactive をiPhoneで確認できます。'
 echo 'PC編集: http://localhost:8080/studio.html'
 echo 'GitHub直接公開の初回設定: README_SETUP_JA.md を参照してください。'
 if [ "${WEBAR_SKIP_START:-0}" != "1" ]; then

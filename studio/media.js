@@ -9,7 +9,8 @@ export class MediaScene {
     this.draco.setDecoderPath(new URL('vendor/three/draco/',baseURL).href);this.loader.setDRACOLoader(this.draco);
   }
   async add(spec) {
-    const group=new THREE.Group(); let mesh,mixer,video,texture;
+    const group=new THREE.Group(); let mesh,mixer,video,texture,clips=[];
+    const motion=new THREE.Group();group.add(motion);
     try {
       if(spec.kind==='glb') {
         const data=await this.loader.loadAsync(this.resolveURL(spec.src));
@@ -17,8 +18,8 @@ export class MediaScene {
         if(!Number.isFinite(longest)||longest<=0)throw new Error('GLBに形状がありません。');
         const center=box.getCenter(new THREE.Vector3());data.scene.position.sub(center);data.scene.scale.setScalar(1/longest);
         // Translation must also be normalized after scaling the original model.
-        data.scene.position.divideScalar(longest);group.add(data.scene);
-        if(data.animations.length){mixer=new THREE.AnimationMixer(data.scene);data.animations.forEach(clip=>mixer.clipAction(clip).play());}
+        data.scene.position.divideScalar(longest);motion.add(data.scene);
+        if(data.animations.length){mixer=new THREE.AnimationMixer(data.scene);clips=data.animations;}
       } else {
         let ratio=1,material;
         if(spec.kind==='sprite') {
@@ -38,16 +39,24 @@ export class MediaScene {
               fragmentShader:'uniform sampler2D map;varying vec2 vUv;void main(){vec3 c=texture2D(map,vec2(vUv.x*0.5,vUv.y)).rgb;float a=texture2D(map,vec2(0.5+vUv.x*0.5,vUv.y)).r;if(a<0.015)discard;gl_FragColor=vec4(c,a);}' });
           }else {texture.colorSpace=THREE.SRGBColorSpace;material=new THREE.MeshBasicMaterial({map:texture,side:THREE.DoubleSide});}
         }
-        mesh=new THREE.Mesh(new THREE.PlaneGeometry(ratio,1),material);group.add(mesh);
+        mesh=new THREE.Mesh(new THREE.PlaneGeometry(ratio,1),material);motion.add(mesh);
       }
-      const item={spec,group,mixer,video,texture};this.items.set(spec.id,item);this.root.add(group);this.apply(spec);this.update(0);return item;
+      const item={spec,group,motion,mixer,clips,video,texture,time:0,playing:spec.autoplay!==false,gate:true,effectTime:null};group.userData.objectId=spec.id;this.items.set(spec.id,item);this.root.add(group);this.apply(spec);this.configure(item);this.update(0);return item;
     }catch(error){video?.pause();video?.removeAttribute('src');dispose(group);texture?.dispose();throw error;}
   }
   apply(spec){const item=this.items.get(spec.id);if(!item)return;item.spec=spec;item.group.position.fromArray(spec.position);item.group.rotation.set(...spec.rotation.map(v=>THREE.MathUtils.degToRad(v)));item.group.scale.fromArray(spec.scale);}
-  play(){this.playing=true;return Promise.allSettled([...this.items.values()].filter(i=>i.video).map(i=>i.video.play()));}
+  configure(item, interaction=item.spec.interaction){if(item.video)item.video.loop=interaction?.loop??(item.spec.loop!==false);if(!item.mixer)return;item.mixer.stopAllAction();const name=interaction?.clip||'all';if(name!=='all'&&!item.clips.some(c=>c.name===name))throw new Error('GLBアニメーションがありません: '+name);for(const clip of item.clips){if(name!=='all'&&clip.name!==name)continue;const action=item.mixer.clipAction(clip);action.reset();action.setLoop(interaction?.loop===false?THREE.LoopOnce:THREE.LoopRepeat,interaction?.loop===false?1:Infinity);action.clampWhenFinished=true;action.play();}}
+  restart(id){const i=this.items.get(id);if(!i)return Promise.resolve();i.time=0;if(i.video)i.video.currentTime=0;this.configure(i);i.playing=true;return this.sync(i);}
+  setPlaying(id,playing){const i=this.items.get(id);if(!i)return Promise.resolve();i.playing=playing;return this.sync(i);}
+  setGate(id,gate){const i=this.items.get(id);if(!i)return;i.gate=gate;this.sync(i).catch(e=>this.onPlaybackError?.(e));}
+  sync(i){const run=this.playing&&i.playing&&i.gate;if(i.video){if(run)return i.video.play();i.video.pause();}return Promise.resolve();}
+  effect(id){const i=this.items.get(id);if(i)i.effectTime=0;}
+  reset(id){const i=this.items.get(id);if(!i)return;i.time=0;i.effectTime=null;i.motion.position.set(0,0,0);i.motion.rotation.set(0,0,0);i.motion.scale.setScalar(1);if(i.video){i.video.pause();i.video.currentTime=0;i.video.loop=i.spec.interaction?.loop??true;}this.configure(i);i.playing=i.spec.autoplay!==false;}
+  primeVideos(){return Promise.allSettled([...this.items.values()].filter(i=>i.video).map(i=>i.video.play().then(()=>{if(!this.playing||!i.playing||!i.gate)i.video.pause();})));}
+  play(){this.playing=true;return Promise.allSettled([...this.items.values()].map(i=>this.sync(i)));}
   pause(){this.playing=false;for(const i of this.items.values())i.video?.pause();}
-  update(delta){if(this.playing)this.time+=delta;for(const item of this.items.values()){if(this.playing)item.mixer?.update(delta);if(item.spec.kind==='sprite'){const f=spriteFrame(this.time,item.spec.sprite);item.texture.offset.set(f.x,f.y);}}}
-  remove(id){const item=this.items.get(id);if(!item)return;item.video?.pause();if(item.video){item.video.removeAttribute('src');item.video.load();}item.mixer?.stopAllAction();this.root.remove(item.group);dispose(item.group);item.texture?.dispose();this.items.delete(id);}
+  update(delta){if(this.playing)this.time+=delta;for(const i of this.items.values()){const run=this.playing&&i.playing&&i.gate;if(run){i.time+=delta;i.mixer?.update(delta);}if(i.spec.kind==='sprite'){let time=i.time;const s=i.spec.sprite;if(i.spec.interaction?.loop===false)time=Math.min(time,(s.frames-1)/s.fps);const f=spriteFrame(time,{...s,loop:i.spec.interaction?.loop??s.loop});i.texture.offset.set(f.x,f.y);}if(i.effectTime!==null&&this.playing&&i.gate){i.effectTime+=delta;const spec=i.spec.interaction,d=spec.duration,t=Math.min(1,i.effectTime/d),wave=Math.sin(Math.PI*t);i.motion.position.set(0,0,spec.effect==='bounce'?wave*.25:0);i.motion.rotation.z=spec.effect==='rotate'?t*Math.PI*2:0;i.motion.scale.setScalar(spec.effect==='pulse'?1+wave*.3:1);if(t===1){i.effectTime=null;i.motion.position.set(0,0,0);i.motion.rotation.set(0,0,0);i.motion.scale.setScalar(1);}}}}
+  remove(id){const item=this.items.get(id);if(!item)return;item.video?.pause();if(item.video){item.video.removeAttribute('src');item.video.load();}item.mixer?.stopAllAction();item.group.removeFromParent();dispose(item.group);item.texture?.dispose();this.items.delete(id);}
   dispose(){for(const id of [...this.items.keys()])this.remove(id);this.draco.dispose();}
 }
 function dispose(root){const ts=new Set();root.traverse(o=>{o.geometry?.dispose();for(const m of [].concat(o.material||[])){for(const t of Object.values(m))if(t?.isTexture)ts.add(t);m.dispose();}});for(const t of ts)t.dispose();}

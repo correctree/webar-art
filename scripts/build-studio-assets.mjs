@@ -1,7 +1,6 @@
 import {cp,access,mkdir,readFile} from 'node:fs/promises';
 import {validateScene,requiredAssets} from '../studio/schema.js';
-const scene=validateScene(JSON.parse(await readFile('public/scenes/demo/scene.json','utf8')));
-for(const file of requiredAssets(scene))await access('public/scenes/demo/'+file);
+for(const id of ['demo','demo-interactive']){const scene=validateScene(JSON.parse(await readFile('public/scenes/'+id+'/scene.json','utf8')));for(const file of requiredAssets(scene))await access('public/scenes/'+id+'/'+file);}
 await cp('public/scenes','dist/scenes',{recursive:true});
 await cp('public/artworks','dist/artworks',{recursive:true});
 await mkdir('dist/licenses',{recursive:true});

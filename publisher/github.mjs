@@ -1,4 +1,4 @@
-import {validatePackage} from '../studio/schema.js';
+import {validatePackage,validateScene,requiredAssets} from '../studio/schema.js';
 export class GitHubPublisher {
  constructor({owner,repo,branch='main',fetcher=fetch}){if(!/^[a-zA-Z0-9-]+$/.test(owner)||!/^[a-zA-Z0-9_.-]+$/.test(repo)||!/^[-a-zA-Z0-9_/]+$/.test(branch))throw new Error('公開先設定が不正です。');Object.assign(this,{owner,repo,branch,fetcher});}
  async request(token,path,method='GET',body){const response=await this.fetcher('https://api.github.com'+path,{method,headers:{Authorization:'Bearer '+token,Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28','User-Agent':'WebAR-Art-Publisher','Content-Type':'application/json'},body:body?JSON.stringify(body):undefined,signal:AbortSignal.timeout(30000)});if(!response.ok){const error=new Error('GitHub API '+response.status+'。権限・公開先・接続を確認してください。');error.status=response.status;throw error;}return response.status===204?null:response.json();}
@@ -27,7 +27,7 @@ export class GitHubPublisher {
   const manifest=await response.json();if(manifest.revision!==job.revision)return{state:'verifying',message:'新しい版の配信を確認しています。'};
   const page=new URL('ar.html',base);const check=await this.fetcher(page,{signal:AbortSignal.timeout(15000)});if(!check.ok)return{state:'failed',message:'AR再生ページがありません。初回のプログラム適用・公開を確認してください。'};
   const pageText=await check.text();if(!pageText.includes('WebAR Art'))return{state:'failed',message:'AR再生ページの内容が不正です。'};
-  const names=new Set([manifest.marker.image,manifest.marker.target]);manifest.objects.forEach(o=>{names.add(o.src);if(o.fallback)names.add(o.fallback.src);});
+  const names=requiredAssets(validateScene(manifest));
   for(const name of names){const asset=await this.fetcher(new URL('scenes/'+job.sceneId+'/'+name,base),{method:'HEAD',signal:AbortSignal.timeout(15000)});if(!asset.ok)return{state:'verifying',message:'作品素材の配信待ち: '+name};}
   page.searchParams.set('scene',job.sceneId);return{state:'ready',message:'公開完了。QRをiPhoneで読み取ってください。',url:page.href};
  }
