@@ -2,9 +2,9 @@
   "version": 2,
   "id": "art-004",
   "title": "新しいWebAR Art",
-  "revision": "d7f69d71-ca5f-4a12-bf10-0ced926474e0",
-  "trackingTarget": "77dc07f8-c28e-49bc-8407-d7e89b3f7370.mind",
-  "maxTrack": 1,
+  "revision": "f456f5c2-e3e1-4d9c-87a1-8e058e0f4bf1",
+  "trackingTarget": "adfb8d10-ef5a-4e24-abe2-d37975e7a45a.mind",
+  "maxTrack": 2,
   "markers": [
     {
       "id": "568970fd-ca09-4678-9490-e00efd65c03d",
@@ -12,6 +12,13 @@
       "image": "568970fd-ca09-4678-9490-e00efd65c03d.jpg",
       "aspect": 1,
       "targetIndex": 0
+    },
+    {
+      "id": "cfe409c2-2c3e-48fc-8f8f-1c2c971fd203",
+      "name": "mk_1008.jpg",
+      "image": "cfe409c2-2c3e-48fc-8f8f-1c2c971fd203.jpg",
+      "aspect": 1,
+      "targetIndex": 1
     }
   ],
   "sounds": [
@@ -68,7 +75,45 @@
             "packedAlpha": true
           },
           "loop": true,
-          "tapEnabled": true
+          "tapEnabled": true,
+          "shadow": true
+        },
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": true,
+          "id": "bf04cb49-6f48-4403-9dc6-b14a3c6609ca",
+          "kind": "glb",
+          "src": "0b1ef65d-f6c6-4111-ae25-1959620a8252.glb",
+          "name": "kabe_02.glb",
+          "markerId": "cfe409c2-2c3e-48fc-8f8f-1c2c971fd203",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": true,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": "55a4fb78-9b33-4aeb-b801-26bb31df41eb",
+            "delay": 1
+          },
+          "position": [
+            0,
+            0,
+            0.1
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            0.5,
+            0.5,
+            0.5
+          ]
         }
       ]
     },
@@ -94,16 +139,16 @@
             "duration": 1,
             "soundId": "37064671-ed90-48c3-9100-00c7499b4410",
             "volume": 1,
-            "nextSceneId": "scene-1",
+            "nextSceneId": "d0bcfe28-62ea-4d03-8fba-e9a9af3a03c6",
             "delay": 1
           },
           "position": [
             0,
-            0,
-            0.2944587634623965
+            2.7755575615628914e-17,
+            0.4772297969888535
           ],
           "rotation": [
-            0,
+            90,
             0,
             0
           ],
@@ -121,7 +166,8 @@
             "fps": 12,
             "loop": true
           },
-          "scaleLinked": false
+          "scaleLinked": false,
+          "shadow": true
         }
       ]
     },
