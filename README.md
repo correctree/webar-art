@@ -1,4 +1,4 @@
-# WebAR Art 0.4.2 — Interactive Marker Studio
+# WebAR Art 0.4.3 — Interactive Marker Studio
 PCブラウザで複数マーカー・シーン・タップと音の反応を制作し、GitHub Pagesへ公開してiPhoneで再生します。
 
 入口:
@@ -22,6 +22,6 @@ Three.js・MindAR・JSZip: MIT。QRCode: MIT。
 
 0.3 ZIPは0.4へ自動変換。マーカーは8枚登録、同時追跡2枚。シーン12個、全体48作品。音声入力・顔・手の追跡は今後の版で追加します。
 
-0.4.2: iPhone向けタップcapture、表示範囲の補助判定、受付メッセージ、反応確認ボタン。
+0.4.3: iPhone向けタップcapture、表示範囲の補助判定、受付メッセージ、反応確認ボタン。
 
-0.4.2: ARの音をタップ内のnative audio再生へ変更。PCはAudioContext.resume完了を待機。音声テストとエラー表示を追加。
+0.4.3: ARの音をタップ内のnative audio再生へ変更。PCはAudioContext.resume完了を待機。音声テストとエラー表示を追加。

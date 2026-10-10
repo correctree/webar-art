@@ -1,5 +1,9 @@
-# WebAR Art 0.4.2 検証範囲
+# WebAR Art 0.4.3 検証範囲
 生成日：2026-10-10。
+
+## 0.4.3の追加検証
+ユーザーのSafari画像に「Can only call Window.fetch on instances of Window」が表示されました。AudioBankがfetchをプロパティに保存してthis.fetcher(url)と呼び、呼び出し元をAudioBankにしていたコードを確認しました。正しいglobalThisを呼び出し元にしていることを実際の既定fetch経路で検証するテストを追加しました。
+この修正のiPhone実機結果は未確認です。
 
 ## 0.4.2の追加検証
 AudioContext.resumeが完了する前に音を開始しないこと、シーン終了で再開待ち音声を取消すこと、ARのHTMLAudioElement.playをPromise待機前に直接呼ぶこと、同じ音を使う別作品の独立した再生、再タップ／終了／ミュートで停止、再生拒否のエラー通知を5件のfixtureテストで確認しました。
@@ -13,7 +17,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/play
 画像では0.4デモの表示とマーカー認識を確認しました。原因候補のイベント経路と当たり判定を修正しましたが、最終原因の断定と修正の実機確認はまだできていません。
 
 ## 実行結果
-- Node自動テスト：34件成功、失敗・スキップなし。
+- Node自動テスト：35件成功、失敗・スキップなし。
 - JavaScriptと設定の構文チェック、APPLY.shのbash構文チェック。
 - 0.3データを0.4へ変換。認識データ、全素材、位置、自動再生とループを保持。
 - 複数マーカー・複数シーン・共有音を含む公開データの検証。不足素材、参照先の不存在、シーン間の作品ID重複を拒否。
