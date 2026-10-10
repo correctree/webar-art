@@ -1,0 +1,2 @@
+export function scaleAxis(scale,axis,value,linked=true){if(!Number.isInteger(axis)||axis<0||axis>2||!Number.isFinite(value)||value<=0||value>100)throw new Error('サイズは0より大きく100以下にしてください。');const next=linked?scale.map(v=>v*value/scale[axis]):scale.map((v,i)=>i===axis?value:v);if(next.some(v=>!Number.isFinite(v)||v<=0||v>100))throw new Error('連動後のサイズが範囲外です。');return next;}
+export const tapEnabled=o=>o.tapEnabled!==false;

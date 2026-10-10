@@ -35,6 +35,8 @@ function validateLegacy(scene) {
   for (const object of scene.objects) {
     if (!assetPath(object.id) || ids.has(object.id)) throw new Error('作品IDが不正・重複しています。'); ids.add(object.id);
     if (!['glb','video','sprite'].includes(object.kind) || !assetPath(object.src)) throw new Error('作品形式が不正です。');
+    for(const key of ['tapEnabled','scaleLinked','shadow'])if(object[key]!==undefined&&typeof object[key]!=='boolean')throw new Error('作品設定が不正です：'+key);
+    if(object.shadow&&object.kind!=='glb')throw new Error('影はGLBに対応しています。');
     if(object.opacity!==undefined&&(!Number.isFinite(object.opacity)||object.opacity<0||object.opacity>1))throw new Error('不透明度は0〜1です。');
     if (typeof object.name !== 'string' || object.name.length > 100) throw new Error('作品名が不正です。');
     if (object.kind === 'sprite') spriteSpec(object.sprite);
@@ -84,6 +86,7 @@ export function validateProject(p,{draft=false}={}){
   if(!assetPath(p.trackingTarget)||!p.trackingTarget.endsWith('.mind'))throw new Error('複数マーカーの認識データが必要です。');
   if(!Array.isArray(p.markers)||p.markers.length<(draft?0:1)||p.markers.length>8)throw new Error('マーカーは1〜8枚です。');
   if(![1,2].includes(p.maxTrack)||p.maxTrack>Math.max(1,p.markers.length))throw new Error('同時追跡枚数が不正です。');
+  if(p.shadowOpacity!==undefined&&(!Number.isFinite(p.shadowOpacity)||p.shadowOpacity<0||p.shadowOpacity>1))throw new Error('影の濃さは0〜1です。');
   const markers=new Set();p.markers.forEach((m,i)=>{namedId(m,markers,'マーカー');if(m.targetIndex!==i||!assetPath(m.image)||!Number.isFinite(m.aspect)||m.aspect<=0||m.aspect>20)throw new Error('マーカー順序・画像・比率が不正です。');});
   if(!Array.isArray(p.sounds)||p.sounds.length>24)throw new Error('音素材は24個までです。');
   const sounds=new Set();for(const a of p.sounds){namedId(a,sounds,'音素材');if(!assetPath(a.src)||! /\.(mp3|wav|m4a|aac)$/i.test(a.src))throw new Error('音素材形式が不正です。');}
@@ -96,6 +99,7 @@ export function validateProject(p,{draft=false}={}){
     if(!draft&&s.autoNextSeconds>0&&!s.nextSceneId)throw new Error('自動切替の行き先が必要です。');
     // Reuse the strict legacy media validation for each scene.
     if(!Array.isArray(s.objects))throw new Error('作品一覧が不正です。');
+    if(!draft&&(!s.objects.length||s.objects.length>24))throw new Error('シーン「'+s.name+'」の作品数は'+s.objects.length+'です。1〜24作品を配置するか、不要なシーンを削除してください。');
     if(!draft||s.objects.length)validateLegacy({version:1,id:p.id,title:p.title,revision:p.revision,marker:{image:p.markers[0].image,target:p.trackingTarget,aspect:p.markers[0].aspect},objects:s.objects});
     for(const o of s.objects){
       if(allIds.has(o.id))throw new Error('シーンをまたぐ作品IDが重複しています。');allIds.add(o.id);total++;
