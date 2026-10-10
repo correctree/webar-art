@@ -1,4 +1,4 @@
-# WebAR Art 0.5.2 Unified Studio
+# WebAR Art 0.5.3 Unified Studio
 
 Three workspaces: marker & scenes, artwork placement & behaviors, save & publish.
 

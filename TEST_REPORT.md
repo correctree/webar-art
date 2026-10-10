@@ -1,11 +1,9 @@
-# WebAR Art 0.5.2 verification
+# WebAR Art 0.5.3 verification
 
-55 automated tests passed, zero failures. Includes actual FFmpeg VP9 alpha to Safari-compatible packed H.264 conversion, saved-data validation, tap/audio regression, local-publisher QR confirmation and repository install backup/preservation.
+58 automated tests passed, zero failures. Includes FFmpeg conversion, tap/audio, publisher, install preservation and three-workspace regressions.
 
-New verification: all existing control IDs retained in three integrated workspaces; marker and scene management appear together; object properties and behavior are simultaneously available; save/publish/QR share a workspace. Mock-Three unit tests verify marker-parented light/target/receiver, scale-aware frustum (800x anchor), alpha-mask depth patch. All three media shadow flags validate and round-trip.
+New tests verify default light position (0,-2,3), receiver size (4,6) for a 1:1.5 marker, all four shadow directions, expanded shadow frustum, settings persistence and rejection of invalid settings. Editor and player share the direction and bounds helpers. Receiver raycast is disabled. Existing packed-alpha and sprite shadow shaders are unchanged.
 
-Not verified: actual browser/WebGL shader compilation and rendering, real production Vite build, live GitHub publish in this environment, iPhone rendering and shadow performance. Dependency registry returned 403 earlier and browser executable is unavailable. APPLY.sh performs production build on the user's Mac before pushing.
+User reported successful iPhone experience with 0.5.2. New 0.5.3 real-device rendering, GPU compilation and production Vite build are not verified here. APPLY.sh performs the build on Mac. Tests use mocked DOM/Three and shader strings; they are not visual tests.
 
-Cause interpretation: fixed world-sized shadow bounds can exclude scaled AR marker content. The code has been changed to follow anchor scale; the exact original device failure has not been instrumented on the iPhone.
-
-Source: studio/shadow-rig.js, studio/media.js, studio/player.js, studio/editor.js; tests/shadow-rig.test.mjs and tests/guided-layout.test.mjs. Tests use mocked DOM/Three and shader strings; they are not visual or GPU tests.
+Source: studio/shadow-rig.js, studio/editor.js, studio/player.js, studio/schema.js; tests/shadow-rig.test.mjs.

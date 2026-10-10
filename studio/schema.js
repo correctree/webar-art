@@ -85,6 +85,8 @@ export function validateProject(p,{draft=false}={}){
   if(!assetPath(p.trackingTarget)||!p.trackingTarget.endsWith('.mind'))throw new Error('複数マーカーの認識データが必要です。');
   if(!Array.isArray(p.markers)||p.markers.length<(draft?0:1)||p.markers.length>8)throw new Error('マーカーは1〜8枚です。');
   if(![1,2].includes(p.maxTrack)||p.maxTrack>Math.max(1,p.markers.length))throw new Error('同時追跡枚数が不正です。');
+  if(p.shadowDirection!==undefined&&!['back','front','left','right'].includes(p.shadowDirection))throw new Error('影の方向が不正です。');
+  if(p.shadowExtent!==undefined&&(!Number.isFinite(p.shadowExtent)||p.shadowExtent<1||p.shadowExtent>8))throw new Error('影の範囲は1〜8倍です。');
   if(p.shadowOpacity!==undefined&&(!Number.isFinite(p.shadowOpacity)||p.shadowOpacity<0||p.shadowOpacity>1))throw new Error('影の濃さは0〜1です。');
   const markers=new Set();p.markers.forEach((m,i)=>{namedId(m,markers,'マーカー');if(m.targetIndex!==i||!assetPath(m.image)||!Number.isFinite(m.aspect)||m.aspect<=0||m.aspect>20)throw new Error('マーカー順序・画像・比率が不正です。');});
   if(!Array.isArray(p.sounds)||p.sounds.length>24)throw new Error('音素材は24個までです。');
