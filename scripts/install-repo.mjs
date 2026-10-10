@@ -25,5 +25,5 @@ try {
   let ignore = ''; try { ignore = await fs.readFile(resolve(destination, '.gitignore'), 'utf8'); } catch {}
   const additions = ['node_modules/', 'dist/', '.DS_Store', 'image-targets/', '.env', '.env.*', '!.env.example'].filter(line => !ignore.split('\n').includes(line));
   if (additions.length) await writeFile(resolve(destination, '.gitignore'), ignore + '\n' + additions.join('\n') + '\n');
-  console.log(`0.4.1を導入しました：${destination}\n旧版バックアップ：${backup}\n次にリポジトリ内で npm install → npm test → npm run build を実行してください。`);
+  console.log(`0.4.2を導入しました：${destination}\n旧版バックアップ：${backup}\n次にリポジトリ内で npm install → npm test → npm run build を実行してください。`);
 } catch (error) { console.error(error.message); process.exitCode = 1; }

@@ -1,12 +1,19 @@
-# WebAR Art 0.4.1 検証範囲
+# WebAR Art 0.4.2 検証範囲
 生成日：2026-10-10。
+
+## 0.4.2の追加検証
+AudioContext.resumeが完了する前に音を開始しないこと、シーン終了で再開待ち音声を取消すこと、ARのHTMLAudioElement.playをPromise待機前に直接呼ぶこと、同じ音を使う別作品の独立した再生、再タップ／終了／ミュートで停止、再生拒否のエラー通知を5件のfixtureテストで確認しました。
+ユーザーから0.4.1のタップ・動き・シーン切替成功、tap.wavの直接再生成功、AR内の音の無音が報告されています。0.4.2の実機音声再生は未確認です。音の最終原因を断定するものではありません。
+APIの参考：AudioContext.resumeは再開完了時に解決するPromiseを返します。HTMLMediaElement.playも再生開始／拒否をPromiseで通知します。
+https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/resume
+https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/play
 
 ## 0.4.1の追加検証
 カメラvideoとcanvasを対象にしたcapture入力、UI除外、移動・キャンセル・別pointer・非アクティブ時の無反応、Touch Events代替、実描画領域の座標換算、補助判定の奥行きと範囲外拒否を検証しました。入力テストはEventTargetのfixtureです。iPhoneの実際のDOM重なりやSafariでの成功を証明するものではありません。
 画像では0.4デモの表示とマーカー認識を確認しました。原因候補のイベント経路と当たり判定を修正しましたが、最終原因の断定と修正の実機確認はまだできていません。
 
 ## 実行結果
-- Node自動テスト：29件成功、失敗・スキップなし。
+- Node自動テスト：34件成功、失敗・スキップなし。
 - JavaScriptと設定の構文チェック、APPLY.shのbash構文チェック。
 - 0.3データを0.4へ変換。認識データ、全素材、位置、自動再生とループを保持。
 - 複数マーカー・複数シーン・共有音を含む公開データの検証。不足素材、参照先の不存在、シーン間の作品ID重複を拒否。
