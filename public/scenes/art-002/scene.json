@@ -1,0 +1,525 @@
+{
+  "version": 2,
+  "id": "art-002",
+  "title": "2マーカー同時表示",
+  "revision": "10b3f6e8-d841-47a5-8c60-58c48fd26561",
+  "trackingTarget": "0bd86905-1647-4c6d-b18d-afab6b98c6bd.mind",
+  "maxTrack": 2,
+  "markers": [
+    {
+      "id": "marker-1",
+      "name": "同梱マーカー",
+      "image": "marker.jpg",
+      "aspect": 1,
+      "targetIndex": 0
+    },
+    {
+      "id": "c799e613-64c6-41b4-b648-67264991d2b3",
+      "name": "mk_1010.jpg",
+      "image": "c799e613-64c6-41b4-b648-67264991d2b3.jpg",
+      "aspect": 1,
+      "targetIndex": 1
+    }
+  ],
+  "sounds": [
+    {
+      "id": "tap-sound",
+      "name": "タップ音",
+      "src": "tap.wav"
+    }
+  ],
+  "initialSceneId": "7631ebcd-c610-4046-9e9f-393e78ee162c",
+  "scenes": [
+    {
+      "id": "scene-1",
+      "name": "シーン1：宝石をタップ",
+      "autoNextSeconds": 0,
+      "nextSceneId": null,
+      "markerLost": "pause",
+      "objects": [
+        {
+          "id": "gem",
+          "kind": "glb",
+          "src": "sample.glb",
+          "name": "立体作品",
+          "position": [
+            -0.3,
+            0.15,
+            0.2
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            0.3,
+            0.3,
+            0.3
+          ],
+          "markerId": "marker-1",
+          "autoplay": false,
+          "interaction": {
+            "action": "restart",
+            "clip": "all",
+            "loop": false,
+            "effect": "rotate",
+            "duration": 1,
+            "soundId": "tap-sound",
+            "volume": 0.35,
+            "nextSceneId": "scene-2",
+            "delay": 1.3
+          }
+        },
+        {
+          "id": "film",
+          "kind": "video",
+          "src": "sample.webm",
+          "name": "透過動画",
+          "position": [
+            0.28,
+            0.15,
+            0.05
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            0.32,
+            0.32,
+            0.32
+          ],
+          "fallback": {
+            "src": "sample-safari.mp4",
+            "packedAlpha": true
+          },
+          "loop": true,
+          "markerId": "marker-1",
+          "autoplay": true,
+          "interaction": {
+            "action": "restart",
+            "clip": "all",
+            "loop": true,
+            "effect": "pulse",
+            "duration": 1,
+            "soundId": null,
+            "volume": 0.35,
+            "nextSceneId": null,
+            "delay": 1.3
+          }
+        },
+        {
+          "id": "sprite",
+          "kind": "sprite",
+          "src": "sprite.png",
+          "name": "157 Sprite",
+          "position": [
+            0,
+            -0.28,
+            0.03
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "sprite": {
+            "frameWidth": 480,
+            "frameHeight": 270,
+            "columns": 4,
+            "rows": 2,
+            "frames": 5,
+            "fps": 12,
+            "loop": true
+          },
+          "markerId": "marker-1",
+          "autoplay": true,
+          "interaction": {
+            "action": "restart",
+            "clip": "all",
+            "loop": true,
+            "effect": "bounce",
+            "duration": 1,
+            "soundId": null,
+            "volume": 0.35,
+            "nextSceneId": null,
+            "delay": 1.3
+          }
+        }
+      ]
+    },
+    {
+      "id": "scene-2",
+      "name": "シーン2：作品をタップで戻る",
+      "autoNextSeconds": 0,
+      "nextSceneId": null,
+      "markerLost": "pause",
+      "objects": [
+        {
+          "id": "scene2-gem",
+          "kind": "glb",
+          "src": "sample.glb",
+          "name": "立体作品",
+          "position": [
+            0.3,
+            0.15,
+            0.2
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            0.3,
+            0.3,
+            0.3
+          ],
+          "markerId": "marker-1",
+          "autoplay": true,
+          "interaction": {
+            "action": "restart",
+            "clip": "all",
+            "loop": false,
+            "effect": "bounce",
+            "duration": 1,
+            "soundId": "tap-sound",
+            "volume": 0.35,
+            "nextSceneId": "scene-1",
+            "delay": 1.3
+          }
+        },
+        {
+          "id": "scene2-film",
+          "kind": "video",
+          "src": "sample.webm",
+          "name": "透過動画",
+          "position": [
+            -0.28,
+            0.15,
+            0.05
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            0.32,
+            0.32,
+            0.32
+          ],
+          "fallback": {
+            "src": "sample-safari.mp4",
+            "packedAlpha": true
+          },
+          "loop": true,
+          "markerId": "marker-1",
+          "autoplay": true,
+          "interaction": {
+            "action": "restart",
+            "clip": "all",
+            "loop": true,
+            "effect": "bounce",
+            "duration": 1,
+            "soundId": "tap-sound",
+            "volume": 0.35,
+            "nextSceneId": "scene-1",
+            "delay": 1.3
+          }
+        },
+        {
+          "id": "scene2-sprite",
+          "kind": "sprite",
+          "src": "sprite.png",
+          "name": "157 Sprite",
+          "position": [
+            0,
+            -0.28,
+            0.03
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "sprite": {
+            "frameWidth": 480,
+            "frameHeight": 270,
+            "columns": 4,
+            "rows": 2,
+            "frames": 5,
+            "fps": 12,
+            "loop": true
+          },
+          "markerId": "marker-1",
+          "autoplay": true,
+          "interaction": {
+            "action": "restart",
+            "clip": "all",
+            "loop": true,
+            "effect": "bounce",
+            "duration": 1,
+            "soundId": "tap-sound",
+            "volume": 0.35,
+            "nextSceneId": "scene-1",
+            "delay": 1.3
+          }
+        }
+      ]
+    },
+    {
+      "id": "7631ebcd-c610-4046-9e9f-393e78ee162c",
+      "name": "2マーカー同時表示",
+      "autoNextSeconds": 0,
+      "nextSceneId": null,
+      "markerLost": "pause",
+      "objects": [
+        {
+          "id": "23a03be3-c5a3-4e61-9d21-92a1edc1f711",
+          "kind": "glb",
+          "src": "sample.glb",
+          "name": "立体作品 / A",
+          "position": [
+            -0.3,
+            0.15,
+            0.2
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            0.3,
+            0.3,
+            0.3
+          ],
+          "markerId": "marker-1",
+          "autoplay": false,
+          "interaction": {
+            "action": "restart",
+            "clip": "all",
+            "loop": false,
+            "effect": "rotate",
+            "duration": 1,
+            "soundId": "tap-sound",
+            "volume": 0.35,
+            "nextSceneId": null,
+            "delay": 1.3
+          }
+        },
+        {
+          "id": "d423e14c-1412-4a0c-b733-7c9ebdfed437",
+          "kind": "video",
+          "src": "sample.webm",
+          "name": "透過動画 / A",
+          "position": [
+            0.28,
+            0.15,
+            0.05
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            0.32,
+            0.32,
+            0.32
+          ],
+          "fallback": {
+            "src": "sample-safari.mp4",
+            "packedAlpha": true
+          },
+          "loop": true,
+          "markerId": "marker-1",
+          "autoplay": true,
+          "interaction": {
+            "action": "restart",
+            "clip": "all",
+            "loop": true,
+            "effect": "pulse",
+            "duration": 1,
+            "soundId": null,
+            "volume": 0.35,
+            "nextSceneId": null,
+            "delay": 1.3
+          }
+        },
+        {
+          "id": "7a5e7057-150d-4754-8a28-36b5e16e78e4",
+          "kind": "sprite",
+          "src": "sprite.png",
+          "name": "157 Sprite / A",
+          "position": [
+            0,
+            -0.28,
+            0.03
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "sprite": {
+            "frameWidth": 480,
+            "frameHeight": 270,
+            "columns": 4,
+            "rows": 2,
+            "frames": 5,
+            "fps": 12,
+            "loop": true
+          },
+          "markerId": "marker-1",
+          "autoplay": true,
+          "interaction": {
+            "action": "restart",
+            "clip": "all",
+            "loop": true,
+            "effect": "bounce",
+            "duration": 1,
+            "soundId": null,
+            "volume": 0.35,
+            "nextSceneId": null,
+            "delay": 1.3
+          }
+        },
+        {
+          "id": "074121ed-b025-43e6-9514-edb285b33cb9",
+          "kind": "glb",
+          "src": "sample.glb",
+          "name": "立体作品 / B",
+          "position": [
+            -0.3,
+            -0.18359927063256512,
+            0.26755761453792193
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            0.3,
+            0.3,
+            0.3
+          ],
+          "markerId": "c799e613-64c6-41b4-b648-67264991d2b3",
+          "autoplay": false,
+          "interaction": {
+            "action": "restart",
+            "clip": "all",
+            "loop": false,
+            "effect": "rotate",
+            "duration": 1,
+            "soundId": "tap-sound",
+            "volume": 0.35,
+            "nextSceneId": null,
+            "delay": 1.3
+          }
+        },
+        {
+          "id": "dd453dba-e7f1-4c8a-bf69-f166567a4d28",
+          "kind": "video",
+          "src": "sample.webm",
+          "name": "透過動画 / B",
+          "position": [
+            0.28,
+            -0.291462701911375,
+            0.05
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            0.32,
+            0.32,
+            0.32
+          ],
+          "fallback": {
+            "src": "sample-safari.mp4",
+            "packedAlpha": true
+          },
+          "loop": true,
+          "markerId": "c799e613-64c6-41b4-b648-67264991d2b3",
+          "autoplay": true,
+          "interaction": {
+            "action": "restart",
+            "clip": "all",
+            "loop": true,
+            "effect": "pulse",
+            "duration": 1,
+            "soundId": null,
+            "volume": 0.35,
+            "nextSceneId": null,
+            "delay": 1.3
+          }
+        },
+        {
+          "id": "db06ab51-e1ed-4d19-88cc-55c63414d259",
+          "kind": "sprite",
+          "src": "sprite.png",
+          "name": "157 Sprite / B",
+          "position": [
+            0,
+            0.4050125363172026,
+            0.03
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "sprite": {
+            "frameWidth": 480,
+            "frameHeight": 270,
+            "columns": 4,
+            "rows": 2,
+            "frames": 5,
+            "fps": 12,
+            "loop": true
+          },
+          "markerId": "c799e613-64c6-41b4-b648-67264991d2b3",
+          "autoplay": true,
+          "interaction": {
+            "action": "restart",
+            "clip": "all",
+            "loop": true,
+            "effect": "bounce",
+            "duration": 1,
+            "soundId": null,
+            "volume": 0.35,
+            "nextSceneId": null,
+            "delay": 1.3
+          }
+        }
+      ]
+    }
+  ]
+}
