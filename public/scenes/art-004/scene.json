@@ -1,0 +1,127 @@
+{
+  "version": 2,
+  "id": "art-004",
+  "title": "新しいWebAR Art",
+  "revision": "a15c08de-1a1a-4204-9101-f51aa67d32e0",
+  "trackingTarget": "77dc07f8-c28e-49bc-8407-d7e89b3f7370.mind",
+  "maxTrack": 1,
+  "markers": [
+    {
+      "id": "568970fd-ca09-4678-9490-e00efd65c03d",
+      "name": "mk_1010.jpg",
+      "image": "568970fd-ca09-4678-9490-e00efd65c03d.jpg",
+      "aspect": 1,
+      "targetIndex": 0
+    }
+  ],
+  "sounds": [
+    {
+      "id": "37064671-ed90-48c3-9100-00c7499b4410",
+      "name": "01.mp3",
+      "src": "37064671-ed90-48c3-9100-00c7499b4410.mp3"
+    }
+  ],
+  "initialSceneId": "scene-1",
+  "scenes": [
+    {
+      "id": "scene-1",
+      "name": "シーン1",
+      "autoNextSeconds": 5,
+      "nextSceneId": "55a4fb78-9b33-4aeb-b801-26bb31df41eb",
+      "markerLost": "continue",
+      "objects": [
+        {
+          "id": "dc2f5d7b-dedc-4f8c-85d2-e33425e52e87",
+          "kind": "video",
+          "src": "33bb70d1-4d3f-4ad8-99e0-9132c8a7cbd0.webm",
+          "name": "delete.webm",
+          "markerId": "568970fd-ca09-4678-9490-e00efd65c03d",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": true,
+            "effect": "none",
+            "duration": 1,
+            "soundId": "37064671-ed90-48c3-9100-00c7499b4410",
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1
+          },
+          "position": [
+            0,
+            0,
+            0.43104669753100777
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "fallback": {
+            "src": "7c9642af-b7ad-49ae-84ff-eb6661cb6e6a.mp4",
+            "packedAlpha": true
+          },
+          "loop": true
+        }
+      ]
+    },
+    {
+      "id": "55a4fb78-9b33-4aeb-b801-26bb31df41eb",
+      "name": "シーン2",
+      "autoNextSeconds": 5,
+      "nextSceneId": "scene-1",
+      "markerLost": "continue",
+      "objects": [
+        {
+          "id": "6a1e4a63-5723-43c9-a1a6-a6c4d49fc05d",
+          "kind": "sprite",
+          "src": "9cab245c-cef6-460c-9932-edbf6a38401a.png",
+          "name": "157-sprite-package.zip",
+          "markerId": "568970fd-ca09-4678-9490-e00efd65c03d",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": true,
+            "effect": "rotate",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1
+          },
+          "position": [
+            0,
+            0,
+            0.2944587634623965
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "sprite": {
+            "columns": 4,
+            "rows": 2,
+            "frames": 5,
+            "frameWidth": 1024,
+            "frameHeight": 576,
+            "fps": 12,
+            "loop": true
+          }
+        }
+      ]
+    }
+  ]
+}
