@@ -4,13 +4,16 @@ import {MediaScene} from './media.js';
 import {AudioBank} from './audio.js';
 import {Behavior} from './behavior.js';
 import {installTapInput,screenPoint,chooseScreenObject} from './tap-input.js';
+import {markerStates,trackingSummary} from './multi-marker.js';
 import {sceneId,toProject} from './schema.js';
 const $=id=>document.getElementById(id);let mind,media,audio,behavior,project,ready=false,active=false,busy=false,epoch=0;
 const clock=new THREE.Clock(),visible=new Set(),anchors=new Map();
 function error(e){$('error').textContent=e.message||String(e);}
-function gates(){for(const s of project.scenes)for(const o of s.objects){const item=media.items.get(o.id);item.group.visible=s===behavior.scene;media.setGate(o.id,s===behavior.scene&&(s.markerLost==='continue'||visible.has(o.markerId)));}}
+function updateTracking(){if(!project||!behavior?.scene)return;const summary=trackingSummary(project,behavior.scene.id,visible);$('tracking').textContent='認識 '+summary.count+' / '+summary.limit+' 枚'+(summary.names.length?'：'+summary.names.join('、'):'');}
+function gates(){for(const [id,state] of markerStates(project,behavior.scene.id,visible)){const item=media.items.get(id);item.group.visible=state.active;media.setGate(id,state.gate);}updateTracking();}
+
 function enter(scene){for(const s of project.scenes)for(const o of s.objects){media.reset(o.id);media.setPlaying(o.id,s===scene&&o.autoplay).catch(error);}gates();$('scenes').value=scene.id;$('scene-label').textContent=scene.name;}
-function stop(){epoch++;active=false;mind?.renderer.setAnimationLoop(null);mind?.stop();behavior?.stop();media?.pause();audio?.stopAll();visible.clear();$('start').hidden=false;$('start').disabled=!ready;$('stop').hidden=true;$('resume').hidden=true;$('status').textContent='終了しました。再度開始できます。';}
+function stop(){epoch++;active=false;mind?.renderer.setAnimationLoop(null);mind?.stop();behavior?.stop();media?.pause();audio?.stopAll();visible.clear();updateTracking();$('start').hidden=false;$('start').disabled=!ready;$('stop').hidden=true;$('resume').hidden=true;$('status').textContent='終了しました。再度開始できます。';}
 try {
  const id=new URLSearchParams(location.search).get('scene')||'demo';if(!sceneId(id))throw new Error('体験IDが不正です。');
  const base=new URL('./scenes/'+id+'/',location.href),response=await fetch(new URL('scene.json',base),{cache:'no-store'});if(!response.ok)throw new Error('公開作品が見つかりません。');

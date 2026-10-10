@@ -20,7 +20,7 @@ node scripts/check-studio-dist.mjs
 FILES=(.github/workflows/pages.yml LICENSE-MIT src scripts tests studio publisher package.json package-lock.json index.html print.html studio.html ar.html vite.studio.config.mjs public/scenes/demo public/scenes/demo-interactive README.md README_SETUP_JA.md TEST_REPORT.md docs .gitignore .dockerignore .env.example Dockerfile render.yaml APPLY.sh)
 git add -- "${FILES[@]}"
 if ! git diff --cached --quiet -- "${FILES[@]}"; then
-  git commit --only -m "Fix Safari fetch receiver in WebAR Art 0.4.3" -- "${FILES[@]}"
+  git commit --only -m "Add dual-marker scene creation and tracking count in WebAR Art 0.4.4" -- "${FILES[@]}"
 fi
 git push
 echo '初回プログラムをGitHubへ送信しました。Actionsの公開完了後、ar.html?scene=demo-interactive をiPhoneで確認できます。'

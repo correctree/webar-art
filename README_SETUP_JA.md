@@ -1,6 +1,10 @@
-# WebAR Art 0.4.3 — 初回設定と利用手順
+# WebAR Art 0.4.4 — 初回設定と利用手順
 
-## 0.4.3のSafari読込修正
+## 0.4.4の2マーカー制作
+「2マーカー同時表示を作る」を追加しました。成功した1枚のプロジェクトへ異なる2枚目の画像を登録し、新しい同時表示シーンへ作品セットを複製します。体験IDはart-002、開始シーンは同時表示シーンに設定します。
+詳細な制作・保存・公開・合格確認は docs/DUAL_MARKER_JA.md を参照してください。iPhoneの同時追跡はこの環境では未確認です。
+
+## 引き継いだSafari読込修正
 0.4.2で音素材のfetchをAudioBankのメソッドとして呼んでしまい、SafariでWindow以外の呼び出し元として拒否されました。globalThis.fetchをその正しい呼び出し元で実行するラッパーへ修正しています。0.4.1のタップ処理と0.4.2の音再生方式は維持しています。
 
 ## 引き継いだ音声修正
@@ -9,7 +13,7 @@ AR画面の「シーン・マーカー」内に「音声をテスト」を追加
 
 ## 引き継いだタップ修正
 描画canvasのみのタップ受付を廃止し、documentのcaptureイベントでカメラ・canvasの重なりに依存せず受け取ります。Pointer Eventsと旧Touch Eventsを切り替え、UIとドラッグを除外します。Raycaster前に行列を更新し、画面上の作品境界で補助判定します。
-AR画面にPLAYER 0.4.3が表示されることを確認してください。「シーン・マーカー」内の「作品の反応を確認」でも最初の作品を動かせます。認識したマーカーの作品のみ対象です。
+AR画面にPLAYER 0.4.4が表示されることを確認してください。「シーン・マーカー」内の「作品の反応を確認」でも最初の作品を動かせます。認識したマーカーの作品のみ対象です。
 現在localhostでサーバーを動かしている場合、適用前にそのターミナルでControl+Cを押してください。
 
 ## 今回の実装
@@ -24,8 +28,8 @@ ZIPをDownloadsへ保存し、次をMacのターミナルへまとめて貼り�
 適用先はこれまで使った $HOME/webar-art-0.1 です。
 
 ```bash
-unzip -o "$HOME/Downloads/WebAR-Art-0.4.3-safari-fetch-fix.zip" -d "$HOME/Downloads"
-bash "$HOME/Downloads/WebAR-Art-0.4.3/APPLY.sh"
+unzip -o "$HOME/Downloads/WebAR-Art-0.4.4-dual-marker.zip" -d "$HOME/Downloads"
+bash "$HOME/Downloads/WebAR-Art-0.4.4/APPLY.sh"
 ```
 
 処理に失敗した場合はその場で停止します。エラーが出たまま次の操作へ進まないでください。
