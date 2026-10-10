@@ -2,7 +2,7 @@
   "version": 2,
   "id": "art-004",
   "title": "新しいWebAR Art",
-  "revision": "a15c08de-1a1a-4204-9101-f51aa67d32e0",
+  "revision": "c3e9f1a9-c170-419e-afcc-45a3d3d74d53",
   "trackingTarget": "77dc07f8-c28e-49bc-8407-d7e89b3f7370.mind",
   "maxTrack": 1,
   "markers": [
@@ -26,7 +26,7 @@
     {
       "id": "scene-1",
       "name": "シーン1",
-      "autoNextSeconds": 5,
+      "autoNextSeconds": 0,
       "nextSceneId": "55a4fb78-9b33-4aeb-b801-26bb31df41eb",
       "markerLost": "continue",
       "objects": [
@@ -45,7 +45,7 @@
             "duration": 1,
             "soundId": "37064671-ed90-48c3-9100-00c7499b4410",
             "volume": 1,
-            "nextSceneId": null,
+            "nextSceneId": "55a4fb78-9b33-4aeb-b801-26bb31df41eb",
             "delay": 1
           },
           "position": [
@@ -67,7 +67,8 @@
             "src": "7c9642af-b7ad-49ae-84ff-eb6661cb6e6a.mp4",
             "packedAlpha": true
           },
-          "loop": true
+          "loop": true,
+          "tapEnabled": true
         }
       ]
     },
@@ -91,9 +92,9 @@
             "loop": true,
             "effect": "rotate",
             "duration": 1,
-            "soundId": null,
+            "soundId": "37064671-ed90-48c3-9100-00c7499b4410",
             "volume": 1,
-            "nextSceneId": null,
+            "nextSceneId": "scene-1",
             "delay": 1
           },
           "position": [
