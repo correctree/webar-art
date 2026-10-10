@@ -36,7 +36,6 @@ function validateLegacy(scene) {
     if (!assetPath(object.id) || ids.has(object.id)) throw new Error('作品IDが不正・重複しています。'); ids.add(object.id);
     if (!['glb','video','sprite'].includes(object.kind) || !assetPath(object.src)) throw new Error('作品形式が不正です。');
     for(const key of ['tapEnabled','scaleLinked','shadow'])if(object[key]!==undefined&&typeof object[key]!=='boolean')throw new Error('作品設定が不正です：'+key);
-    if(object.shadow&&object.kind!=='glb')throw new Error('影はGLBに対応しています。');
     if(object.opacity!==undefined&&(!Number.isFinite(object.opacity)||object.opacity<0||object.opacity>1))throw new Error('不透明度は0〜1です。');
     if (typeof object.name !== 'string' || object.name.length > 100) throw new Error('作品名が不正です。');
     if (object.kind === 'sprite') spriteSpec(object.sprite);

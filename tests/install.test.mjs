@@ -18,7 +18,7 @@ test('repository install backs up replaced source, keeps compiled old targets, a
     await writeFile(resolve(destination, '.env'), 'private config');
     const result = spawnSync(process.execPath, [fileURLToPath(new URL('../scripts/install-repo.mjs', import.meta.url)), destination], {encoding: 'utf8'});
     assert.equal(result.status, 0, result.stderr);
-    assert.equal(JSON.parse(await readFile(resolve(destination, 'package.json'))).version, '0.5.1');
+    assert.equal(JSON.parse(await readFile(resolve(destination, 'package.json'))).version, '0.5.2');
     assert.equal(await readFile(resolve(destination, 'public/targets/mk_1008.mind'), 'utf8'), 'old compiled target');
     assert.equal(await readFile(resolve(destination, '.git/HEAD'), 'utf8'), 'ref: refs/heads/main');
     await assert.rejects(access(resolve(destination, 'tests/lifecycle.test.mjs')));

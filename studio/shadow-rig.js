@@ -1,0 +1,8 @@
+// Light and target use marker-local coordinates so AR camera distance cannot move the marker out of the shadow camera.
+export function configureShadowLight(light){light.castShadow=true;light.shadow.mapSize.set(1024,1024);Object.assign(light.shadow.camera,{near:.01,far:16,left:-4,right:4,top:4,bottom:-4});light.shadow.bias=-.0002;light.shadow.normalBias=.002;light.shadow.camera.updateProjectionMatrix();}
+export function createMarkerShadowRig(THREE,group,aspect,opacity=.3){const light=new THREE.DirectionalLight(0xffffff,2);light.position.set(1,2,3);const target=new THREE.Object3D();group.add(light,target);light.target=target;configureShadowLight(light);const receiver=new THREE.Mesh(new THREE.PlaneGeometry(1,aspect),new THREE.ShadowMaterial({opacity,depthWrite:false,side:THREE.DoubleSide}));receiver.position.z=.002;receiver.receiveShadow=true;receiver.raycast=()=>{};group.add(receiver);return{light,receiver,target,group};}
+export function patchPackedAlphaDepth(shader){if(!shader.fragmentShader.includes('#include <map_fragment>'))throw new Error('Packed-alpha shadow shader incompatible');shader.fragmentShader=shader.fragmentShader.replace('#include <map_fragment>',`#ifdef USE_MAP
+ diffuseColor.a *= texture2D(map,vec2(0.5+vMapUv.x*0.5,vMapUv.y)).r;
+ #endif`);}
+
+export function fitMarkerShadowRig(rig,THREE){rig.group.updateMatrixWorld(true);const scale=rig.group.getWorldScale(new THREE.Vector3());const unit=Math.max(Math.abs(scale.x),Math.abs(scale.y),Math.abs(scale.z));if(!Number.isFinite(unit)||unit<=0)return;const camera=rig.light.shadow.camera;Object.assign(camera,{near:.01*unit,far:16*unit,left:-4*unit,right:4*unit,top:4*unit,bottom:-4*unit});rig.light.shadow.normalBias=.002*unit;camera.updateProjectionMatrix();}
