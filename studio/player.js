@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import {MediaScene} from './media.js';
 import {AudioBank} from './audio.js';
 import {Behavior} from './behavior.js';
+import {installTapInput,screenPoint,chooseScreenObject} from './tap-input.js';
 import {sceneId,toProject} from './schema.js';
 const $=id=>document.getElementById(id);let mind,media,audio,behavior,project,ready=false,active=false,busy=false,epoch=0;
 const clock=new THREE.Clock(),visible=new Set(),anchors=new Map();
@@ -24,7 +25,15 @@ try {
  await audio.load(project.sounds);
  behavior=new Behavior(project,{leave:()=>audio.stopAll(),enter,tap:(o,playing)=>{const i=o.interaction;if(i.action==='restart')media.restart(o.id).catch(error);else if(i.action==='toggle')media.setPlaying(o.id,playing).catch(error);media.effect(o.id);if(i.action!=='toggle'||playing){try{audio.play(o);}catch(e){error(e);}}else audio.stop(o.id);}});behavior.enter(project.initialSceneId);
  $('scenes').onchange=()=>{if(active)behavior.enter($('scenes').value);};$('mute').onclick=()=>{audio.enabled=!audio.enabled;if(!audio.enabled)audio.stopAll();$('mute').textContent=audio.enabled?'音 ON':'音 OFF';};
- const ray=new THREE.Raycaster();let down;const canvas=mind.renderer.domElement;canvas.addEventListener('pointerdown',e=>down=[e.clientX,e.clientY]);canvas.addEventListener('pointerup',e=>{if(!active||!down||Math.hypot(e.clientX-down[0],e.clientY-down[1])>10)return;const r=canvas.getBoundingClientRect();ray.setFromCamera(new THREE.Vector2((e.clientX-r.left)/r.width*2-1,1-(e.clientY-r.top)/r.height*2),mind.camera);const roots=behavior.scene.objects.filter(o=>visible.has(o.markerId)).map(o=>media.items.get(o.id).group);const hits=ray.intersectObjects(roots,true);if(!hits.length)return;let node=hits[0].object;while(node&&!node.userData.objectId)node=node.parent;if(node){audio.unlock().catch(error);try{behavior.tap(node.userData.objectId);}catch(e){error(e);}}});
+ const ray=new THREE.Raycaster(),canvas=mind.renderer.domElement;let tapCount=0;
+ function activate(id){const o=behavior.scene.objects.find(o=>o.id===id);if(!o||!visible.has(o.markerId))return;audio.unlock().catch(error);try{$('error').textContent='';if(behavior.tap(id)){$('status').textContent='タップ受付 '+(++tapCount)+'：'+o.name;}}catch(e){error(e);}}
+ function pick(x,y){const rect=canvas.getBoundingClientRect(),point=screenPoint(x,y,rect);if(!point)return;mind.scene.updateMatrixWorld(true);mind.camera.updateMatrixWorld(true);ray.setFromCamera(new THREE.Vector2(point.x,point.y),mind.camera);const objects=behavior.scene.objects.filter(o=>visible.has(o.markerId)),roots=objects.map(o=>media.items.get(o.id).group);const hits=ray.intersectObjects(roots,true);let id=null;if(hits.length){let node=hits[0].object;while(node&&!node.userData.objectId)node=node.parent;id=node?.userData.objectId;}
+  if(!id){const bounds=objects.map(o=>{const box=new THREE.Box3().setFromObject(media.items.get(o.id).group),points=[];if(!box.isEmpty())for(const a of [box.min.x,box.max.x])for(const b of [box.min.y,box.max.y])for(const c of [box.min.z,box.max.z]){const p=new THREE.Vector3(a,b,c).project(mind.camera);points.push({x:rect.left+(p.x+1)*rect.width/2,y:rect.top+(1-p.y)*rect.height/2,z:p.z});}return{id:o.id,points};});id=chooseScreenObject(x,y,bounds);}
+  if(id)activate(id);else $('status').textContent=visible.size?'タップを受け取りました。作品の中心をタップしてください。':'マーカーへカメラを向けてください。';
+ }
+ installTapInput({surface:document,isActive:()=>active,isUI:target=>!!target?.closest?.('.ar-ui'),onTap:(x,y)=>{try{pick(x,y);}catch(e){error(e);}},pointer:typeof window.PointerEvent!=='undefined'});
+ $('test-reaction').onclick=()=>{if(!active)return;const o=behavior.scene.objects.find(o=>visible.has(o.markerId)&&o.interaction.action!=='none')||behavior.scene.objects.find(o=>visible.has(o.markerId));if(o)activate(o.id);else $('status').textContent='マーカー認識後に反応を確認できます。';};
+
  ready=true;$('start').disabled=false;$('status').textContent='ARを開始し、印刷したマーカーにカメラを向けてください。';
  $('resume').onclick=()=>{audio.unlock().catch(error);media.primeVideos().then(r=>$('resume').hidden=!r.some(x=>x.status==='rejected'));};
  $('start').onclick=async()=>{if(busy||active)return;busy=true;const startEpoch=++epoch;$('start').disabled=true;$('error').textContent='';behavior.enter(project.initialSceneId);const unlock=audio.unlock();media.playing=true;const playback=media.primeVideos();try{await unlock;await mind.start();if(startEpoch!==epoch||document.hidden){stop();return;}active=true;behavior.running=true;clock.start();mind.renderer.setAnimationLoop(()=>{const dt=Math.min(clock.getDelta(),.1);behavior.update(dt);media.update(dt);mind.renderer.render(mind.scene,mind.camera);});$('start').hidden=true;$('stop').hidden=false;$('status').textContent='マーカーへカメラを向けてください。';$('resume').hidden=!(await playback).some(r=>r.status==='rejected');}catch(e){stop();error(new Error('開始できません: '+e.message+' Safariのカメラ許可を確認してください。'));}finally{busy=false;$('start').disabled=false;}};

@@ -1,4 +1,9 @@
-# WebAR Art 0.4.0 — 初回設定と利用手順
+# WebAR Art 0.4.1 — 初回設定と利用手順
+
+## 0.4.1の修正
+描画canvasのみのタップ受付を廃止し、documentのcaptureイベントでカメラ・canvasの重なりに依存せず受け取ります。Pointer Eventsと旧Touch Eventsを切り替え、UIとドラッグを除外します。Raycaster前に行列を更新し、画面上の作品境界で補助判定します。
+AR画面にPLAYER 0.4.1が表示されることを確認してください。「シーン・マーカー」内の「作品の反応を確認」でも最初の作品を動かせます。認識したマーカーの作品のみ対象です。
+現在localhostでサーバーを動かしている場合、適用前にそのターミナルでControl+Cを押してください。
 
 ## 今回の実装
 0.3で成功したマーカーARの構成（MindAR 1.2.5＋Three.js）を拡張しました。
@@ -12,8 +17,8 @@ ZIPをDownloadsへ保存し、次をMacのターミナルへまとめて貼り�
 適用先はこれまで使った $HOME/webar-art-0.1 です。
 
 ```bash
-unzip -o "$HOME/Downloads/WebAR-Art-0.4.0-interactive-studio.zip" -d "$HOME/Downloads"
-bash "$HOME/Downloads/WebAR-Art-0.4.0/APPLY.sh"
+unzip -o "$HOME/Downloads/WebAR-Art-0.4.1-tap-fix.zip" -d "$HOME/Downloads"
+bash "$HOME/Downloads/WebAR-Art-0.4.1/APPLY.sh"
 ```
 
 処理に失敗した場合はその場で停止します。エラーが出たまま次の操作へ進まないでください。
