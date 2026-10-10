@@ -2,7 +2,7 @@
   "version": 2,
   "id": "art-004",
   "title": "新しいWebAR Art",
-  "revision": "c3e9f1a9-c170-419e-afcc-45a3d3d74d53",
+  "revision": "d7f69d71-ca5f-4a12-bf10-0ced926474e0",
   "trackingTarget": "77dc07f8-c28e-49bc-8407-d7e89b3f7370.mind",
   "maxTrack": 1,
   "markers": [
@@ -108,9 +108,9 @@
             0
           ],
           "scale": [
-            0.5,
-            0.5,
-            0.5
+            1,
+            1,
+            1
           ],
           "sprite": {
             "columns": 4,
@@ -120,9 +120,57 @@
             "frameHeight": 576,
             "fps": 12,
             "loop": true
-          }
+          },
+          "scaleLinked": false
+        }
+      ]
+    },
+    {
+      "id": "d0bcfe28-62ea-4d03-8fba-e9a9af3a03c6",
+      "name": "シーン3",
+      "autoNextSeconds": 0,
+      "nextSceneId": null,
+      "markerLost": "continue",
+      "objects": [
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": true,
+          "id": "dce2aaea-7792-4644-8ecb-2e4efb0a28e7",
+          "kind": "glb",
+          "src": "2adb24c2-98b4-480d-80e2-2c8f4350ca44.glb",
+          "name": "Situps.glb",
+          "markerId": "568970fd-ca09-4678-9490-e00efd65c03d",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "Armature|mixamo.com|Layer0",
+            "loop": true,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": "scene-1",
+            "delay": 1
+          },
+          "position": [
+            0,
+            0,
+            0.1
+          ],
+          "rotation": [
+            90,
+            0,
+            0
+          ],
+          "scale": [
+            0.31,
+            0.31,
+            0.31
+          ]
         }
       ]
     }
-  ]
+  ],
+  "shadowOpacity": 0.36
 }
