@@ -35,6 +35,7 @@ function validateLegacy(scene) {
   for (const object of scene.objects) {
     if (!assetPath(object.id) || ids.has(object.id)) throw new Error('作品IDが不正・重複しています。'); ids.add(object.id);
     if (!['glb','video','sprite'].includes(object.kind) || !assetPath(object.src)) throw new Error('作品形式が不正です。');
+    if(object.opacity!==undefined&&(!Number.isFinite(object.opacity)||object.opacity<0||object.opacity>1))throw new Error('不透明度は0〜1です。');
     if (typeof object.name !== 'string' || object.name.length > 100) throw new Error('作品名が不正です。');
     if (object.kind === 'sprite') spriteSpec(object.sprite);
     if (object.kind === 'video' && (!assetPath(object.fallback?.src) || typeof object.fallback.packedAlpha !== 'boolean')) throw new Error('Safari用動画を用意してください。');
@@ -47,7 +48,7 @@ function validateLegacy(scene) {
   return scene;
 }
 export function requiredAssets(scene) {
-  const set = new Set(scene.version===2 ? [scene.trackingTarget,...scene.markers.map(m=>m.image),...scene.sounds.map(s=>s.src)] : [scene.marker.image,scene.marker.target]);
+  const set = new Set(scene.version===2 ? [...(scene.markers.length?[scene.trackingTarget]:[]),...scene.markers.map(m=>m.image),...scene.sounds.map(s=>s.src)] : [scene.marker.image,scene.marker.target]);
   const objects=scene.version===2 ? scene.scenes.flatMap(s=>s.objects) : scene.objects;
   objects.forEach(o=>{set.add(o.src); if(o.fallback)set.add(o.fallback.src);});
   return [...set];
@@ -81,8 +82,8 @@ function namedId(item,seen,label){if(!sceneId(item?.id)||seen.has(item.id)||type
 export function validateProject(p,{draft=false}={}){
   if(!p||p.version!==2||!sceneId(p.id)||typeof p.title!=='string'||p.title.length>100||typeof p.revision!=='string'||!/^[a-zA-Z0-9-]{1,80}$/.test(p.revision))throw new Error('プロジェクト形式が不正です。');
   if(!assetPath(p.trackingTarget)||!p.trackingTarget.endsWith('.mind'))throw new Error('複数マーカーの認識データが必要です。');
-  if(!Array.isArray(p.markers)||p.markers.length<1||p.markers.length>8)throw new Error('マーカーは1〜8枚です。');
-  if(![1,2].includes(p.maxTrack)||p.maxTrack>p.markers.length)throw new Error('同時追跡枚数が不正です。');
+  if(!Array.isArray(p.markers)||p.markers.length<(draft?0:1)||p.markers.length>8)throw new Error('マーカーは1〜8枚です。');
+  if(![1,2].includes(p.maxTrack)||p.maxTrack>Math.max(1,p.markers.length))throw new Error('同時追跡枚数が不正です。');
   const markers=new Set();p.markers.forEach((m,i)=>{namedId(m,markers,'マーカー');if(m.targetIndex!==i||!assetPath(m.image)||!Number.isFinite(m.aspect)||m.aspect<=0||m.aspect>20)throw new Error('マーカー順序・画像・比率が不正です。');});
   if(!Array.isArray(p.sounds)||p.sounds.length>24)throw new Error('音素材は24個までです。');
   const sounds=new Set();for(const a of p.sounds){namedId(a,sounds,'音素材');if(!assetPath(a.src)||! /\.(mp3|wav|m4a|aac)$/i.test(a.src))throw new Error('音素材形式が不正です。');}

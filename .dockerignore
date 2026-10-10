@@ -4,3 +4,5 @@ dist
 .env
 .env.*
 *.zip
+
+.studio-data

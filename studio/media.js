@@ -34,9 +34,9 @@ export class MediaScene {
           await new Promise((resolve,reject)=>{const t=setTimeout(()=>reject(new Error('動画読込タイムアウト')),30000);video.onloadedmetadata=()=>{clearTimeout(t);resolve();};video.onerror=()=>{clearTimeout(t);reject(new Error('動画を読み込めません。'));};video.load();});
           texture=new THREE.VideoTexture(video);ratio=video.videoWidth/(spec.fallback.packedAlpha?2:1)/video.videoHeight;
           if(spec.fallback.packedAlpha) {
-            material=new THREE.ShaderMaterial({uniforms:{map:{value:texture}},transparent:true,depthWrite:false,side:THREE.DoubleSide,
+            material=new THREE.ShaderMaterial({uniforms:{map:{value:texture},artOpacity:{value:1}},transparent:true,depthWrite:false,side:THREE.DoubleSide,
               vertexShader:'varying vec2 vUv; void main(){vUv=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
-              fragmentShader:'uniform sampler2D map;varying vec2 vUv;void main(){vec3 c=texture2D(map,vec2(vUv.x*0.5,vUv.y)).rgb;float a=texture2D(map,vec2(0.5+vUv.x*0.5,vUv.y)).r;if(a<0.015)discard;gl_FragColor=vec4(c,a);}' });
+              fragmentShader:'uniform sampler2D map;uniform float artOpacity;varying vec2 vUv;void main(){vec3 c=texture2D(map,vec2(vUv.x*0.5,vUv.y)).rgb;float a=texture2D(map,vec2(0.5+vUv.x*0.5,vUv.y)).r;if(a<0.015)discard;gl_FragColor=vec4(c,a*artOpacity);}' });
           }else {texture.colorSpace=THREE.SRGBColorSpace;material=new THREE.MeshBasicMaterial({map:texture,side:THREE.DoubleSide});}
         }
         mesh=new THREE.Mesh(new THREE.PlaneGeometry(ratio,1),material);motion.add(mesh);
@@ -44,7 +44,7 @@ export class MediaScene {
       const item={spec,group,motion,mixer,clips,video,texture,time:0,playing:spec.autoplay!==false,gate:true,effectTime:null};group.userData.objectId=spec.id;this.items.set(spec.id,item);this.root.add(group);this.apply(spec);this.configure(item);this.update(0);return item;
     }catch(error){video?.pause();video?.removeAttribute('src');dispose(group);texture?.dispose();throw error;}
   }
-  apply(spec){const item=this.items.get(spec.id);if(!item)return;item.spec=spec;item.group.position.fromArray(spec.position);item.group.rotation.set(...spec.rotation.map(v=>THREE.MathUtils.degToRad(v)));item.group.scale.fromArray(spec.scale);}
+  apply(spec){const item=this.items.get(spec.id);if(!item)return;item.spec=spec;item.group.position.fromArray(spec.position);item.group.rotation.set(...spec.rotation.map(v=>THREE.MathUtils.degToRad(v)));item.group.scale.fromArray(spec.scale);item.motion.traverse(o=>{for(const m of [].concat(o.material||[])){m.userData.artBase??={opacity:m.opacity,transparent:m.transparent,depthWrite:m.depthWrite};const opacity=spec.opacity??1;if(m.uniforms?.artOpacity)m.uniforms.artOpacity.value=opacity;else m.opacity=m.userData.artBase.opacity*opacity;m.transparent=m.userData.artBase.transparent||opacity<1;m.depthWrite=opacity<1?false:m.userData.artBase.depthWrite;m.needsUpdate=true;}});}
   configure(item, interaction=item.spec.interaction){if(item.video)item.video.loop=interaction?.loop??(item.spec.loop!==false);if(!item.mixer)return;item.mixer.stopAllAction();const name=interaction?.clip||'all';if(name!=='all'&&!item.clips.some(c=>c.name===name))throw new Error('GLBアニメーションがありません: '+name);for(const clip of item.clips){if(name!=='all'&&clip.name!==name)continue;const action=item.mixer.clipAction(clip);action.reset();action.setLoop(interaction?.loop===false?THREE.LoopOnce:THREE.LoopRepeat,interaction?.loop===false?1:Infinity);action.clampWhenFinished=true;action.play();}}
   restart(id){const i=this.items.get(id);if(!i)return Promise.resolve();i.time=0;if(i.video)i.video.currentTime=0;this.configure(i);i.playing=true;return this.sync(i);}
   setPlaying(id,playing){const i=this.items.get(id);if(!i)return Promise.resolve();i.playing=playing;return this.sync(i);}

@@ -1,183 +1,57 @@
-# WebAR Art 0.4.4 — 初回設定と利用手順
+# WebAR Art 0.5.0 — Guided Studio
 
-## 0.4.4の2マーカー制作
-「2マーカー同時表示を作る」を追加しました。成功した1枚のプロジェクトへ異なる2枚目の画像を登録し、新しい同時表示シーンへ作品セットを複製します。体験IDはart-002、開始シーンは同時表示シーンに設定します。
-詳細な制作・保存・公開・合格確認は docs/DUAL_MARKER_JA.md を参照してください。iPhoneの同時追跡はこの環境では未確認です。
-
-## 引き継いだSafari読込修正
-0.4.2で音素材のfetchをAudioBankのメソッドとして呼んでしまい、SafariでWindow以外の呼び出し元として拒否されました。globalThis.fetchをその正しい呼び出し元で実行するラッパーへ修正しています。0.4.1のタップ処理と0.4.2の音再生方式は維持しています。
-
-## 引き継いだ音声修正
-ARのタップ音はHTMLAudioElementを使い、ユーザーのタップ／ボタン操作中にplay()を呼びます。PC編集のWeb Audioはresume()完了を待ちます。音声の失敗は画面へ表示し、シーン変更・終了時には再生待ちの音も取消します。
-AR画面の「シーン・マーカー」内に「音声をテスト」を追加しました。初めの音素材を再生します。テスト後、通常の宝石タップでも音を確認してください。ブラウザーが再生開始を許可しても、実際に聞こえるかは端末で確認する必要があります。ARの素材音量はブラウザーのmedia音量対応に依存するため、iPhoneの本体音量でも調整してください。
-
-## 引き継いだタップ修正
-描画canvasのみのタップ受付を廃止し、documentのcaptureイベントでカメラ・canvasの重なりに依存せず受け取ります。Pointer Eventsと旧Touch Eventsを切り替え、UIとドラッグを除外します。Raycaster前に行列を更新し、画面上の作品境界で補助判定します。
-AR画面にPLAYER 0.4.4が表示されることを確認してください。「シーン・マーカー」内の「作品の反応を確認」でも最初の作品を動かせます。認識したマーカーの作品のみ対象です。
-現在localhostでサーバーを動かしている場合、適用前にそのターミナルでControl+Cを押してください。
-
-## 今回の実装
-0.3で成功したマーカーARの構成（MindAR 1.2.5＋Three.js）を拡張しました。
-0.4はタップ・音・複数マーカー・複数シーン・プロジェクト保存と公開に対応します。
-旧index.html、space.html、0.3形式の制作ZIPも利用できます。
-0.4の実機操作・実アカウント認証はこの環境では未確認です。検証範囲はTEST_REPORT.mdに記載しています。
-音声入力、顔認識、ハンドトラッキングは次の版の対象です。
-
-## 1. Macへ適用
-ZIPをDownloadsへ保存し、次をMacのターミナルへまとめて貼り付けます。
-適用先はこれまで使った $HOME/webar-art-0.1 です。
+## 適用（Mac、初回のみ）
+起動中の旧StudioのターミナルでControl+Cを押してください。
+ZIPをDownloadsへ保存し、次の2行を貼り付けます。
 
 ```bash
-unzip -o "$HOME/Downloads/WebAR-Art-0.4.4-dual-marker.zip" -d "$HOME/Downloads"
-bash "$HOME/Downloads/WebAR-Art-0.4.4/APPLY.sh"
+unzip -o "$HOME/Downloads/WebAR-Art-0.5.0-guided-studio.zip" -d "$HOME/Downloads"
+bash "$HOME/Downloads/WebAR-Art-0.5.0/APPLY.sh"
 ```
 
-処理に失敗した場合はその場で停止します。エラーが出たまま次の操作へ進まないでください。
+既存の `$HOME/webar-art-0.1` をバックアップして適用します。
+Node.js 22以上とFFmpegを確認し、依存導入・45件のテスト・ビルド・配信ファイル確認後にGitHubへpushします。
+ビルドが失敗した場合は停止し、公開やサーバー起動へ進みません。
+独自作品、既存マーカー、.env、.git、サーバー保存の .studio-data は維持します。
+その後 http://localhost:8080/studio.html を開きます。
 
-APPLY.shはNode.js 22以上を確認し、FFmpegがなければ既存Homebrewで導入します。
-旧ソースを ~/webar-art-backups/ に保存し、npm install --ignore-scripts・テスト・ビルド・公開ファイル確認・GitHubへのpushを行います。
-元のpublic/space.html、生成済みマーカー、独自素材、.git、.envは保持します。
-同梱デモ public/scenes/demo と public/scenes/demo-interactive は更新します。独自のpublic/scenesは保持します。
-最初のnpm install --ignore-scriptsで依存バージョンを固定したpackage-lock.jsonを生成します。以後それをgitへ保存します。
+## ここからはStudioの案内に沿って制作
+1. **マーカー登録**：前回の編集を復元します。新規なら「空のプロジェクトを作成」。PNG/JPEGを登録して認識データ生成を待ちます。デモを試す場合は「作品配置」で「同梱デモを読込」。
+2. **作品配置**：シーンと配置先マーカーを確認してGLB、WebM、Sprite ZIPを追加。左の作品一覧または中央の作品を選択し、右で位置・サイズ・回転・不透明度を設定します。複製した作品は独立した配置・反応を持ち、元の素材ファイルを共有します。
+3. **反応設定**：宝石を選択し、タップ時の再生・動き・音を指定。「この作品だけにタップ反応を限定」を押すと、現在のシーンの他作品のタップ再生・動き・音・シーン切替を解除します。他シーンと自動再生は維持します。「選択作品の動きと音を確認」でテスト。場面転換は中央の「再生／停止」でプレビュー中にクリックして確認します。
+4. **保存**：体験IDは新規なら art-003 など既存公開と異なるID。サーバーに保存すると編集データと素材をまとめて保存し、制作ZIPは持ち運び可能なバックアップです。公開版は更新しません。体験IDを入力して「サーバーの保存を開く」で別ブラウザーから再開できます。同じ認証ユーザーで接続してください。
+5. **公開**：localhostでは既存MacのGit認証でGitHubへ送信します。新たなGitHub App設定は不要です。Git originが correctree/webar-art、ブランチmainであることを確認します。作品の public/scenes/体験ID/ だけをコミットし、force pushはしません。GitHub Pagesで指定版と全素材が配信されたことを確認してからQRを表示します。初回適用時のプログラム更新のGitHub Actions完了を待ってから作品を公開してください。
+6. **iPhoneで体験**：QRを標準カメラで読み取り、Safariで「ARを開始」。PCで表示・印刷したマーカーへカメラを向け、宝石と他の作品をそれぞれタップします。
 
-完了後は http://localhost:8080/studio.html が開きます。
-localhostでPC制作・マーカー生成・動画変換・制作ZIP保存ができます。
-サーバーを終了するにはターミナルでControl+C。再開は次のコマンドです。
+### 保存先の違い
+- ブラウザー自動保存：現在のブラウザー内のIndexedDB。別ブラウザーへ共有されません。
+- localhostのサーバー保存：Macのリポジトリ内 `.studio-data/local/体験ID.json`。GitHubに含めません。
+- GitHub接続済みサーバー保存：サーバーの `DRAFT_DIR/ユーザー名/体験ID.json`。下書きにはGitHubログインが必要です。
+- 公開：GitHub Pagesへ公開版を出力。閲覧者のGitHubログインは不要です。
+- 制作ZIP：マーカー・全シーン・全素材を含むバックアップ。「制作データを開く」で復元。
 
+### Renderで保存を永続化する場合
+Persistent Diskを `/var/data` に接続し、環境変数 `DRAFT_DIR=/var/data/webar-drafts` を指定してください。
+永続ディスク未設定時、サーバーの再デプロイなどで保存が失われる場合があります。必要なプラン・費用はRenderの管理画面で確認してください。
+GitHub Appによる直接公開の初回設定は docs/GITHUB_CONNECTION_JA.md を参照してください。
+Renderを使用中ならコード適用後にManual Deployが必要です。Macのlocalhostのみ使う場合は不要です。
+
+### 合格確認
+- 6つの案内が表示され、選択したマーカー・シーン・作品が上部に表示される。
+- GLB・透過動画・Spriteが配置でき、不透明度の変更を保存・復元・ARへ引き継ぐ。
+- 宝石タップで音と動きが起き、同じシーンの他作品タップでは起きない。
+- サーバー保存→再読み込み→体験IDを指定して読込で配置・反応を復元。
+- 保存だけでは公開版が変わらず、公開完了後のみ新しいQRが表示される。
+- iPhoneでマーカー認識・透過・宝石の反応を確認。
+
+### この版の範囲
+マーカー8枚、同時追跡2枚、シーン12、全体48作品の既存上限を維持しています。
+20枚を1枚ずつ切り替える最適化、マイク入力、言葉認識、顔・手の追跡はこの版には含めていません。
+不透明度は作品全体へ乗算します。元の素材の透過は保持します。
+公開検証は配信された版と素材の存在・サイズを確認します。実機の追跡・聞こえる音を自動確認するものではありません。
+
+## 再開
 ```bash
 cd "$HOME/webar-art-0.1"
 npm start
 ```
-
-## 2. 同梱デモをiPhoneで確認
-GitHub ActionsのDeploy WebAR Artが成功した後、次をiPhone Safariで開きます。
-https://correctree.github.io/webar-art/ar.html?scene=demo-interactive
-
-マーカーは次の画像を紙へ印刷するかPC画面に表示してください。
-https://correctree.github.io/webar-art/scenes/demo-interactive/marker.jpg
-
-「ARを開始」を一度タップし、カメラを許可してマーカー全体へ向けます。
-透過動画と157 Spriteが動きます。左の宝石をタップすると立体アニメーション、回転、音が再生され、1.3秒後にシーン2へ切り替わります。
-シーン2の作品をタップするとシーン1へ戻ります。「シーン・マーカー」を開くと手動切替もできます。
-音を確認するときはiPhoneの音量を上げてください。「音 OFF」で消音できます。
-動画が止まる場合は表示される「動画を再生」をタップしてください。
-マーカーを見失うと作品を非表示にします。デモは再生も一時停止します。再認識で映像・アニメーションが再開し、音は次のタップで再生します。背景へ回った場合はカメラを終了します。
-
-## 3. ブラウザからのGitHub直接公開を設定
-直接公開はGitHub Appと公開サーバーを一度設定する必要があります。ZIPを適用しただけでは認証は有効になりません。
-PATをブラウザやpublicへ入力・保存する必要はありません。トークンはサーバーのメモリ内に保持します。
-
-### A. Renderに公開サーバーを作る
-1. Renderで New → Web Service。
-2. correctree/webar-art を接続。
-3. RuntimeはDocker。Dockerfileはリポジトリ直下のDockerfile。
-4. Health Check Pathは /health。
-5. 自動デプロイはOFF。作品を公開するたびにサーバーが再起動することを防ぎます。
-6. サービスのURLを控えます。例: https://webar-art-studio-xxxx.onrender.com
-7. 次の環境変数を設定します。
-   APP_ORIGIN: 控えたURL（末尾の / なし）
-   GITHUB_OWNER: correctree
-   GITHUB_REPO: webar-art
-   GITHUB_BRANCH: main
-   GITHUB_ALLOWED_LOGINS: correctree
-
-無料サービスを利用する場合、休止からの起動待ちや動画変換のCPU負荷により遅くなることがあります。
-Renderのプランや料金は利用時点の画面で確認してください。継続運用時の費用は別途発生する場合があります。
-
-### B. GitHub Appを作る
-GitHub → Settings → Developer settings → GitHub Apps → New GitHub App。
-次を設定します。
-- GitHub App name: 他と重複しない名前。例 correctree-webar-art-studio
-- Homepage URL: 控えたRender URL
-- Callback URL: 控えたRender URL + /auth/callback
-- Webhook Active: OFF（この実装はポーリング方式）
-- Repository permissions:
-  Contents: Read and write
-  Actions: Read-only
-  Deployments: Read-only
-  Pages: Read-only
-  Metadata: Read-only（自動）
-- Account permissions / Subscribe to events: 不要
-- Install: 自分のアカウントのwebar-artリポジトリだけを選択
-
-AppのClient IDを控え、Client secretを生成します。
-Renderの環境変数へ次を追加し、サービスを再デプロイしてください。
-GITHUB_CLIENT_ID: Client ID
-GITHUB_CLIENT_SECRET: Client secret
-秘密情報はチャット、GitHubのファイル、ブラウザの作品データに入れないでください。
-
-### C. 接続と公開
-Renderの studio.html をPCで開き、「GitHubに接続」を押します。
-correctreeアカウントで認証後、Studioへ戻り「GitHub接続済み」が出れば接続完了です。
-マーカーと作品を編集し、体験ID・タイトルを指定して「公開する」を押します。
-初回はdemoを別作品へ変更せず、体験IDをart-001に変更して公開してください。
-
-送信 → GitHub Actions → 該当コミットのgithub-pagesデプロイ成功 → 版番号と素材の配信確認 → QR表示、の順に進みます。
-QRはar.html?scene=体験IDを指し、同じ体験IDの更新ではURLは変わりません。
-QRは保存・URLコピーができます。認証情報はQRへ含めません。
-公開処理は最大約10分画面で待ちます。画面を再読込すると同じ確認処理を再開します。
-サーバーが再起動すると認証・ジョブ情報は消えます。再接続後「公開版を編集へ読込」で確認してください。
-
-## 4. 制作
-- マーカー: PNG/JPEGを選択。ブラウザで特徴点を生成し、.mindを素材に含めます。
-- マーカー生成中は編集操作を停止します。WebGLが使えないPCでは生成できません。
-- 3D画面: マーカー幅を1、中心を原点とします。X=左右、Y=上下、Z=マーカーから手前。
-- GLB: 画像・形状を内包するGLB。Draco対応。KTX2・Meshopt拡張はこの版では未対応。
-- WebM/MP4: 60秒以内・24MB以内。Safari向けH.264をサーバーで生成し、実際のARでは変換後を使用します。
-- 透過WebM: VP8/VP9のalpha_mode=1に対応。色とアルファを左右に詰めたMP4を生成し、AR側のシェーダーで透過を再現。
-- 通常WebM: H.264へ変換。通常動画として再生。
-- 動画の音声: この版は常にミュート。複数作品の映像を同時に再生します。
-- Sprite: PNGシート＋JSONをまとめたZIP。添付157形式を対応。FPS未指定は12、画面で変更可能。
-- .sprite: ZIP形式なら読込可能。JSON単独や別の独自バイナリは対応外。
-- Spriteシート: 長辺4096px以内に自動縮小。元のフレーム構造と透過を保持。
-- 作品: 各シーン最大24個、プロジェクト全体48個。ただしiPhone 11 Pro Maxではまず3〜6個・軽い素材で試してください。
-- 同時再生: GLB・Sprite・動画が同時に動作。フレーム単位の厳密な動画同期を保証する実装ではありません。
-- 制作データ: IndexedDBへ自動保存。ZIPで明示保存・復元も可能。
-- GitHub PagesのStudio: 編集・マーカー生成・ZIP保存のみ。動画追加・直接公開はRenderかlocalhostのStudio。
-- 公開素材: 合計48MB以内、各24MB以内。GitHubへ送る原動画とSafari用動画の両方を含みます。
-- 新しい素材は一括コミット。既存シーンや古い素材は自動削除しません。
-- マーカーありのみ。マーカーなしのGLB配置は従来space.htmlへ移動します。
-
-## 5. 0.4の制作手順
-1. 同梱デモを読み込み、体験IDをart-001など自分のIDへ変更します。
-2. 左の「マーカー画像を追加」で異なる画像を登録します。追加するたびに全画像をまとめた認識データを再生成します。同一画像は登録しないでください。
-3. 「編集中のマーカー」を選び、GLB・WebM・Spriteを追加してXYZを調整します。編集画面は選択した1枚のマーカーを表示します。ARは同時に最大2枚を追跡します。
-4. 作品を選び「シーン開始時に自動再生」「タップ時の再生」「GLBアニメーション」「繰り返し」「動き」を設定します。自動再生OFF＋先頭から再生で、タップした時だけ動く作品になります。
-5. MP3/WAV/M4A/AACを追加し、「タップ時の音」と音量を設定します。動画自体はミュートです。動画の音が必要な場合は音ファイルを別途登録してください。
-6. 「選択作品の動きと音を確認」で確認します。シーン切替まで試す場合は3D画面の「再生 / 停止」を押し、作品をクリックします。もう一度押すとプレビューを終了します。
-7. 左の「シーン追加」で場面を作り、各シーンに作品を追加します。「開始シーンに設定」で最初の場面を指定します。作品はシーンごとに独立しています。
-8. タップ後のシーンを選び、切替までの秒数を設定します。この秒数はタップからの時間で、GLBアニメーション終了イベントではありません。再タップすると切替予約は更新されます。
-9. シーン全体の自動切替は左の秒数と切替先を設定します。0秒ならOFF。切替時は旧シーンの音・作品を止め、新しいシーンを初期状態から開始します。
-10. マーカーを見失った時の再生継続／一時停止を選びます。一時停止ではそのマーカーの映像・アニメーションを止め、音は停止します。シーン切替タイマーはAR実行中に進みます。
-11. 「制作データ保存」で全マーカー・全シーン・共有素材を1つのZIPへ保存します。空のシーンを含む制作途中のZIPも保存・復元できます。公開する前に各シーンへ最低1作品を配置してください。
-12. GitHubに接続したStudioで「公開する」。全素材を同じコミットで送信し、公開を確認してからQRを表示します。他者はGitHubログイン不要でiPhone Safariから閲覧できます。
-
-上限はマーカー8枚（同時追跡2枚）、シーン12個、音24個、素材合計48MBです。まずはマーカー2枚、各3作品で確認してください。
-新しいマーカー画像だけを追加しても、作品を配置しないとそのマーカーに作品は表示されません。認識データは複数画像に対するものをStudioで生成してください。画像とtargetIndexを書き換えるだけでは登録できません。
-保存ZIPをGitHubへ手動追加する場合は、展開したscene.jsonと素材をpublic/scenes/体験ID/へ置き、コミットします。AR公開URLはar.html?scene=体験IDです。
-Renderの自動デプロイをOFFにしている場合、0.4をGitHubへpushした後、RenderのManual Deploy → Deploy latest commitも1回実行してください。GitHub Pagesだけが0.4になっても、RenderのStudioは手動更新するまで旧版です。初回設定済みのGitHub Appと環境変数はそのまま使います。
-
-## 6. 実機の合格確認
-1. デモの動画・Spriteが動き、宝石のタップでGLB・音・回転・シーン切替が起きる。
-2. 印刷マーカーを動かすと全作品が一緒に追従する。
-3. 見失うと非表示、再認識で復帰。
-4. 新しいマーカーをPCで生成し、別の体験IDで公開できる。
-5. 配置・回転・サイズ・FPSの編集がiPhoneへ反映される。
-6. 同じ体験IDを更新して同じQRで新しい版を見られる。
-7. カメラ終了後、同じページで再開できる。
-8. WebM透過部分に黒背景が出ない。
-9. 異なるマーカー2枚を同時に映すと、同一シーンで両方の作品が表示される。
-10. マーカーを見失った時の一時停止、シーン切替時の旧音停止、ZIP復元を確認。
-11. 公開失敗時にQRを「新しい公開完了」として表示しない。
-
-不具合時は処理名とエラーをStudioに表示します。一般的な成功と実機の追跡成功を区別します。
-
-## 参照
-MindAR公式: https://hiukim.github.io/mind-ar-js-doc/installation/
-Compiler公式例: https://github.com/hiukim/mind-ar-js/blob/master/examples/image-tracking/compile.html
-GitHub App認証: https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-user-access-token-for-a-github-app
-GitHub Git trees: https://docs.github.com/en/rest/git/trees
-GitHub Pages: https://docs.github.com/en/rest/pages/pages
-FFmpeg: https://ffmpeg.org/ffmpeg-filters.html#alphaextract
-
-ブラウザ専用のMindAR処理を使用し、Node用canvasのネイティブビルドは使用しません。依存インストールは --ignore-scripts を指定しています。Viteのプラットフォーム別esbuildパッケージを使用します。旧8th Wall CLIを別途使う場合はその依存のセットアップが必要な場合があります。
