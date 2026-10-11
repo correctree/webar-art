@@ -2,7 +2,7 @@
   "version": 2,
   "id": "art-003",
   "title": "ART001",
-  "revision": "5306bc9b-2658-434d-9fce-794bf4cece88",
+  "revision": "ed57dd65-3edf-472c-8b0e-8059bcebbd54",
   "trackingTarget": "77dc07f8-c28e-49bc-8407-d7e89b3f7370.mind",
   "maxTrack": 1,
   "markers": [
@@ -67,7 +67,8 @@
             "src": "7c9642af-b7ad-49ae-84ff-eb6661cb6e6a.mp4",
             "packedAlpha": true
           },
-          "loop": true
+          "loop": true,
+          "shadow": true
         }
       ]
     },
@@ -123,5 +124,7 @@
         }
       ]
     }
-  ]
+  ],
+  "shadowDirection": "left",
+  "trackingMode": "responsive"
 }
