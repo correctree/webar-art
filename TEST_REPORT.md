@@ -1,9 +1,9 @@
-# ARARART 0.8.1 verification
+# ARARART 0.8.2 verification
 
-82 automated tests passed, zero failures. Editor/player syntax checks passed. Sound-volume and proximity controls, microphone button, detector modules and runtime updates removed. Tap-based audio playback, hide/show and camera-facing actions remain.
+88 automated tests passed, zero failures, including FORCE_COLOR=1. JavaScript syntax and installer shell checks passed.
 
-Regression coverage includes existing installer, tracking, shadows, media, dashboard, saving/publication and sequences. New compatibility coverage imports a 0.8 project with automatic triggers and hidden initial visibility: obsolete fields are stripped, assets/actions preserved, tapEnabled preserved, and hide/wait/show/camera steps still execute. DOM contract verifies removed controls are absent.
+New tests verify independent visibility delay/fade timing, instant legacy visibility steps, leading appearance from hidden state, pause time consumption and animation budgets, eligible-marker scene-start execution once per entry/reentry, tap exclusion for scene-start objects, schema bounds, media opacity multiplication, packed-alpha uniform updates and isolated clip/video pauses with resume. DOM contract verifies the start-method selector. Existing tracking, media, shadows, dashboard, saving, installer and publication regressions pass. Three/GPU integration tests use adapters/mocks.
 
-Production build and real iPhone/browser rendering were not performed here: dependencies unavailable and registry requests returned HTTP 403 during 0.8 work. APPLY.sh requires dependency installation, automated tests, production build and dist checks on Mac before GitHub push. No external deployment performed here.
+Limitations: no real iPhone/browser/GPU tests or production Vite build here. Dependencies are absent and registry requests returned 403 during previous checks. APPLY.sh requires install, tests, production build and dist inspection on Mac before GitHub push. No live publication performed here. Video pause/resume follows animation frames; exact subframe timing is not guaranteed. Audio is not paused by the object-pause action. Automatic scene timers retain their existing timing even before marker recognition.
 
-Evidence: studio/editor.js, studio/player.js, studio/behavior.js, studio/schema.js, studio/action-sequence.js and tests/action-sequence.test.mjs, tests/guided-layout.test.mjs, tests/media-sequence.test.mjs. Setup and acceptance steps: README_SETUP_JA.md section 10.
+Evidence: studio/action-sequence.js, studio/behavior.js, studio/media.js, studio/editor.js, studio/player.js, studio/schema.js; tests/scene-actions.test.mjs, tests/media-sequence.test.mjs, tests/guided-layout.test.mjs and existing regression suite. Setup and acceptance: README_SETUP_JA.md sections 10–11.

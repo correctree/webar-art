@@ -107,7 +107,7 @@ export function validateProject(p,{draft=false}={}){
     for(const o of s.objects){
       if(allIds.has(o.id))throw new Error('シーンをまたぐ作品IDが重複しています。');allIds.add(o.id);total++;
       if(!markers.has(o.markerId)||typeof o.autoplay!=='boolean')throw new Error('作品のマーカー・自動再生設定が不正です。');
-      const b=o.interaction;validateSequence(b?.sequence,sounds,scenes);
+      const b=o.interaction;if(b?.startTrigger!==undefined&&!['tap','scene'].includes(b.startTrigger))throw Error('開始方法が不正です。');validateSequence(b?.sequence,sounds,scenes);
       if(!b||!['none','restart','toggle'].includes(b.action)||typeof b.clip!=='string'||b.clip.length>200||typeof b.loop!=='boolean'||!['none','rotate','bounce','pulse'].includes(b.effect))throw new Error('タップ反応が不正です。');
       if(!Number.isFinite(b.duration)||b.duration<.1||b.duration>60||!Number.isFinite(b.delay)||b.delay<0||b.delay>60||!Number.isFinite(b.volume)||b.volume<0||b.volume>1)throw new Error('反応の時間・音量が不正です。');
       if(b.soundId!=null&&!sounds.has(b.soundId)||b.nextSceneId!=null&&!scenes.has(b.nextSceneId))throw new Error('反応の音・シーンが見つかりません。');
