@@ -1,4 +1,4 @@
-# WebAR Art 0.6.1
+# ARARART 0.7.0
 
 Marker AR authoring with GLB, WebM and sprite media, object-specific tap/audio/scene interactions and marker-local shadows.
 
@@ -13,3 +13,5 @@ This release adds:
 Setup: README_SETUP_JA.md. Public Studio uses Docker/Render, persistent disk and the existing GitHub App flow. Local Studio uses the existing repository credentials. Public AR remains on GitHub Pages.
 
 The artifact supplies implementation and deployment configuration. No live service has been deployed by this package generation. See TEST_REPORT.md for limitations.
+
+0.7.0 adds editable sequential tap actions (rotation/movement/scale/wait/audio/scene), repeat/pingpong/re-tap/end policies, header dashboard navigation and ARARART branding. Legacy tap behaviors remain available when sequence mode is off.
