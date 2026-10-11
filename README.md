@@ -1,4 +1,4 @@
-# ARARART 0.8.0
+# ARARART 0.8.1
 
 Marker AR authoring with GLB, WebM and sprite media, object-specific tap/audio/scene interactions and marker-local shadows.
 
@@ -17,4 +17,4 @@ The artifact supplies implementation and deployment configuration. No live servi
 0.7.0 adds editable sequential tap actions (rotation/movement/scale/wait/audio/scene), repeat/pingpong/re-tap/end policies, header dashboard navigation and ARARART branding. Legacy tap behaviors remain available when sequence mode is off.
 
 
-0.8.0 adds opt-in microphone RMS and marker-relative camera proximity triggers, initial visibility, hide/show steps and camera-facing orientation. Automatic triggers are independent of tapEnabled and share each object's action sequence. Local-only mic analysis uses hysteresis, cooldown and application-audio suppression. Markerless spatial placement remains a separate future release. See README_SETUP_JA.md section 10 for exact setup and acceptance checks.
+0.8.1 removes microphone/proximity triggers and their UI/runtime. Tap-only sequences retain hide/show, camera-facing orientation and sound playback. Loading 0.8 projects strips legacy automatic trigger settings and restores initial visibility; authored media and tapEnabled choices remain intact.

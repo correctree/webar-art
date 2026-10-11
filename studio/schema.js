@@ -1,4 +1,3 @@
-import {validateTriggers} from './triggers.js';
 import {validateSequence} from './action-sequence.js';
 export const MAX_ASSET_BYTES = 24 * 1024 * 1024;
 export const MAX_TOTAL_BYTES = 48 * 1024 * 1024;
@@ -73,7 +72,7 @@ export function validatePackage(scene, files, options) {
 
 export function toProject(input, options) {
   validateScene(input, options);
-  if(input.version===2)return structuredClone(input);
+  if(input.version===2){const p=structuredClone(input);for(const scene of p.scenes)for(const object of scene.objects){delete object.interaction.triggers;delete object.initiallyVisible;}return p;}
   const p=structuredClone(input);
   return {version:2,id:p.id,title:p.title,revision:p.revision,trackingTarget:p.marker.target,maxTrack:1,
     markers:[{id:'marker-1',name:'マーカー1',image:p.marker.image,aspect:p.marker.aspect,targetIndex:0}],sounds:[],
@@ -108,7 +107,7 @@ export function validateProject(p,{draft=false}={}){
     for(const o of s.objects){
       if(allIds.has(o.id))throw new Error('シーンをまたぐ作品IDが重複しています。');allIds.add(o.id);total++;
       if(!markers.has(o.markerId)||typeof o.autoplay!=='boolean')throw new Error('作品のマーカー・自動再生設定が不正です。');
-      const b=o.interaction;validateSequence(b?.sequence,sounds,scenes);validateTriggers(b?.triggers);
+      const b=o.interaction;validateSequence(b?.sequence,sounds,scenes);
       if(!b||!['none','restart','toggle'].includes(b.action)||typeof b.clip!=='string'||b.clip.length>200||typeof b.loop!=='boolean'||!['none','rotate','bounce','pulse'].includes(b.effect))throw new Error('タップ反応が不正です。');
       if(!Number.isFinite(b.duration)||b.duration<.1||b.duration>60||!Number.isFinite(b.delay)||b.delay<0||b.delay>60||!Number.isFinite(b.volume)||b.volume<0||b.volume>1)throw new Error('反応の時間・音量が不正です。');
       if(b.soundId!=null&&!sounds.has(b.soundId)||b.nextSceneId!=null&&!scenes.has(b.nextSceneId))throw new Error('反応の音・シーンが見つかりません。');
