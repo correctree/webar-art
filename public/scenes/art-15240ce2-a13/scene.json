@@ -1,0 +1,179 @@
+{
+  "version": 2,
+  "id": "art-15240ce2-a13",
+  "title": "ARARART",
+  "revision": "8c155e4a-d00a-4c46-b284-5fdb95cabfce",
+  "trackingTarget": "0ec9f16f-937b-46ab-a9cb-528af563feee.mind",
+  "maxTrack": 1,
+  "markers": [
+    {
+      "id": "f151cd8c-0ac3-479b-bc10-cc1bd94cfacf",
+      "name": "mk_1010.jpg",
+      "image": "f151cd8c-0ac3-479b-bc10-cc1bd94cfacf.jpg",
+      "aspect": 1,
+      "targetIndex": 0
+    }
+  ],
+  "sounds": [
+    {
+      "id": "aecde866-5d00-4e92-abc9-16062fbf20f6",
+      "name": "01.mp3",
+      "src": "aecde866-5d00-4e92-abc9-16062fbf20f6.mp3"
+    }
+  ],
+  "initialSceneId": "scene-1",
+  "scenes": [
+    {
+      "id": "scene-1",
+      "name": "シーン1",
+      "autoNextSeconds": 0,
+      "nextSceneId": null,
+      "markerLost": "continue",
+      "objects": [
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": true,
+          "id": "4bd36479-9807-4eb3-88d8-5dced1205233",
+          "kind": "sprite",
+          "src": "208ce375-cecc-4d09-956e-0ecbf60aa3d5.png",
+          "name": "157-sprite-package.zip",
+          "markerId": "f151cd8c-0ac3-479b-bc10-cc1bd94cfacf",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": true,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1,
+            "sequence": {
+              "enabled": true,
+              "retrigger": "ignore",
+              "finish": "reset",
+              "actions": [
+                {
+                  "type": "move",
+                  "offset": [
+                    3,
+                    0,
+                    0.25
+                  ],
+                  "duration": 1,
+                  "repeat": 1,
+                  "pingpong": true
+                },
+                {
+                  "type": "rotate",
+                  "axis": "y",
+                  "angle": 180,
+                  "duration": 1,
+                  "repeat": 2,
+                  "pingpong": true
+                },
+                {
+                  "type": "scene",
+                  "sceneId": "c350c80b-1808-45be-ab37-1e4cc581788a"
+                }
+              ]
+            }
+          },
+          "position": [
+            0,
+            0,
+            0.3389223733474136
+          ],
+          "rotation": [
+            90,
+            0,
+            0
+          ],
+          "scale": [
+            0.7,
+            0.7,
+            0.7
+          ],
+          "sprite": {
+            "columns": 4,
+            "rows": 2,
+            "frames": 5,
+            "frameWidth": 1024,
+            "frameHeight": 576,
+            "fps": 6,
+            "loop": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "c350c80b-1808-45be-ab37-1e4cc581788a",
+      "name": "シーン2",
+      "autoNextSeconds": 0,
+      "nextSceneId": null,
+      "markerLost": "continue",
+      "objects": [
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": true,
+          "id": "2b26b0ef-89b6-4389-85bb-367ad314f66f",
+          "kind": "video",
+          "src": "9d22115f-970c-498a-946c-8703672f55ac.webm",
+          "name": "delete.webm",
+          "markerId": "f151cd8c-0ac3-479b-bc10-cc1bd94cfacf",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": true,
+            "effect": "none",
+            "duration": 1,
+            "soundId": "aecde866-5d00-4e92-abc9-16062fbf20f6",
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1,
+            "sequence": {
+              "enabled": true,
+              "retrigger": "restart",
+              "finish": "keep",
+              "actions": [
+                {
+                  "type": "rotate",
+                  "axis": "y",
+                  "angle": 360,
+                  "duration": 1,
+                  "repeat": 3,
+                  "pingpong": false
+                }
+              ]
+            }
+          },
+          "position": [
+            0,
+            0,
+            0.7746539791636747
+          ],
+          "rotation": [
+            60,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "fallback": {
+            "src": "7d454da0-3ee1-4c3b-9bf1-e47a7c895cee.mp4",
+            "packedAlpha": true
+          },
+          "loop": true
+        }
+      ]
+    }
+  ],
+  "shadowOpacity": 0.46
+}
