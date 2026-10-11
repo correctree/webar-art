@@ -1,8 +1,8 @@
 {
   "version": 2,
   "id": "art-15240ce2-a13",
-  "title": "ARARART",
-  "revision": "8c155e4a-d00a-4c46-b284-5fdb95cabfce",
+  "title": "ARARART1011",
+  "revision": "a1078305-b8bf-4cf8-94c1-0faaab1df5f1",
   "trackingTarget": "0ec9f16f-937b-46ab-a9cb-528af563feee.mind",
   "maxTrack": 1,
   "markers": [
@@ -104,7 +104,8 @@
             "frameHeight": 576,
             "fps": 6,
             "loop": true
-          }
+          },
+          "opacity": 1
         }
       ]
     },
