@@ -1,7 +1,15 @@
-# WebAR Art 0.6.0 Unified Studio
+# WebAR Art 0.6.1
 
-Three workspaces: marker & scenes, artwork placement & behaviors, save & publish.
+Marker AR authoring with GLB, WebM and sprite media, object-specific tap/audio/scene interactions and marker-local shadows.
 
-Includes marker-local, scale-aware AR shadows and alpha-aware video/sprite shadow depth materials. Keeps successful local Git publication and QR verification fixes, per-artwork tap switches, linked scales, opacity and Safari audio/video fixes.
+This release adds:
+- Marker-relative pose smoothing, spike rejection and short-loss hold.
+- Web/local Studio project dashboard, thumbnails, search and recent projects.
+- Per-user persistent project folders, rename, duplication, trash and restore.
+- Browser-supported PC folder selection for production ZIP backup.
+- Authenticated Web Studio auto-save after first explicit project save and stale-write protection.
+- Z-up mouse orbit with Reset View; 45-degree buttons removed.
 
-README_SETUP_JA.md contains install and device verification steps. TEST_REPORT.md distinguishes automated tests from unverified real rendering. Use APPLY.sh on the existing Mac repository.
+Setup: README_SETUP_JA.md. Public Studio uses Docker/Render, persistent disk and the existing GitHub App flow. Local Studio uses the existing repository credentials. Public AR remains on GitHub Pages.
+
+The artifact supplies implementation and deployment configuration. No live service has been deployed by this package generation. See TEST_REPORT.md for limitations.

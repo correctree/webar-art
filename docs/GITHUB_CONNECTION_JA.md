@@ -1,4 +1,4 @@
-# 公開サーバーのGitHub接続（0.5.0）
+# 公開サーバーのGitHub接続（0.6.1）
 
 localhostの直接公開にはこの設定は不要です。Renderで制作する場合の初回設定です。
 
@@ -20,7 +20,7 @@ PATをブラウザやpublicへ入力・保存する必要はありません。�
    GITHUB_BRANCH: main
    GITHUB_ALLOWED_LOGINS: correctree
 
-無料サービスを利用する場合、休止からの起動待ちや動画変換のCPU負荷により遅くなることがあります。
+プロジェクトを永続保存するにはPersistent Disk対応プランと /var/data のDiskを設定し、DRAFT_DIR=/var/data/webar-draftsを環境変数に追加してください。
 Renderのプランや料金は利用時点の画面で確認してください。継続運用時の費用は別途発生する場合があります。
 
 ### B. GitHub Appを作る
@@ -46,8 +46,8 @@ GITHUB_CLIENT_SECRET: Client secret
 秘密情報はチャット、GitHubのファイル、ブラウザの作品データに入れないでください。
 
 ### C. 接続と公開
-Renderの studio.html をPCで開き、「GitHubに接続」を押します。
-correctreeアカウントで認証後、Studioへ戻り「GitHub接続済み」が出れば接続完了です。
+Renderの dashboard.html をPCで開き、「GitHubでログイン」を押します。
+correctreeアカウントで認証後、ダッシュボードにGitHubユーザー名が出れば接続完了です。カードを開くか、新規プロジェクトからStudioへ進みます。
 マーカーと作品を編集し、体験ID・タイトルを指定して「公開する」を押します。
 初回はdemoを別作品へ変更せず、体験IDをart-001に変更して公開してください。
 
