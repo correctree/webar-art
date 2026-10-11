@@ -1,9 +1,7 @@
-# WebAR Art 0.5.3 verification
+# WebAR Art 0.6.0 verification
 
-58 automated tests passed, zero failures. Includes FFmpeg conversion, tap/audio, publisher, install preservation and three-workspace regressions.
+61 automated tests passed. Added tests for rotation around marker Z, full 360-degree orbit around a translated target and reset with Z up/unrestricted azimuth. Existing shadow, media, tap/audio, guided UI, installer and publisher regressions pass.
 
-New tests verify default light position (0,-2,3), receiver size (4,6) for a 1:1.5 marker, all four shadow directions, expanded shadow frustum, settings persistence and rejection of invalid settings. Editor and player share the direction and bounds helpers. Receiver raycast is disabled. Existing packed-alpha and sprite shadow shaders are unchanged.
+Real browser mouse/gizmo interaction, production Vite build and iPhone rendering have not been verified here. APPLY.sh runs the production build on Mac before push. Changes affect Studio camera only; AR tracking and project transforms are unchanged.
 
-User reported successful iPhone experience with 0.5.2. New 0.5.3 real-device rendering, GPU compilation and production Vite build are not verified here. APPLY.sh performs the build on Mac. Tests use mocked DOM/Three and shader strings; they are not visual tests.
-
-Source: studio/shadow-rig.js, studio/editor.js, studio/player.js, studio/schema.js; tests/shadow-rig.test.mjs.
+Scope: Z-axis view controls. Web Studio deployment, dashboard and tracking improvements remain future work.

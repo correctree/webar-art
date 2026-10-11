@@ -1,0 +1,5 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {rotateViewZ,setupMarkerOrbit,DEFAULT_VIEW} from '../studio/view-controls.js';
+const near=(a,b)=>a.forEach((v,i)=>assert.ok(Math.abs(v-b[i])<1e-10));
+test('quarter-turn uses marker Z axis and preserves height',()=>{near(rotateViewZ([1,0,2],[0,0,0],Math.PI/2),[0,1,2]);});
+test('eight 45-degree steps complete a full turn around a panned target without changing distance',()=>{let p=[4,2,5];const target=[3,2,1];for(let i=0;i<8;i++)p=rotateViewZ(p,target,Math.PI/4);near(p,[4,2,5]);});
+test('reset establishes Z up, marker center and unrestricted azimuth',()=>{const camera={up:{set(...v){this.v=v;}},position:{set(...v){this.v=v;}}};const orbit={target:{set(...v){this.v=v;}},update(){this.updated=true;}};setupMarkerOrbit(camera,orbit);assert.deepEqual(camera.up.v,[0,0,1]);assert.deepEqual(camera.position.v,DEFAULT_VIEW);assert.deepEqual(orbit.target.v,[0,0,0]);assert.equal(orbit.minAzimuthAngle,-Infinity);assert.equal(orbit.maxAzimuthAngle,Infinity);assert.equal(orbit.updated,true);});

@@ -1,4 +1,4 @@
-# WebAR Art 0.5.3 — 影の方向・受け面の拡張
+# WebAR Art 0.6.0 — Z軸360°視点回転
 
 ## Macへの適用
 1. 必要な編集データを制作ZIPまたはサーバーへ保存。
@@ -6,14 +6,14 @@
 3. ZIPをDownloadsに保存し、次の2行を実行。
 
 ```bash
-unzip -o "$HOME/Downloads/WebAR-Art-0.5.3-shadow-layout.zip" -d "$HOME/Downloads"
-bash "$HOME/Downloads/WebAR-Art-0.5.3/APPLY.sh"
+unzip -o "$HOME/Downloads/WebAR-Art-0.6.0-z-axis-view.zip" -d "$HOME/Downloads"
+bash "$HOME/Downloads/WebAR-Art-0.6.0/APPLY.sh"
 ```
 
-旧コードをバックアップし、依存導入・58件のテスト・実ビルド・配信ファイル確認が通った後にGitHubへpushし、localhostサーバーを起動します。
+旧コードをバックアップし、依存導入・61件のテスト・実ビルド・配信ファイル確認が通った後にGitHubへpushし、localhostサーバーを起動します。
 独自素材、マーカー、.env、.git、.studio-data は保持します。失敗した場合はその場で停止します。
 
-Studio: http://localhost:8080/studio.html を再読み込みしてSTUDIO 0.5.3を確認。
+Studio: http://localhost:8080/studio.html を再読み込みしてSTUDIO 0.6.0を確認。
 GitHub Actionsで今回のプログラム更新が成功してから、作品の公開へ進んでください。
 RenderのStudioを使う場合はManual Deployも必要です。GitHub App設定は docs/GITHUB_CONNECTION_JA.md。
 
@@ -42,7 +42,7 @@ localhost保存先はリポジトリの .studio-data、GitHubへ含めません�
 1. GitHub Actionsで今回のプログラム更新完了を確認。
 2. 配置・反応でGLB・WebM・Spriteそれぞれの影をON。
 3. 保存・公開で同じ体験IDへ再公開し、QRを表示。
-4. iPhoneで公開ページを再読み込み。PLAYER 0.5.3を確認。
+4. iPhoneで公開ページを再読み込み。PLAYER 0.6.0を確認。
 5. ARを開始してマーカーを認識。3形式の影がマーカー面に出るか確認。
 6. マーカーを傾けても影が追従し、見失うと作品と影が非表示になるか確認。
 7. Spriteのフレーム・動画の輪郭に合わせて影が動くか確認。透過部分が長方形の影にならないか確認。
@@ -50,7 +50,7 @@ localhost保存先はリポジトリの .studio-data、GitHubへ含めません�
 
 ## ARの影の修正内容
 0.5.1では影用のライトとカメラ範囲が編集画面の座標に固定されていました。
-0.5.3はライトとその注視点を各マーカーの子要素へ配置し、マーカーのワールド拡大率に応じて影の計算範囲とバイアスを毎フレーム更新します。
+0.6.0はライトとその注視点を各マーカーの子要素へ配置し、マーカーのワールド拡大率に応じて影の計算範囲とバイアスを毎フレーム更新します。
 動画・Spriteは専用の深度描画を使用。透過動画の右半分のアルファマスクを参照し、Spriteのフレーム切替と同じテクスチャを使います。
 
 ## 検証範囲・上限
@@ -65,3 +65,8 @@ localhost保存先はリポジトリの .studio-data、GitHubへ含めません�
 cd "$HOME/webar-art-0.1"
 npm start
 ```
+
+## 0.6.0の視点操作
+背景を左ボタンで横へドラッグするとマーカーのZ軸を中心に360°回れます。縦ドラッグは見下ろし・見上げ、右ドラッグは平行移動、ホイールは拡大縮小です。右パネルの「左へ45°」「右へ45°」で一定角度ずつ回り、「視点を戻す」でマーカー中央へ戻します。作品の位置・回転には影響しません。初期視点はZを上とした斜め上からです。
+
+今回の0.6.0は視点操作の更新です。Web版Studio、ダッシュボード、追跡安定化、体験タイプ追加はこのZIPには含まれません。
