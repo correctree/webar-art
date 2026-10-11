@@ -1,3 +1,4 @@
+import {validateTriggers} from './triggers.js';
 import {validateSequence} from './action-sequence.js';
 export const MAX_ASSET_BYTES = 24 * 1024 * 1024;
 export const MAX_TOTAL_BYTES = 48 * 1024 * 1024;
@@ -36,7 +37,7 @@ function validateLegacy(scene) {
   for (const object of scene.objects) {
     if (!assetPath(object.id) || ids.has(object.id)) throw new Error('作品IDが不正・重複しています。'); ids.add(object.id);
     if (!['glb','video','sprite'].includes(object.kind) || !assetPath(object.src)) throw new Error('作品形式が不正です。');
-    for(const key of ['tapEnabled','scaleLinked','shadow'])if(object[key]!==undefined&&typeof object[key]!=='boolean')throw new Error('作品設定が不正です：'+key);
+    for(const key of ['tapEnabled','scaleLinked','shadow','initiallyVisible'])if(object[key]!==undefined&&typeof object[key]!=='boolean')throw new Error('作品設定が不正です：'+key);
     if(object.opacity!==undefined&&(!Number.isFinite(object.opacity)||object.opacity<0||object.opacity>1))throw new Error('不透明度は0〜1です。');
     if (typeof object.name !== 'string' || object.name.length > 100) throw new Error('作品名が不正です。');
     if (object.kind === 'sprite') spriteSpec(object.sprite);
@@ -107,7 +108,7 @@ export function validateProject(p,{draft=false}={}){
     for(const o of s.objects){
       if(allIds.has(o.id))throw new Error('シーンをまたぐ作品IDが重複しています。');allIds.add(o.id);total++;
       if(!markers.has(o.markerId)||typeof o.autoplay!=='boolean')throw new Error('作品のマーカー・自動再生設定が不正です。');
-      const b=o.interaction;validateSequence(b?.sequence,sounds,scenes);
+      const b=o.interaction;validateSequence(b?.sequence,sounds,scenes);validateTriggers(b?.triggers);
       if(!b||!['none','restart','toggle'].includes(b.action)||typeof b.clip!=='string'||b.clip.length>200||typeof b.loop!=='boolean'||!['none','rotate','bounce','pulse'].includes(b.effect))throw new Error('タップ反応が不正です。');
       if(!Number.isFinite(b.duration)||b.duration<.1||b.duration>60||!Number.isFinite(b.delay)||b.delay<0||b.delay>60||!Number.isFinite(b.volume)||b.volume<0||b.volume>1)throw new Error('反応の時間・音量が不正です。');
       if(b.soundId!=null&&!sounds.has(b.soundId)||b.nextSceneId!=null&&!scenes.has(b.nextSceneId))throw new Error('反応の音・シーンが見つかりません。');

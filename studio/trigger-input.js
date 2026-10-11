@@ -1,0 +1,8 @@
+import {TriggerDetector,MicrophoneLevel} from './triggers.js';
+import * as THREE from 'three';
+export class TriggerInput{
+ constructor({media,camera,behavior,eligible,width=()=>1,audioBusy=()=>false,onFire=()=>{},onLevel=()=>{}}){Object.assign(this,{media,camera,behavior,eligible,width,audioBusy,onFire,onLevel});this.detector=new TriggerDetector();this.mic=new MicrophoneLevel();this.time=0;this.sceneId=null;this.quietUntil=0;}
+ reset(){this.detector.reset();this.sceneId=null;}
+ stop(){this.reset();this.mic.stop();this.onLevel(0,false);}
+ update(dt){const b=this.behavior();if(!b?.running)return;if(this.sceneId!==b.scene.id){this.detector.reset();this.sceneId=b.scene.id;}this.time+=dt;const level=this.mic.read(),busy=this.audioBusy();if(busy)this.quietUntil=this.time+.6;this.onLevel(level,this.mic.enabled);this.camera.updateMatrixWorld(true);const camera=new THREE.Vector3();this.camera.getWorldPosition(camera);for(const o of [...b.scene.objects]){const item=this.media.items.get(o.id);if(!item)continue;const allowed=this.eligible(o),position=new THREE.Vector3();item.motion.updateWorldMatrix(true,false);item.motion.getWorldPosition(position);const distance=camera.distanceTo(position)/Math.max(.00001,this.width(o));for(const kind of ['sound','near']){const fire=this.detector.update(o.id,kind,o.interaction.triggers?.[kind],{value:kind==='sound'?level:distance,eligible:allowed&&(kind!=='sound'||this.mic.enabled),suppressed:kind==='sound'&&(busy||this.time<this.quietUntil),now:this.time});if(fire&&b.trigger(o.id,kind)){this.onFire(o,kind);break;}if(b.scene.id!==this.sceneId)return;}}}
+}
