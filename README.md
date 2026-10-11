@@ -1,4 +1,4 @@
-# ARARART 0.8.2
+# ARARART 0.8.3
 
 Marker AR authoring with GLB, WebM and sprite media, object-specific tap/audio/scene interactions and marker-local shadows.
 
@@ -17,4 +17,4 @@ The artifact supplies implementation and deployment configuration. No live servi
 0.7.0 adds editable sequential tap actions (rotation/movement/scale/wait/audio/scene), repeat/pingpong/re-tap/end policies, header dashboard navigation and ARARART branding. Legacy tap behaviors remain available when sequence mode is off.
 
 
-0.8.2 adds a per-object tap/scene-start selector, visibility delay and fade duration, and finite per-object animation pauses. Scene reactions wait for tracking eligibility and fire once per scene entry. Existing microphone/proximity features remain removed. See README_SETUP_JA.md sections 10–11.
+0.8.3 adds a per-object tap/scene-start selector, visibility delay and fade duration, and finite per-object animation pauses. Scene reactions wait for tracking eligibility and fire once per scene entry. Existing microphone/proximity features remain removed. See README_SETUP_JA.md sections 10–11.

@@ -10,3 +10,5 @@ select{width:100%;padding:8px;background:#17292e;color:#e7f4f2;border:1px solid 
 
 #sequence-card{border:1px solid #679a87;border-radius:8px;padding:12px;margin-top:18px}#sequence-card p{font-size:12px;line-height:1.6;color:#b6cec6}#action-rows fieldset{border:1px solid #446064;border-radius:6px;margin:12px 0;padding:10px}#action-rows fieldset div{display:flex;gap:5px;flex-wrap:wrap}#action-rows button{font-size:12px;padding:6px}.project-actions{flex-wrap:wrap}
 
+
+#action-rows .action-drag-handle{cursor:grab;width:100%;text-align:left;color:#bcead4;border-style:dashed;margin-bottom:8px}#action-rows .action-drag-handle:active{cursor:grabbing}#action-rows fieldset.action-dragging{opacity:.45}#action-rows fieldset.action-drop{outline:2px solid #a4efc9;background:#264039}
