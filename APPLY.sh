@@ -20,7 +20,7 @@ node scripts/check-studio-dist.mjs
 FILES=(.github/workflows/pages.yml LICENSE-MIT src scripts tests studio publisher package.json package-lock.json index.html print.html studio.html dashboard.html ar.html vite.studio.config.mjs public/scenes/demo public/scenes/demo-interactive README.md README_SETUP_JA.md TEST_REPORT.md docs .gitignore .dockerignore .env.example Dockerfile render.yaml APPLY.sh)
 git add -- "${FILES[@]}"
 if ! git diff --cached --quiet -- "${FILES[@]}"; then
-  git commit --only -m "Move preview and view reset to left panel in ARARART 0.8.5" -- "${FILES[@]}"
+  git commit --only -m "Add Studio inspector accordions and compact action controls in ARARART 0.8.6" -- "${FILES[@]}"
 fi
 git push
 echo '初回プログラムをGitHubへ送信しました。Actionsの公開完了後、ar.html?scene=demo-interactive をiPhoneで確認できます。'

@@ -1,9 +1,9 @@
-# ARARART 0.8.5 verification
+# ARARART 0.8.6 verification
 
-88 regression tests passed, zero failures. Editor syntax and installer shell checks passed. DOM contract confirms preview/view reset reside in left panel, legacy import button absent, and all remaining control IDs preserved. Action/media/tracking/saving/publication regressions pass.
+88 regression tests passed, zero failures. JavaScript syntax and installer shell checks passed. DOM contract verifies placement, reaction and sequence disclosures retain their form IDs and selected-title is hidden. Existing action, tracking, audio, save and publication tests pass.
 
-Changes match 1014-02.jpg: move scene preview and view reset to left panel under object list; remove legacy motion import button, action help disclosure, view heading and permanent mouse instructions. Legacy authored reactions and sequences remain compatible. AR runtime unchanged apart from version label.
+Changes follow 1014-03/04/05.jpg: hide redundant selected-work/adjustment headings; retain accessible work-name input; native details/summary accordions for placement/display, reaction/animation and sequential actions; rename start method to trigger and scene-switch labels accordingly; compact action labels/inputs, spacing and drag/tool buttons. Layout disclosure state is retained when switching selected objects; authored behavior/data schema is unchanged.
 
-No actual browser visual/GPU verification or production Vite build here; dependencies unavailable after registry HTTP 403 in previous work. APPLY.sh requires install, tests, production build and dist checks before GitHub push. User confirmed 0.8.4 operation before this UI change.
+No real browser visual/GPU check or production build performed here; dependencies unavailable after earlier registry HTTP 403. APPLY.sh requires install, tests, build and dist checks on Mac before GitHub push. User confirmed 0.8.5 prior to this UI update.
 
-Evidence: supplied 1014-02.jpg; studio/editor.js; tests/guided-layout.test.mjs and regression suite. Instructions: README_SETUP_JA.md section 14.
+Evidence: supplied 1014-03.jpg, 1014-04.jpg, 1014-05.jpg; studio/editor.js, studio.html, studio/style.css; tests/guided-layout.test.mjs and existing suite. Setup: README_SETUP_JA.md section 15.
