@@ -26,7 +26,7 @@ export class GitHubPublisher {
   const response=await this.fetcher(manifestURL,{cache:'no-store',signal:AbortSignal.timeout(15000)});if(!response.ok)return{state:'verifying',message:'公開ファイルの配信待ちです。'};
   const manifest=await response.json();if(manifest.revision!==job.revision)return{state:'verifying',message:'新しい版の配信を確認しています。'};
   const page=new URL('ar.html',base);const check=await this.fetcher(page,{signal:AbortSignal.timeout(15000)});if(!check.ok)return{state:'failed',message:'AR再生ページがありません。初回のプログラム適用・公開を確認してください。'};
-  const pageText=await check.text();if(!pageText.includes('WebAR Art'))return{state:'failed',message:'AR再生ページの内容が不正です。'};
+  const pageText=await check.text();if(!pageText.includes('ARARART') && !pageText.includes('WebAR Art'))return{state:'failed',message:'AR再生ページの内容が不正です。'};
   const names=requiredAssets(validateScene(manifest));
   for(const name of names){const asset=await this.fetcher(new URL('scenes/'+job.sceneId+'/'+name,base),{method:'HEAD',signal:AbortSignal.timeout(15000)});if(!asset.ok)return{state:'verifying',message:'作品素材の配信待ち: '+name};}
   page.searchParams.set('scene',job.sceneId);return{state:'ready',message:'公開完了。QRをiPhoneで読み取ってください。',url:page.href};
