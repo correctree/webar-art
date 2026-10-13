@@ -1,9 +1,9 @@
-# ARARART 0.8.6 verification
+# ARARART 0.8.7 verification
 
-88 regression tests passed, zero failures. JavaScript syntax and installer shell checks passed. DOM contract verifies placement, reaction and sequence disclosures retain their form IDs and selected-title is hidden. Existing action, tracking, audio, save and publication tests pass.
+88 regression tests passed, zero failures. JavaScript and shell syntax checks passed. Updated DOM contract verifies combined production panels, two left navigation choices, marker/scene/asset disclosures, preserved control IDs, hidden guide banner and visible status moved to left sidebar. Existing tracking, actions, media, save and publication tests pass.
 
-Changes follow 1014-03/04/05.jpg: hide redundant selected-work/adjustment headings; retain accessible work-name input; native details/summary accordions for placement/display, reaction/animation and sequential actions; rename start method to trigger and scene-switch labels accordingly; compact action labels/inputs, spacing and drag/tool buttons. Layout disclosure state is retained when switching selected objects; authored behavior/data schema is unchanged.
+Changes match 1014-06.jpg: unify marker/scene and placement/reaction into one production workspace; move navigation to left; hide top guide/title/breadcrumb and two-marker helper/summary; remove marker preparation explanation; use left accordions with compact scene inputs/buttons. Existing multi-marker project data and all runtime behavior remain unchanged. Regular marker registration remains available; the old paired-demo creation shortcut is hidden.
 
-No real browser visual/GPU check or production build performed here; dependencies unavailable after earlier registry HTTP 403. APPLY.sh requires install, tests, build and dist checks on Mac before GitHub push. User confirmed 0.8.5 prior to this UI update.
+No browser visual/GPU verification or production build performed here. Dependencies remain absent after registry HTTP 403 in prior work. APPLY.sh requires installation, tests, production build and dist checks on Mac before git push. No live deployment performed here. User confirmed 0.8.6 operation before this update.
 
-Evidence: supplied 1014-03.jpg, 1014-04.jpg, 1014-05.jpg; studio/editor.js, studio.html, studio/style.css; tests/guided-layout.test.mjs and existing suite. Setup: README_SETUP_JA.md section 15.
+Evidence: 1014-06.jpg; studio/editor.js, studio.html, studio/style.css; tests/guided-layout.test.mjs and regression suite. Setup: README_SETUP_JA.md section 16.
