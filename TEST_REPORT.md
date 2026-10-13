@@ -1,9 +1,9 @@
-# ARARART 0.8.4 verification
+# ARARART 0.8.5 verification
 
-88 regression tests passed, zero failures. JavaScript and installer shell syntax checks passed. Updated DOM contract verifies checkbox scale-link control, relocated object-list actions, absence of demo button, and shadow controls grouped under a disclosure. Existing media, sequence, tracking, audio, shadows, saving and publication tests pass.
+88 regression tests passed, zero failures. Editor syntax and installer shell checks passed. DOM contract confirms preview/view reset reside in left panel, legacy import button absent, and all remaining control IDs preserved. Action/media/tracking/saving/publication regressions pass.
 
-Studio UI changes: remove left tutorial/demo controls; checkbox scale link beside size heading; per-object tap checkbox and compact duplicate/delete buttons; individual display/shadow controls and project-wide shadow disclosure; Sprite FPS only for Sprite; optional action guidance. List operations are disabled during preview and refreshed after async tasks. Deleting an unselected object preserves the current transform gizmo. AR runtime is unchanged apart from version label.
+Changes match 1014-02.jpg: move scene preview and view reset to left panel under object list; remove legacy motion import button, action help disclosure, view heading and permanent mouse instructions. Legacy authored reactions and sequences remain compatible. AR runtime unchanged apart from version label.
 
-No actual browser visual/GPU test or production Vite build here: dependencies remain unavailable after registry HTTP 403 in previous work. APPLY.sh requires install, tests, build and dist inspection on Mac before GitHub push. User confirmed 0.8.3 operation before this change. No live publication was performed here.
+No actual browser visual/GPU verification or production Vite build here; dependencies unavailable after registry HTTP 403 in previous work. APPLY.sh requires install, tests, production build and dist checks before GitHub push. User confirmed 0.8.4 operation before this UI change.
 
-Evidence: supplied 1014-01.jpg annotations; studio/editor.js, studio.html, studio/style.css, tests/guided-layout.test.mjs, regression suite. Acceptance steps: README_SETUP_JA.md section 13.
+Evidence: supplied 1014-02.jpg; studio/editor.js; tests/guided-layout.test.mjs and regression suite. Instructions: README_SETUP_JA.md section 14.
