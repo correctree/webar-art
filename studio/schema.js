@@ -55,12 +55,36 @@ export function requiredAssets(scene) {
   objects.forEach(o=>{set.add(o.src); if(o.fallback)set.add(o.fallback.src);});
   return [...set];
 }
+
+function validBase64(value) {
+  if (
+    !value.length ||
+    value.length % 4 !== 0 ||
+    value.length > Math.ceil(MAX_ASSET_BYTES / 3) * 4
+  ) return false;
+
+  const padding = value.endsWith('==') ? 2
+    : value.endsWith('=') ? 1 : 0;
+  const end = value.length - padding;
+
+  for (let i = 0; i < end; i++) {
+    const c = value.charCodeAt(i);
+    const allowed =
+      (c >= 65 && c <= 90) ||
+      (c >= 97 && c <= 122) ||
+      (c >= 48 && c <= 57) ||
+      c === 43 || c === 47;
+    if (!allowed) return false;
+  }
+  return true;
+}
+
 export function validatePackage(scene, files, options) {
   validateScene(scene, options);
   if (!Array.isArray(files) || files.length>160) throw new Error('ファイル数が不正です。');
   const map=new Map(); let total=0;
   for(const file of files) {
-    if(!assetPath(file.name)||map.has(file.name)||typeof file.content!=='string'|| !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(file.content)) throw new Error('ファイルが不正です。');
+    if(!assetPath(file.name)||map.has(file.name)||typeof file.content!=='string'||!validBase64(file.content)) throw new Error('ファイルが不正です。');
     const size=file.content.length*3/4 - (file.content.endsWith('==')?2:file.content.endsWith('=')?1:0);
     if(size<1||size>MAX_ASSET_BYTES)throw new Error('各ファイルは24MB以内にしてください。');
     total+=size;map.set(file.name,file);
