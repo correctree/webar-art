@@ -1,0 +1,82 @@
+{
+  "version": 2,
+  "id": "art-c2ca1f86-f45",
+  "title": "ARARART",
+  "revision": "efe8d409-0b8d-4df5-b4b7-baa6f9d93bf1",
+  "trackingTarget": "449445cf-946e-42b7-8d9c-a1153b81e493.mind",
+  "maxTrack": 1,
+  "markers": [
+    {
+      "id": "c5c1c5ae-b2a9-4dce-b901-32325cce64f6",
+      "name": "8H7N2YA69t4H3HjNX6RZRww7IcTNO6nQ.jpg",
+      "image": "c5c1c5ae-b2a9-4dce-b901-32325cce64f6.jpg",
+      "aspect": 1,
+      "targetIndex": 0
+    }
+  ],
+  "sounds": [],
+  "initialSceneId": "scene-1",
+  "scenes": [
+    {
+      "id": "scene-1",
+      "name": "シーン1",
+      "autoNextSeconds": 0,
+      "nextSceneId": null,
+      "markerLost": "continue",
+      "objects": [
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": true,
+          "id": "f71c3125-892f-466e-b5d3-4a25fd4ece2e",
+          "kind": "glb",
+          "src": "270993d4-e2b4-45d5-91aa-1aabcb259e28.glb",
+          "name": "model.glb",
+          "markerId": "c5c1c5ae-b2a9-4dce-b901-32325cce64f6",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": false,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1,
+            "sequence": {
+              "enabled": true,
+              "retrigger": "restart",
+              "finish": "keep",
+              "actions": [
+                {
+                  "type": "rotate",
+                  "axis": "y",
+                  "angle": 360,
+                  "duration": 10,
+                  "repeat": 10,
+                  "pingpong": false
+                }
+              ]
+            }
+          },
+          "position": [
+            0,
+            5.551115123125783e-17,
+            0.3686764708816206
+          ],
+          "rotation": [
+            90,
+            0,
+            0
+          ],
+          "scale": [
+            0.5,
+            0.5,
+            0.5
+          ]
+        }
+      ]
+    }
+  ]
+}
