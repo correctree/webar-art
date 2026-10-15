@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>ARARART — 空間配置の検証 01</title>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>ARARART — 空間配置の検証 02</title>
 <script type="importmap">{"imports":{"three":"./vendor/three/build/three.module.js","three/addons/":"./vendor/three/examples/jsm/"}}</script>
 <style>
 :root{font-family:system-ui,sans-serif;color:#eef9f4;background:#102023;color-scheme:dark}*{box-sizing:border-box}body{margin:0}canvas{position:fixed;inset:0;width:100%;height:100%;touch-action:none}#panel{position:fixed;z-index:4;bottom:max(12px,env(safe-area-inset-bottom));left:12px;right:12px;padding:16px;border:1px solid #456461;border-radius:16px;background:#102023ed;max-height:46dvh;overflow:auto}h1{font-size:17px;margin:0 0 8px}p{font-size:14px;line-height:1.6;margin:8px 0}button,label.pick{display:inline-block;font:inherit;padding:12px;margin:4px 3px 4px 0;border-radius:9px;border:1px solid #466865;background:#213b3b;color:inherit;min-height:44px}button.primary{background:#a4efc9;color:#11251a}button:disabled{opacity:.4}small{color:#bbcfca}#stats{font:12px monospace;white-space:pre-wrap}#toggle{position:fixed;right:12px;top:max(12px,env(safe-area-inset-top));z-index:5}a{color:#a4efc9}[hidden]{display:none!important}input[type=file]{max-width:100%}summary{padding:10px 0}#error{color:#ffb8b8}
 </style></head><body>
 <canvas id="camera"></canvas><button id="toggle" aria-expanded="true" aria-controls="panel">案内を隠す</button>
-<section id="panel"><h1>ARARART ｜空間配置の検証 01</h1>
+<section id="panel"><h1>ARARART ｜空間配置の検証 02</h1>
 <p id="message" role="status" aria-live="polite">iPhoneのSafariで開き、明るい床や模様のある机へカメラを向けてください。</p><p id="error" role="alert"></p>
 <button id="start" class="primary" disabled>準備中…</button><button id="place" class="primary" disabled>目印の位置へ置く</button><button id="reset" disabled>置き直す</button><button id="stop" disabled>終了</button>
 <details><summary>作品・診断</summary><p>最初は付属GLBで確認します。別のGLBも端末から選択できます（24MB以内）。配置サイズは検証用に自動調整します。実寸保証はありません。</p><input id="model-file" type="file" accept=".glb"><p id="model-name">付属GLB</p><pre id="stats">エンジン未開始</pre><button id="report">診断を保存</button><p><a href="./licenses/8thwall-engine.txt" target="_blank" rel="noopener">8th Wall Engineのライセンス</a> · <a href="./licenses/three.txt" target="_blank" rel="noopener">Three.js</a></p></details>
@@ -15,12 +15,14 @@ import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {DRACOLoader} from 'three/addons/loaders/DRACOLoader.js';
 import {loadEngine} from './src/engine-loader.js';
+import {surfaceHit} from './src/policy.js';
 import {XRAdapter} from './src/xr-adapter.js';
 window.THREE=THREE;
 function resizeCanvas(){const c=document.getElementById('camera');const d=Math.min(window.devicePixelRatio||1,2);c.width=Math.round(innerWidth*d);c.height=Math.round(innerHeight*d);}
 resizeCanvas();window.addEventListener('resize',resizeCanvas);
 const $=id=>document.getElementById(id);
 const log=[],loader=new GLTFLoader(),draco=new DRACOLoader();draco.setDecoderPath('./vendor/three/draco/');loader.setDRACOLoader(draco);
+let rawHits=[],frameCount=0,hitError='',hitTypeCounts={},sampleAt=0;
 let adapter,scene,reticle,root,mixer,model,engine,active=false,placed=false,tracking='LIMITED',candidate=null,last=null,steadySince=0,lastFrame=0,lastStats=0,startedAt=0,loading=false;
 function note(message){$('message').textContent=message;}
 function record(type,value){log.push({time:new Date().toISOString(),type,value});if(log.length>150)log.shift();}
@@ -37,14 +39,14 @@ $('camera').addEventListener('pointerup',place);
 $('reset').onclick=()=>{placed=false;root.visible=false;clearCandidate();$('reset').disabled=true;note('床や机をゆっくり映して、新しい目印を探してください。');};
 $('stop').onclick=()=>{end();note('カメラを終了しました。');};
 $('toggle').onclick=()=>{const hidden=!$('panel').hidden;$('panel').hidden=hidden;$('toggle').textContent=hidden?'案内を表示':'案内を隠す';$('toggle').setAttribute('aria-expanded',String(!hidden));};
-$('report').onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify({version:'space-test-01',tracking,placed,events:log},null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='ararart-space-diagnostic.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
-function frame(){if(!active||!scene)return;const now=performance.now();mixer?.update(Math.min(.1,(now-(lastFrame||now))/1000));lastFrame=now;
+$('report').onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify({version:'space-test-02',tracking,placed,frameCount,hitError,hitTypeCounts,lastHits:rawHits.slice(0,8),candidate:candidate?.toArray()||null,events:log},null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='ararart-space-diagnostic.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);};
+function frame(){if(!active||!scene)return;frameCount++;const now=performance.now();mixer?.update(Math.min(.1,(now-(lastFrame||now))/1000));lastFrame=now;
  if(!placed){if(tracking!=='NORMAL'){clearCandidate();note('周囲を認識中です。床や机を中心に、カメラをゆっくり左右へ動かしてください。');}
- else{const hit=adapter.hitTest(.5,.5);if(!hit){clearCandidate();note(now-startedAt>20000?'配置候補がありません。模様のある明るい場所へ移動し、机の端も含めて映してください。':'床や机の配置候補を探しています。ゆっくりカメラを動かしてください。');}
+ else{let hit=null;try{rawHits=engine.XrController.hitTest(.5,.5)||[];hitTypeCounts={};for(const h of rawHits){const t=h.type||'MISSING';hitTypeCounts[t]=(hitTypeCounts[t]||0)+1;}hit=surfaceHit(rawHits);hitError='';}catch(e){hitError=e.message;rawHits=[];hitTypeCounts={};}if(now-sampleAt>1500){sampleAt=now;record('surface-sample',{tracking,frames:frameCount,counts:hitTypeCounts,error:hitError,accepted:hit?.type||null});}if(!hit){clearCandidate();note(now-startedAt>20000?'配置候補がありません。模様のある明るい場所へ移動し、机の端も含めて映してください。':'床や机の配置候補を探しています。ゆっくりカメラを動かしてください。');}
  else{const position=new THREE.Vector3(hit.position.x,hit.position.y,hit.position.z);if(!last||last.distanceTo(position)>.08){steadySince=now;candidate=null;}last=position;reticle.position.copy(position);reticle.visible=true;const ready=now-steadySince>=650;candidate=ready?position.clone():null;$('place').disabled=!ready;reticle.material.color.set(ready?0xa4efc9:0xffcd72);note(ready?(hit.type==='DETECTED_SURFACE'?'検出した面に目印が安定しました。タップして配置できます。':'推定した面に目印が安定しました。タップして配置できます。'):'目印を安定させています。カメラを少し止めてください。');}}
  }else if(tracking!=='NORMAL'){note('追跡が不安定です。配置した場所をもう一度ゆっくり映してください。');}else note('配置済みです。左右へ移動し、作品の位置が保たれるか確認してください。');
- if(now-lastStats>500){lastStats=now;$('stats').textContent=`追跡: ${tracking}\n配置: ${placed?'済み':'未配置'}\n候補: ${candidate?'安定':'探索中'}\n経過: ${Math.round((now-startedAt)/1000)}秒`;}}
-$('start').onclick=()=>{if(active||loading||!engine||!model)return;if(!window.isSecureContext)return fail(new Error('HTTPSのページで開いてください。'));$('error').textContent='';active=true;placed=false;tracking='LIMITED';scene=null;lastFrame=0;startedAt=performance.now();$('start').hidden=true;$('stop').disabled=false;note('カメラの使用を許可してください。');record('start','');
+ if(now-lastStats>500){lastStats=now;$('stats').textContent=`追跡: ${tracking}\n配置: ${placed?'済み':'未配置'}\n候補: ${candidate?'安定':'探索中'}\nヒット件数: ${rawHits.length}\n種類: ${JSON.stringify(hitTypeCounts)}\n更新回数: ${frameCount}\n検査エラー: ${hitError||'なし'}\n経過: ${Math.round((now-startedAt)/1000)}秒`;}}
+$('start').onclick=()=>{if(active||loading||!engine||!model)return;if(!window.isSecureContext)return fail(new Error('HTTPSのページで開いてください。'));$('error').textContent='';active=true;placed=false;tracking='LIMITED';scene=null;lastFrame=0;startedAt=performance.now();$('start').hidden=true;$('stop').disabled=false;note('カメラの使用を許可してください。');record('start','');frameCount=0;rawHits=[];hitTypeCounts={};hitError='';sampleAt=0;
  const guardedEngine={...engine,run:options=>{const result=engine.run(options);result?.catch?.(fail);return result;}};
  adapter=new XRAdapter(guardedEngine,{canvas:$('camera'),mode:'world',onScene:context=>{scene=context.scene;root=new THREE.Group();root.visible=false;scene.add(root);scene.add(new THREE.HemisphereLight(0xffffff,0x556666,2));const light=new THREE.DirectionalLight(0xffffff,2);light.position.set(2,5,2);scene.add(light);reticle=new THREE.Mesh(new THREE.RingGeometry(.075,.095,48).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({color:0xffcd72,side:THREE.DoubleSide,depthTest:false}));reticle.visible=false;reticle.renderOrder=10;scene.add(reticle);mount();},onStatus:status=>{if(status==='NORMAL'||status==='LIMITED'){if(tracking!==status)record('tracking',status);tracking=status;}},onFrame:()=>{try{frame();}catch(e){fail(e);}},onError:fail});adapter.start();};
 window.addEventListener('pagehide',end);
