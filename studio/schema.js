@@ -55,36 +55,22 @@ export function requiredAssets(scene) {
   objects.forEach(o=>{set.add(o.src); if(o.fallback)set.add(o.fallback.src);});
   return [...set];
 }
-
 function validBase64(value) {
-  if (
-    !value.length ||
-    value.length % 4 !== 0 ||
-    value.length > Math.ceil(MAX_ASSET_BYTES / 3) * 4
-  ) return false;
-
-  const padding = value.endsWith('==') ? 2
-    : value.endsWith('=') ? 1 : 0;
+  if (!value.length || value.length % 4 !== 0 || value.length > Math.ceil(MAX_ASSET_BYTES / 3) * 4) return false;
+  const padding = value.endsWith('==') ? 2 : value.endsWith('=') ? 1 : 0;
   const end = value.length - padding;
-
   for (let i = 0; i < end; i++) {
     const c = value.charCodeAt(i);
-    const allowed =
-      (c >= 65 && c <= 90) ||
-      (c >= 97 && c <= 122) ||
-      (c >= 48 && c <= 57) ||
-      c === 43 || c === 47;
-    if (!allowed) return false;
+    if (!((c >= 65 && c <= 90) || (c >= 97 && c <= 122) || (c >= 48 && c <= 57) || c === 43 || c === 47)) return false;
   }
   return true;
 }
-
 export function validatePackage(scene, files, options) {
   validateScene(scene, options);
   if (!Array.isArray(files) || files.length>160) throw new Error('ファイル数が不正です。');
   const map=new Map(); let total=0;
   for(const file of files) {
-    if(!assetPath(file.name)||map.has(file.name)||typeof file.content!=='string'||!validBase64(file.content)) throw new Error('ファイルが不正です。');
+    if(!assetPath(file.name)||map.has(file.name)||typeof file.content!=='string'|| !validBase64(file.content)) throw new Error('ファイルが不正です。');
     const size=file.content.length*3/4 - (file.content.endsWith('==')?2:file.content.endsWith('=')?1:0);
     if(size<1||size>MAX_ASSET_BYTES)throw new Error('各ファイルは24MB以内にしてください。');
     total+=size;map.set(file.name,file);
@@ -107,6 +93,8 @@ export function defaultInteraction(){return {action:'none',clip:'all',loop:false
 function namedId(item,seen,label){if(!sceneId(item?.id)||seen.has(item.id)||typeof item.name!=='string'||item.name.length>100)throw new Error(label+'ID・名前が不正・重複しています。');seen.add(item.id);}
 export function validateProject(p,{draft=false}={}){
   if(!p||p.version!==2||!sceneId(p.id)||typeof p.title!=='string'||p.title.length>100||typeof p.revision!=='string'||!/^[a-zA-Z0-9-]{1,80}$/.test(p.revision))throw new Error('プロジェクト形式が不正です。');
+  if(p.experienceMode!==undefined&&!['marker','space'].includes(p.experienceMode))throw new Error('体験モードが不正です。');
+  if(p.spaceScale!==undefined&&(!Number.isFinite(p.spaceScale)||p.spaceScale<.01||p.spaceScale>10))throw new Error('空間配置の全体倍率は0.01〜10です。');
   if(!assetPath(p.trackingTarget)||!p.trackingTarget.endsWith('.mind'))throw new Error('複数マーカーの認識データが必要です。');
   if(!Array.isArray(p.markers)||p.markers.length<(draft?0:1)||p.markers.length>8)throw new Error('マーカーは1〜8枚です。');
   if(![1,2].includes(p.maxTrack)||p.maxTrack>Math.max(1,p.markers.length))throw new Error('同時追跡枚数が不正です。');

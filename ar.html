@@ -1,45 +1,17 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>ARARART — マーカー体験</title><link rel="stylesheet" href="./studio/style.css"><script type="importmap">{"imports":{"three":"./vendor/three/build/three.module.js","three/addons/":"./vendor/three/examples/jsm/"}}</script></head><body><div id="stage" class="ar-stage"></div><section class="ar-ui"><small>ARARART</small> <strong id="title">ARARART</strong> <small>PLAYER 0.8.8</small><small id="tracking" aria-live="polite"></small><p id="status" role="status">作品を読み込んでいます。</p><p id="error"></p><button id="start" class="primary" disabled>ARを開始</button><button id="resume" hidden>動画を再生</button><button id="stop" hidden>終了</button><button id="mute">音 ON</button><span id="scene-label"></span><details><summary>シーン・マーカー</summary><select id="scenes" aria-label="シーン選択"></select><button id="audio-test" hidden>音声をテスト</button><button id="test-reaction">作品の反応を確認</button><div id="markers"></div></details></section><script type="module" src="./studio/player.js"></script><style>
-#ar-ui-toggle {
-  position: fixed;
-  z-index: 10;
-  top: max(12px, env(safe-area-inset-top));
-  right: 12px;
-  min-height: 44px;
-  padding: 10px 14px;
-  border: 1px solid #446064;
-  border-radius: 10px;
-  background: #112126df;
-  color: #e7eeed;
-  font: inherit;
-  touch-action: manipulation;
-}
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>ARARART — マーカー体験</title><link rel="stylesheet" href="./studio/style.css"><script type="importmap">{"imports":{"three":"./vendor/three/build/three.module.js","three/addons/":"./vendor/three/examples/jsm/"}}</script></head><body><div id="stage" class="ar-stage"></div><section id="ar-controls" class="ar-ui"><small>ARARART</small> <strong id="title">ARARART</strong> <small>PLAYER 0.9.0</small><small id="tracking" aria-live="polite"></small><p id="status" role="status">作品を読み込んでいます。</p><p id="error"></p><button id="start" class="primary" disabled>ARを開始</button><button id="resume" hidden>動画を再生</button><button id="stop" hidden>終了</button><button id="mute">音 ON</button><span id="scene-label"></span><div id="space-controls" hidden><button id="space-place" class="primary" disabled>作品群をここに置く</button><button id="space-reset" disabled>置き直す</button><button id="space-diagnostic">空間配置の診断を保存</button><p>特徴点への配置です。平面検出・実寸・終了後の位置復元は未対応です。</p></div><details><summary>シーン・マーカー</summary><select id="scenes" aria-label="シーン選択"></select><button id="audio-test" hidden>音声をテスト</button><button id="test-reaction">作品の反応を確認</button><div id="markers"></div></details></section><style>
+#ar-ui-toggle{position:fixed;z-index:6;top:max(12px,env(safe-area-inset-top));right:12px;min-height:44px;background:#112126df;color:#e7eeed;touch-action:manipulation}
 </style>
-
-<button
-  id="ar-ui-toggle"
-  type="button"
-  aria-controls="ar-controls"
-  aria-expanded="true"
->操作を隠す</button>
-
+<button id="ar-ui-toggle" type="button" aria-controls="ar-controls" aria-expanded="true">操作を隠す</button>
 <script>
-(() => {
-  const panel = document.querySelector('.ar-ui');
-  const toggle = document.getElementById('ar-ui-toggle');
-  if (!panel) {
-    toggle.hidden = true;
-    return;
-  }
-
-  panel.id = 'ar-controls';
-
-  toggle.addEventListener('click', event => {
-    event.stopPropagation();
-    panel.hidden = !panel.hidden;
-    toggle.setAttribute('aria-expanded', String(!panel.hidden));
-    toggle.textContent = panel.hidden
-      ? '操作を表示'
-      : '操作を隠す';
-  });
+(()=>{
+ const panel=document.getElementById('ar-controls');
+ const toggle=document.getElementById('ar-ui-toggle');
+ toggle.addEventListener('click',event=>{
+  event.stopPropagation();
+  panel.hidden=!panel.hidden;
+  toggle.setAttribute('aria-expanded',String(!panel.hidden));
+  toggle.textContent=panel.hidden?'操作を表示':'操作を隠す';
+ });
 })();
-</script></body></html>
+</script>
+<script type="module" src="./studio/player.js"></script></body></html>

@@ -7,8 +7,7 @@ if (!existsSync('dist/index.html')) {
 }
 
 copyFileSync('public/space.html', 'dist/space.html');
-
-copyFileSync('public/space-test.html', 'dist/space-test.html');
+if(existsSync('public/space-test.html'))copyFileSync('public/space-test.html','dist/space-test.html');
 
 const model = 'dist/artworks/sample.glb';
 if (!existsSync(model)) {
