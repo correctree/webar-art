@@ -33,3 +33,16 @@ export function aimLayout(stage,canvas,viewport,panelTop=Infinity,toggleBottom=0
  const screen={x:left+visible.width*target.x,y:top+visible.height*target.y};
  return {screen,aim:{x:(screen.x-canvas.left)/canvas.width,y:(screen.y-canvas.top)/canvas.height},visible};
 }
+
+// Require a continuous cluster, not merely elapsed time since one hit. Units
+// follow the responsive engine; this threshold does not represent centimeters.
+export function stablePlacement(previous,position,type,now){
+ const duration=1500,radius=.04,gap=250;
+ const valid=previous&&previous.type===type&&now-previous.last<=gap&&Math.hypot(...position.map((v,i)=>v-previous.origin[i]))<=radius;
+ const state=valid?previous:{type,origin:[...position],since:now,last:now,samples:[]};
+ state.last=now;state.samples.push({time:now,position:[...position]});
+ state.samples=state.samples.filter(s=>now-s.time<=duration+250);
+ const mean=position.map((_,i)=>state.samples.reduce((sum,s)=>sum+s.position[i],0)/state.samples.length);
+ const spread=Math.max(...state.samples.map(s=>Math.hypot(...s.position.map((v,i)=>v-mean[i]))));
+ return {state,mean,spread,ready:now-state.since>=duration&&state.samples.length>=12&&spread<=radius};
+}

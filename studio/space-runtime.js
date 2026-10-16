@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import {loadEngine} from '../src/engine-loader.js';
 import {XRAdapter} from '../src/xr-adapter.js';
-import {placementCheck,SPACE_SCALE,aimLayout,projectedCandidateCheck,pairDistances,pairDrift} from './space-policy.js';
+import {placementCheck,SPACE_SCALE,aimLayout,stablePlacement,projectedCandidateCheck,pairDistances,pairDrift} from './space-policy.js';
 
 // Keeps the existing media/behavior player on the same scene graph. The engine
 // owns the camera and renderer; artwork transforms are never rewritten per frame.
@@ -12,8 +12,8 @@ export class SpaceRuntime {
   this.anchor=new THREE.Group();this.contentRoot=new THREE.Group();
   this.contentRoot.rotation.x=-Math.PI/2;this.anchor.scale.setScalar(scale);
   this.anchor.add(this.contentRoot);this.scene.add(this.anchor);this.anchor.visible=false;
-  this.canvas=document.createElement('canvas');this.canvas.style.cssText='width:100%;height:100%;display:block';container.append(this.canvas);
-  this.resize=()=>{const d=Math.min(devicePixelRatio||1,2);this.canvas.width=Math.round(container.clientWidth*d);this.canvas.height=Math.round(container.clientHeight*d);};
+  this.canvas=document.createElement('canvas');this.canvas.className='space-camera';this.canvas.style.cssText='position:absolute;left:0;top:0;width:100%!important;height:100%!important;display:block';container.append(this.canvas);
+  this.resize=()=>{if(this.running)return;this.canvas.width=Math.round(container.clientWidth);this.canvas.height=Math.round(container.clientHeight);};
   this.resize();window.addEventListener('resize',this.resize);
   this.renderer={domElement:this.canvas,shadowMap:{enabled:false,type:THREE.PCFShadowMap},setAnimationLoop:fn=>{this.loop=fn;},render:()=>{}};
   this.aimElement=document.getElementById?.('space-aim');this.aimLabel=document.getElementById?.('space-aim-label');this.samples=[];this.events=[];this.tracking='LIMITED';this.placed=false;this.running=false;this.generation=0;
@@ -44,7 +44,7 @@ export class SpaceRuntime {
    const guarded={...this.engine,run:options=>{const result=this.engine.run(options);result?.catch?.(fail);return result;}};
    this.adapter=new XRAdapter(guarded,{canvas:this.canvas,mode:'world',onScene:context=>{
     if(generation!==this.generation)return;
-    this.camera=context.camera;this.actualScene=context.scene;this.actualScene.add(this.scene);
+    this.actualRenderer=context.renderer;this.camera=context.camera;this.actualScene=context.scene;this.actualScene.add(this.scene);
     context.renderer.shadowMap.enabled=this.renderer.shadowMap.enabled;context.renderer.shadowMap.type=this.renderer.shadowMap.type;
     this.reticle?.geometry.dispose();this.reticle?.material.dispose();this.reticle?.removeFromParent();
     this.reticle=new THREE.Mesh(new THREE.RingGeometry(.075,.095,48).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({color:0xffcd72,side:THREE.DoubleSide,depthTest:false}));
@@ -52,7 +52,7 @@ export class SpaceRuntime {
    },onStatus:status=>{if(!['NORMAL','LIMITED'].includes(status))return;if(this.tracking!==status){this.tracking=status;this.record('tracking',status);if(this.placed)this.onTracking?.(status);}},onFrame:()=>{try{this.frame();}catch(e){fail(e);}},onError:fail});this.adapter.start();
   });
  }
- clearCandidate(){this.candidate=null;this.steadyAnchor=null;this.candidateType=null;this.candidateAt=0;if(this.reticle)this.reticle.visible=false;this.steadyMean=null;this.steadyCount=0;}
+ clearCandidate(){this.candidate=null;this.steadyAnchor=null;this.candidateType=null;this.candidateAt=0;if(this.reticle)this.reticle.visible=false;this.steadyMean=null;this.steadyCount=0;this.stability=null;}
  frame(){
   if(!this.running)return;const now=performance.now();this.updateAim(false);
   if(!this.placed){
@@ -65,9 +65,10 @@ export class SpaceRuntime {
     if(now-(this.lastCheck||0)>1500){this.lastCheck=now;this.record('candidates',checks.map(c=>({type:c.h.type,position:c.p.toArray(),reason:c.reason})));}
     if(!hit){this.clearCandidate();this.onStatus?.('前方の配置候補を探しています。模様のある床や机へ向けてください。',false);}
     else {
-     if(!this.steadyAnchor||this.candidateType!==hit.h.type||this.steadyAnchor.distanceTo(hit.p)>.08){this.steadyAnchor=hit.p.clone();this.steadySince=now;this.steadyMean=hit.p.clone();this.steadyCount=0;}
-     this.steadyCount++;this.steadyMean.lerp(hit.p,1/this.steadyCount);this.candidateType=hit.h.type;this.reticle.visible=false;
-     const ready=now-this.steadySince>=900&&this.check(this.steadyMean).accepted;this.candidate=ready?this.steadyMean.clone():null;this.updateAim(ready);this.candidateAt=now;
+     const cluster=stablePlacement(this.stability,hit.p.toArray(),hit.h.type,now);this.stability=cluster.state;
+     this.steadyMean=new THREE.Vector3(...cluster.mean);this.candidateType=hit.h.type;this.reticle.visible=false;
+     const ready=cluster.ready&&this.check(this.steadyMean).accepted;this.candidate=ready?this.steadyMean.clone():null;this.updateAim(ready);this.candidateAt=now;
+
      this.reticle.material.color.set(ready?0xa4efc9:0xffcd72);
      this.onStatus?.(ready?'特徴点の目印に作品群を配置できます（平面未確認）。':'目印を安定させています。カメラを少し止めてください。',ready);
     }
@@ -87,6 +88,6 @@ export class SpaceRuntime {
   if(!this.placed)return;this.scene.updateWorldMatrix(true,true);const objects=this.inspectObjects?.()||[],pairs=pairDistances(objects);if(!this.baselinePairs)this.baselinePairs=pairs;const drift=pairDrift(this.baselinePairs,pairs);const camera=this.camera.getWorldPosition(new THREE.Vector3()),anchor=this.anchor.getWorldPosition(new THREE.Vector3());
   this.samples.push({time:new Date().toISOString(),reason,tracking:this.tracking,objects,pairDistances:pairs,maxPairDistanceChange:drift,cameraPosition:camera.toArray(),anchorPosition:anchor.toArray(),distance:camera.distanceTo(anchor),anchorInCameraSpace:this.relative(anchor).toArray()});if(this.samples.length>240)this.samples.shift();
  }
- diagnostic(){this.capture('export');return {version:'studio-space-0.9.2',viewport:this.viewportDiagnostic,units:'responsive engine units; not guaranteed meters',poseSampleIntervalMs:500,poseSampleLimit:240,placed:this.placed,tracking:this.tracking,scale:this.scale,project:this.projectSummary,animationPaused:!!this.debugPaused,events:this.events,poseSamples:this.samples};}
+ diagnostic(){this.capture('export');return {version:'studio-space-0.9.3',viewport:this.viewportDiagnostic,canvasBuffer:{width:this.canvas.width,height:this.canvas.height,pixelRatio:this.actualRenderer?.getPixelRatio?.()},placementPolicy:{durationMs:1500,maxClusterRadius:.04,minSamples:12,maxSampleGapMs:250},units:'responsive engine units; not guaranteed meters',poseSampleIntervalMs:500,poseSampleLimit:240,placed:this.placed,tracking:this.tracking,scale:this.scale,project:this.projectSummary,animationPaused:!!this.debugPaused,events:this.events,poseSamples:this.samples};}
  stop(){this.generation++;this.running=false;this.pendingReject?.(new Error('空間ARの開始を中止しました。'));this.pendingReject=null;this.adapter?.stop();this.anchor.visible=false;this.placed=false;this.clearCandidate();this.loop=null;if(this.aimElement)this.aimElement.hidden=true;}
 }
