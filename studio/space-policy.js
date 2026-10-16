@@ -9,3 +9,16 @@ export function placementCheck(relative){
  return {accepted:reason==='ACCEPTED',reason,distance};
 }
 export function spaceGate(sceneId,currentSceneId,placed,tracking){return sceneId===currentSceneId&&placed&&tracking==='NORMAL';}
+// Aim midway inside the camera area above the controls, in CSS viewport pixels.
+export function aimPoint(rect,panelTop=Infinity,toggleBottom=0){
+ const top=Math.max(rect.top+70,toggleBottom+16),bottom=Math.min(rect.top+rect.height-90,panelTop-28);
+ const y=bottom-top>=80?(top+bottom)/2:rect.top+rect.height*.28;
+ return {x:.5,y:Math.max(.12,Math.min(.7,(y-rect.top)/rect.height))};
+}
+export function projectedCandidateCheck(ndc,aim){
+ if(![ndc.x,ndc.y,ndc.z].every(Number.isFinite)||ndc.z< -1||ndc.z>1)return false;
+ const x=(ndc.x+1)/2,y=(1-ndc.y)/2;
+ return x>.08&&x<.92&&y>.08&&y<.85&&Math.hypot(x-aim.x,y-aim.y)<.12;
+}
+export function pairDistances(objects){const result=[];for(let i=0;i<objects.length;i++)for(let j=i+1;j<objects.length;j++)result.push({ids:[objects[i].id,objects[j].id],distance:Math.hypot(...objects[i].worldPosition.map((v,k)=>v-objects[j].worldPosition[k]))});return result;}
+export function pairDrift(previous,current){const map=new Map(previous.map(p=>[p.ids.join('|'),p.distance]));let maximum=0;for(const p of current){const before=map.get(p.ids.join('|'));if(before!==undefined)maximum=Math.max(maximum,Math.abs(p.distance-before));}return maximum;}
