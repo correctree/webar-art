@@ -28,3 +28,16 @@ test('placement needs a dense continuous cluster and resets on jumps, gaps and t
  assert.equal(stablePlacement(state,[0,0,-2],'DETECTED_SURFACE',1550).ready,false);
  let sparse=stablePlacement(null,[0,0,-2],'FEATURE_POINT',0);sparse=stablePlacement(sparse.state,[0,0,-2],'FEATURE_POINT',1500);assert.equal(sparse.ready,false);
 });
+test('aim UI shows stability progress and enables placement only when ready',async()=>{
+ const {readFile}=await import('node:fs/promises'),vm=await import('node:vm');
+ const rect={left:0,top:0,width:390,height:740},elements={
+  'space-aim-progress':{value:0},'space-aim-place':{disabled:true,textContent:''}
+ };
+ const ctx={aimLayout,window:{innerWidth:390,innerHeight:740},document:{getElementById:id=>elements[id]}};
+ vm.createContext(ctx);const source=await readFile(new URL('../studio/space-runtime.js',import.meta.url),'utf8');vm.runInContext(source.replace(/^import .*;\n/gm,'').replace('export class SpaceRuntime','class SpaceRuntime')+';globalThis.Runtime=SpaceRuntime;',ctx);
+ const r=Object.create(ctx.Runtime.prototype);Object.assign(r,{canvas:{getBoundingClientRect:()=>rect},container:{getBoundingClientRect:()=>rect},running:true,placed:false,aimElement:{style:{},classList:{toggle(){}}},aimLabel:{textContent:''}});
+ r.updateAim(false,.5);assert.match(r.aimLabel.textContent,/安定確認中 50%/);assert.equal(elements['space-aim-progress'].value,50);assert.equal(elements['space-aim-place'].disabled,true);
+ r.updateAim(true,1);assert.equal(elements['space-aim-place'].disabled,false);assert.equal(elements['space-aim-place'].textContent,'ここに配置');
+ r.updateAim(false,0);assert.equal(elements['space-aim-place'].disabled,true);assert.equal(elements['space-aim-progress'].value,0);
+ r.placed=true;r.updateAim(false);assert.equal(r.aimElement.hidden,true);
+});

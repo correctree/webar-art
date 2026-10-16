@@ -26,13 +26,17 @@ export class SpaceRuntime {
   const projected=position.clone().project(this.camera);
   return projectedCandidateCheck(projected,this.aim||{x:.5,y:.5})?{...gate,projected:projected.toArray()}:{...gate,accepted:false,reason:'OUTSIDE_AIM',projected:projected.toArray()};
  }
- updateAim(ready=false){
+ updateAim(ready=false,progress=0){
   const rect=this.canvas.getBoundingClientRect(),panel=document.getElementById('ar-controls'),toggle=document.getElementById('ar-ui-toggle');
   const v=window.visualViewport,viewport={left:v?.offsetLeft||0,top:v?.offsetTop||0,width:v?.width||window.innerWidth,height:v?.height||window.innerHeight};
   const layout=aimLayout(this.container.getBoundingClientRect(),rect,viewport,panel&&!panel.hidden?panel.getBoundingClientRect().top:Infinity,toggle?.getBoundingClientRect().bottom||0);
   this.aim=layout.aim;this.viewportDiagnostic={viewport,stage:this.container.getBoundingClientRect().toJSON?.()||layout.visible,canvas:{left:rect.left,top:rect.top,width:rect.width,height:rect.height},screen:layout.screen,aim:this.aim};
   if(this.aimElement){this.aimElement.hidden=!this.running||this.placed;this.aimElement.style.left=layout.screen.x+'px';this.aimElement.style.top=layout.screen.y+'px';this.aimElement.classList.toggle('ready',ready);}
-  if(this.aimLabel)this.aimLabel.textContent=ready?'この照準の位置に置けます':'床や机をゆっくり映してください';
+  const percent=ready?100:Math.min(99,Math.floor(progress*100));
+  if(this.aimLabel)this.aimLabel.textContent=ready?'配置できます':progress>0?'安定確認中 '+percent+'% — 少し静止してください':'配置場所を探しています';
+  const bar=document.getElementById('space-aim-progress'),button=document.getElementById('space-aim-place');
+  if(bar)bar.value=percent;
+  if(button){button.disabled=!ready;button.textContent=ready?'ここに配置':'安定を待っています';}
  }
  record(type,value){this.events.push({time:new Date().toISOString(),type,value});if(this.events.length>150)this.events.shift();}
  async start(){
@@ -67,7 +71,7 @@ export class SpaceRuntime {
     else {
      const cluster=stablePlacement(this.stability,hit.p.toArray(),hit.h.type,now);this.stability=cluster.state;
      this.steadyMean=new THREE.Vector3(...cluster.mean);this.candidateType=hit.h.type;this.reticle.visible=false;
-     const ready=cluster.ready&&this.check(this.steadyMean).accepted;this.candidate=ready?this.steadyMean.clone():null;this.updateAim(ready);this.candidateAt=now;
+     const ready=cluster.ready&&this.check(this.steadyMean).accepted;this.candidate=ready?this.steadyMean.clone():null;this.updateAim(ready,Math.max(.01,Math.min(1,(now-cluster.state.since)/1500)));this.candidateAt=now;
 
      this.reticle.material.color.set(ready?0xa4efc9:0xffcd72);
      this.onStatus?.(ready?'特徴点の目印に作品群を配置できます（平面未確認）。':'目印を安定させています。カメラを少し止めてください。',ready);
@@ -93,6 +97,6 @@ export class SpaceRuntime {
   if(!this.placed)return;this.scene.updateWorldMatrix(true,true);const objects=this.inspectObjects?.()||[],pairs=pairDistances(objects);if(!this.baselinePairs)this.baselinePairs=pairs;const drift=pairDrift(this.baselinePairs,pairs);const camera=this.camera.getWorldPosition(new THREE.Vector3()),anchor=this.anchor.getWorldPosition(new THREE.Vector3());
   this.samples.push({time:new Date().toISOString(),reason,tracking:this.tracking,objects,pairDistances:pairs,maxPairDistanceChange:drift,cameraPosition:camera.toArray(),anchorPosition:anchor.toArray(),distance:camera.distanceTo(anchor),anchorInCameraSpace:this.relative(anchor).toArray()});if(this.samples.length>240)this.samples.shift();
  }
- diagnostic(){this.capture('export');return {version:'studio-space-0.9.4',viewport:this.viewportDiagnostic,canvasBuffer:{width:this.canvas.width,height:this.canvas.height,pixelRatio:this.actualRenderer?.getPixelRatio?.()},placementPolicy:{durationMs:1500,maxClusterRadius:.04,minSamples:12,maxSampleGapMs:250},units:'responsive engine units; not guaranteed meters',poseSampleIntervalMs:500,poseSampleLimit:240,placed:this.placed,tracking:this.tracking,scale:this.scale,baseScale:this.baseScale,displayMultiplier:this.displayMultiplier,project:this.projectSummary,animationPaused:!!this.debugPaused,events:this.events,poseSamples:this.samples};}
+ diagnostic(){this.capture('export');return {version:'studio-space-0.9.5',viewport:this.viewportDiagnostic,canvasBuffer:{width:this.canvas.width,height:this.canvas.height,pixelRatio:this.actualRenderer?.getPixelRatio?.()},placementPolicy:{durationMs:1500,maxClusterRadius:.04,minSamples:12,maxSampleGapMs:250},units:'responsive engine units; not guaranteed meters',poseSampleIntervalMs:500,poseSampleLimit:240,placed:this.placed,tracking:this.tracking,scale:this.scale,baseScale:this.baseScale,displayMultiplier:this.displayMultiplier,project:this.projectSummary,animationPaused:!!this.debugPaused,events:this.events,poseSamples:this.samples};}
  stop(){this.generation++;this.running=false;this.pendingReject?.(new Error('空間ARの開始を中止しました。'));this.pendingReject=null;this.adapter?.stop();this.anchor.visible=false;this.placed=false;this.clearCandidate();this.loop=null;if(this.aimElement)this.aimElement.hidden=true;}
 }
