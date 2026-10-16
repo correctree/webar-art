@@ -7,7 +7,7 @@ import {placementCheck,SPACE_SCALE,aimLayout,stablePlacement,projectedCandidateC
 // owns the camera and renderer; artwork transforms are never rewritten per frame.
 export class SpaceRuntime {
  constructor({container,scale=SPACE_SCALE,onPlacement,onTracking,onError,onStatus}){
-  Object.assign(this,{container,onPlacement,onTracking,onError,onStatus});this.scale=scale;
+  Object.assign(this,{container,onPlacement,onTracking,onError,onStatus});this.scale=scale;this.baseScale=scale;this.displayMultiplier=1;
   this.scene=new THREE.Scene();this.camera=new THREE.PerspectiveCamera();
   this.anchor=new THREE.Group();this.contentRoot=new THREE.Group();
   this.contentRoot.rotation.x=-Math.PI/2;this.anchor.scale.setScalar(scale);
@@ -83,11 +83,16 @@ export class SpaceRuntime {
   this.anchor.position.copy(this.candidate);this.anchor.visible=true;this.placed=true;
   this.record('placed',{position:this.anchor.position.toArray(),scale:this.scale,type:this.candidateType});this.clearCandidate();this.onPlacement?.(true);if(this.aimElement)this.aimElement.hidden=true;this.capture('placed');return true;
  }
+ setDisplayMultiplier(value){
+  if(!Number.isFinite(value)||value<.25||value>8)return false;
+  this.displayMultiplier=value;this.scale=this.baseScale*value;this.anchor.scale.setScalar(this.scale);
+  this.baselinePairs=null;this.record('display-scale',{multiplier:value,scale:this.scale});return true;
+ }
  reset(){this.placed=false;this.anchor.visible=false;this.clearCandidate();this.baselinePairs=null;this.record('reset',{});this.onPlacement?.(false);}
  capture(reason){
   if(!this.placed)return;this.scene.updateWorldMatrix(true,true);const objects=this.inspectObjects?.()||[],pairs=pairDistances(objects);if(!this.baselinePairs)this.baselinePairs=pairs;const drift=pairDrift(this.baselinePairs,pairs);const camera=this.camera.getWorldPosition(new THREE.Vector3()),anchor=this.anchor.getWorldPosition(new THREE.Vector3());
   this.samples.push({time:new Date().toISOString(),reason,tracking:this.tracking,objects,pairDistances:pairs,maxPairDistanceChange:drift,cameraPosition:camera.toArray(),anchorPosition:anchor.toArray(),distance:camera.distanceTo(anchor),anchorInCameraSpace:this.relative(anchor).toArray()});if(this.samples.length>240)this.samples.shift();
  }
- diagnostic(){this.capture('export');return {version:'studio-space-0.9.3',viewport:this.viewportDiagnostic,canvasBuffer:{width:this.canvas.width,height:this.canvas.height,pixelRatio:this.actualRenderer?.getPixelRatio?.()},placementPolicy:{durationMs:1500,maxClusterRadius:.04,minSamples:12,maxSampleGapMs:250},units:'responsive engine units; not guaranteed meters',poseSampleIntervalMs:500,poseSampleLimit:240,placed:this.placed,tracking:this.tracking,scale:this.scale,project:this.projectSummary,animationPaused:!!this.debugPaused,events:this.events,poseSamples:this.samples};}
+ diagnostic(){this.capture('export');return {version:'studio-space-0.9.4',viewport:this.viewportDiagnostic,canvasBuffer:{width:this.canvas.width,height:this.canvas.height,pixelRatio:this.actualRenderer?.getPixelRatio?.()},placementPolicy:{durationMs:1500,maxClusterRadius:.04,minSamples:12,maxSampleGapMs:250},units:'responsive engine units; not guaranteed meters',poseSampleIntervalMs:500,poseSampleLimit:240,placed:this.placed,tracking:this.tracking,scale:this.scale,baseScale:this.baseScale,displayMultiplier:this.displayMultiplier,project:this.projectSummary,animationPaused:!!this.debugPaused,events:this.events,poseSamples:this.samples};}
  stop(){this.generation++;this.running=false;this.pendingReject?.(new Error('空間ARの開始を中止しました。'));this.pendingReject=null;this.adapter?.stop();this.anchor.visible=false;this.placed=false;this.clearCandidate();this.loop=null;if(this.aimElement)this.aimElement.hidden=true;}
 }
