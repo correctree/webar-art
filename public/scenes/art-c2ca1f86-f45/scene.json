@@ -2,7 +2,7 @@
   "version": 2,
   "id": "art-c2ca1f86-f45",
   "title": "ARARART-001",
-  "revision": "417c88d8-eaec-4177-a31d-fcb038c3c4b4",
+  "revision": "5552c6dd-583b-4d20-b55d-e0035962bd76",
   "trackingTarget": "449445cf-946e-42b7-8d9c-a1153b81e493.mind",
   "maxTrack": 1,
   "markers": [
@@ -14,7 +14,13 @@
       "targetIndex": 0
     }
   ],
-  "sounds": [],
+  "sounds": [
+    {
+      "id": "afba26c4-de07-4383-94a5-9345282cc9e7",
+      "name": "01.mp3",
+      "src": "afba26c4-de07-4383-94a5-9345282cc9e7.mp3"
+    }
+  ],
   "initialSceneId": "scene-1",
   "scenes": [
     {
@@ -106,7 +112,7 @@
         {
           "scaleLinked": true,
           "tapEnabled": true,
-          "shadow": false,
+          "shadow": true,
           "id": "37dc5818-e324-46c3-a9e5-3850dfaeaf1a",
           "kind": "sprite",
           "src": "e48d7ad8-3e91-4880-a130-c3fa7c3aead0.png",
@@ -119,7 +125,7 @@
             "loop": true,
             "effect": "none",
             "duration": 1,
-            "soundId": null,
+            "soundId": "afba26c4-de07-4383-94a5-9345282cc9e7",
             "volume": 1,
             "nextSceneId": null,
             "delay": 1,
@@ -133,7 +139,7 @@
                   "axis": "y",
                   "angle": 360,
                   "duration": 1,
-                  "repeat": 10,
+                  "repeat": 3,
                   "pingpong": false
                 }
               ]
