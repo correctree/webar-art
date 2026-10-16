@@ -49,7 +49,7 @@ export class SpaceRuntime {
    this.adapter=new XRAdapter(guarded,{canvas:this.canvas,mode:'world',onScene:context=>{
     if(generation!==this.generation)return;
     this.actualRenderer=context.renderer;this.camera=context.camera;this.actualScene=context.scene;this.actualScene.add(this.scene);
-    context.renderer.shadowMap.enabled=this.renderer.shadowMap.enabled;context.renderer.shadowMap.type=this.renderer.shadowMap.type;
+    context.renderer.localClippingEnabled=true;context.renderer.shadowMap.enabled=this.renderer.shadowMap.enabled;context.renderer.shadowMap.type=this.renderer.shadowMap.type;
     this.reticle?.geometry.dispose();this.reticle?.material.dispose();this.reticle?.removeFromParent();
     this.reticle=new THREE.Mesh(new THREE.RingGeometry(.075,.095,48).rotateX(-Math.PI/2),new THREE.MeshBasicMaterial({color:0xffcd72,side:THREE.DoubleSide,depthTest:false}));
     this.reticle.visible=false;this.reticle.renderOrder=10;this.actualScene.add(this.reticle);this.pendingReject=null;resolve();
@@ -97,6 +97,6 @@ export class SpaceRuntime {
   if(!this.placed)return;this.scene.updateWorldMatrix(true,true);const objects=this.inspectObjects?.()||[],pairs=pairDistances(objects);if(!this.baselinePairs)this.baselinePairs=pairs;const drift=pairDrift(this.baselinePairs,pairs);const camera=this.camera.getWorldPosition(new THREE.Vector3()),anchor=this.anchor.getWorldPosition(new THREE.Vector3());
   this.samples.push({time:new Date().toISOString(),reason,tracking:this.tracking,objects,pairDistances:pairs,maxPairDistanceChange:drift,cameraPosition:camera.toArray(),anchorPosition:anchor.toArray(),distance:camera.distanceTo(anchor),anchorInCameraSpace:this.relative(anchor).toArray()});if(this.samples.length>240)this.samples.shift();
  }
- diagnostic(){this.capture('export');return {version:'studio-space-0.9.5',viewport:this.viewportDiagnostic,canvasBuffer:{width:this.canvas.width,height:this.canvas.height,pixelRatio:this.actualRenderer?.getPixelRatio?.()},placementPolicy:{durationMs:1500,maxClusterRadius:.04,minSamples:12,maxSampleGapMs:250},units:'responsive engine units; not guaranteed meters',poseSampleIntervalMs:500,poseSampleLimit:240,placed:this.placed,tracking:this.tracking,scale:this.scale,baseScale:this.baseScale,displayMultiplier:this.displayMultiplier,project:this.projectSummary,animationPaused:!!this.debugPaused,events:this.events,poseSamples:this.samples};}
+ diagnostic(){this.capture('export');return {version:'studio-space-0.10.0',viewport:this.viewportDiagnostic,canvasBuffer:{width:this.canvas.width,height:this.canvas.height,pixelRatio:this.actualRenderer?.getPixelRatio?.()},placementPolicy:{durationMs:1500,maxClusterRadius:.04,minSamples:12,maxSampleGapMs:250},units:'responsive engine units; not guaranteed meters',poseSampleIntervalMs:500,poseSampleLimit:240,placed:this.placed,tracking:this.tracking,scale:this.scale,baseScale:this.baseScale,displayMultiplier:this.displayMultiplier,project:this.projectSummary,animationPaused:!!this.debugPaused,events:this.events,poseSamples:this.samples};}
  stop(){this.generation++;this.running=false;this.pendingReject?.(new Error('空間ARの開始を中止しました。'));this.pendingReject=null;this.adapter?.stop();this.anchor.visible=false;this.placed=false;this.clearCandidate();this.loop=null;if(this.aimElement)this.aimElement.hidden=true;}
 }
