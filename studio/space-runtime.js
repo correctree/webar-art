@@ -1,13 +1,13 @@
 import * as THREE from 'three';
 import {loadEngine} from '../src/engine-loader.js';
 import {XRAdapter} from '../src/xr-adapter.js';
-import {placementCheck,SPACE_SCALE,aimPoint,projectedCandidateCheck,pairDistances,pairDrift} from './space-policy.js';
+import {placementCheck,SPACE_SCALE,aimLayout,projectedCandidateCheck,pairDistances,pairDrift} from './space-policy.js';
 
 // Keeps the existing media/behavior player on the same scene graph. The engine
 // owns the camera and renderer; artwork transforms are never rewritten per frame.
 export class SpaceRuntime {
  constructor({container,scale=SPACE_SCALE,onPlacement,onTracking,onError,onStatus}){
-  Object.assign(this,{onPlacement,onTracking,onError,onStatus});this.scale=scale;
+  Object.assign(this,{container,onPlacement,onTracking,onError,onStatus});this.scale=scale;
   this.scene=new THREE.Scene();this.camera=new THREE.PerspectiveCamera();
   this.anchor=new THREE.Group();this.contentRoot=new THREE.Group();
   this.contentRoot.rotation.x=-Math.PI/2;this.anchor.scale.setScalar(scale);
@@ -28,8 +28,10 @@ export class SpaceRuntime {
  }
  updateAim(ready=false){
   const rect=this.canvas.getBoundingClientRect(),panel=document.getElementById('ar-controls'),toggle=document.getElementById('ar-ui-toggle');
-  this.aim=aimPoint(rect,panel&&!panel.hidden?panel.getBoundingClientRect().top:Infinity,toggle?.getBoundingClientRect().bottom||0);
-  if(this.aimElement){this.aimElement.hidden=!this.running||this.placed;this.aimElement.style.left=(rect.left+rect.width*this.aim.x)+'px';this.aimElement.style.top=(rect.top+rect.height*this.aim.y)+'px';this.aimElement.classList.toggle('ready',ready);}
+  const v=window.visualViewport,viewport={left:v?.offsetLeft||0,top:v?.offsetTop||0,width:v?.width||window.innerWidth,height:v?.height||window.innerHeight};
+  const layout=aimLayout(this.container.getBoundingClientRect(),rect,viewport,panel&&!panel.hidden?panel.getBoundingClientRect().top:Infinity,toggle?.getBoundingClientRect().bottom||0);
+  this.aim=layout.aim;this.viewportDiagnostic={viewport,stage:this.container.getBoundingClientRect().toJSON?.()||layout.visible,canvas:{left:rect.left,top:rect.top,width:rect.width,height:rect.height},screen:layout.screen,aim:this.aim};
+  if(this.aimElement){this.aimElement.hidden=!this.running||this.placed;this.aimElement.style.left=layout.screen.x+'px';this.aimElement.style.top=layout.screen.y+'px';this.aimElement.classList.toggle('ready',ready);}
   if(this.aimLabel)this.aimLabel.textContent=ready?'この照準の位置に置けます':'床や机をゆっくり映してください';
  }
  record(type,value){this.events.push({time:new Date().toISOString(),type,value});if(this.events.length>150)this.events.shift();}
@@ -85,6 +87,6 @@ export class SpaceRuntime {
   if(!this.placed)return;this.scene.updateWorldMatrix(true,true);const objects=this.inspectObjects?.()||[],pairs=pairDistances(objects);if(!this.baselinePairs)this.baselinePairs=pairs;const drift=pairDrift(this.baselinePairs,pairs);const camera=this.camera.getWorldPosition(new THREE.Vector3()),anchor=this.anchor.getWorldPosition(new THREE.Vector3());
   this.samples.push({time:new Date().toISOString(),reason,tracking:this.tracking,objects,pairDistances:pairs,maxPairDistanceChange:drift,cameraPosition:camera.toArray(),anchorPosition:anchor.toArray(),distance:camera.distanceTo(anchor),anchorInCameraSpace:this.relative(anchor).toArray()});if(this.samples.length>240)this.samples.shift();
  }
- diagnostic(){this.capture('export');return {version:'studio-space-0.9.1',units:'responsive engine units; not guaranteed meters',poseSampleIntervalMs:500,poseSampleLimit:240,placed:this.placed,tracking:this.tracking,scale:this.scale,project:this.projectSummary,animationPaused:!!this.debugPaused,events:this.events,poseSamples:this.samples};}
+ diagnostic(){this.capture('export');return {version:'studio-space-0.9.2',viewport:this.viewportDiagnostic,units:'responsive engine units; not guaranteed meters',poseSampleIntervalMs:500,poseSampleLimit:240,placed:this.placed,tracking:this.tracking,scale:this.scale,project:this.projectSummary,animationPaused:!!this.debugPaused,events:this.events,poseSamples:this.samples};}
  stop(){this.generation++;this.running=false;this.pendingReject?.(new Error('空間ARの開始を中止しました。'));this.pendingReject=null;this.adapter?.stop();this.anchor.visible=false;this.placed=false;this.clearCandidate();this.loop=null;if(this.aimElement)this.aimElement.hidden=true;}
 }

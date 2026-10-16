@@ -22,3 +22,14 @@ export function projectedCandidateCheck(ndc,aim){
 }
 export function pairDistances(objects){const result=[];for(let i=0;i<objects.length;i++)for(let j=i+1;j<objects.length;j++)result.push({ids:[objects[i].id,objects[j].id],distance:Math.hypot(...objects[i].worldPosition.map((v,k)=>v-objects[j].worldPosition[k]))});return result;}
 export function pairDrift(previous,current){const map=new Map(previous.map(p=>[p.ids.join('|'),p.distance]));let maximum=0;for(const p of current){const before=map.get(p.ids.join('|'));if(before!==undefined)maximum=Math.max(maximum,Math.abs(p.distance-before));}return maximum;}
+
+// The engine canvas may extend beyond the visible stage. Position HUD in the
+// visible viewport, then convert the same pixel to canvas coordinates for picking.
+export function aimLayout(stage,canvas,viewport,panelTop=Infinity,toggleBottom=0){
+ const left=Math.max(stage.left,viewport.left),top=Math.max(stage.top,viewport.top);
+ const right=Math.min(stage.left+stage.width,viewport.left+viewport.width),bottom=Math.min(stage.top+stage.height,viewport.top+viewport.height);
+ const visible={left,top,width:Math.max(1,right-left),height:Math.max(1,bottom-top)};
+ const target=aimPoint(visible,panelTop,toggleBottom);
+ const screen={x:left+visible.width*target.x,y:top+visible.height*target.y};
+ return {screen,aim:{x:(screen.x-canvas.left)/canvas.width,y:(screen.y-canvas.top)/canvas.height},visible};
+}
