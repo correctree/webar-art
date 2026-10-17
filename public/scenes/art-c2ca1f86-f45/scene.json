@@ -2,7 +2,7 @@
   "version": 2,
   "id": "art-c2ca1f86-f45",
   "title": "ARARART-001",
-  "revision": "4e3d19dc-2786-4d5d-abe0-1f2f9cfcb377",
+  "revision": "df5c79d3-4606-49a7-820b-4c1632af9da5",
   "trackingTarget": "449445cf-946e-42b7-8d9c-a1153b81e493.mind",
   "maxTrack": 1,
   "markers": [
@@ -49,7 +49,13 @@
             "soundId": null,
             "volume": 1,
             "nextSceneId": null,
-            "delay": 1
+            "delay": 1,
+            "sequence": {
+              "enabled": false,
+              "retrigger": "restart",
+              "finish": "keep",
+              "actions": []
+            }
           },
           "position": [
             -0.7554984114830718,
@@ -69,12 +75,12 @@
           "boxMask": {
             "type": "circle",
             "animation": {
-              "enabled": false,
+              "enabled": true,
               "duration": 3,
               "loop": true,
               "pingpong": true,
               "move": [
-                0.25,
+                2,
                 0,
                 0
               ],
@@ -92,9 +98,9 @@
             "enabled": true,
             "mode": "inside",
             "position": [
-              -0.36106891182985995,
+              -0.77882730097593,
               -1.2045862070238753,
-              0.2574953116249737
+              0.4976425551196007
             ],
             "rotation": [
               90,
@@ -105,7 +111,8 @@
               1,
               1,
               0.27300000670859986
-            ]
+            ],
+            "scope": "scene"
           }
         },
         {
@@ -130,9 +137,9 @@
             "delay": 1
           },
           "position": [
-            0,
-            0.022538518894711587,
-            1.200783385172115
+            -0.43872979949360214,
+            0.2648523623478363,
+            0.8680895202344537
           ],
           "rotation": [
             90,
@@ -140,57 +147,15 @@
             0
           ],
           "scale": [
-            1,
-            1,
-            1
+            2,
+            2,
+            2
           ],
           "fallback": {
             "src": "71fd33da-7f43-451c-ba1c-d3aec018e73a.mp4",
             "packedAlpha": true
           },
-          "loop": true,
-          "boxMask": {
-            "type": "circle",
-            "animation": {
-              "enabled": false,
-              "duration": 3,
-              "loop": true,
-              "pingpong": true,
-              "move": [
-                0.25,
-                0,
-                0
-              ],
-              "rotate": [
-                0,
-                0,
-                0
-              ],
-              "scale": [
-                1,
-                1,
-                1
-              ]
-            },
-            "enabled": true,
-            "mode": "inside",
-            "position": [
-              -0.36106891182985995,
-              -1.2045862070238753,
-              0.2574953116249737
-            ],
-            "rotation": [
-              90,
-              0,
-              0
-            ],
-            "size": [
-              1,
-              1,
-              0.27300000670859986
-            ],
-            "scope": "object"
-          }
+          "loop": true
         },
         {
           "scaleLinked": true,
@@ -229,9 +194,9 @@
             }
           },
           "position": [
-            0.28805851469877364,
-            0.5924268140616685,
-            0.4704290391685013
+            0.7861422840851449,
+            -0.271281995046582,
+            0.5614739665805139
           ],
           "rotation": [
             90,
@@ -251,49 +216,81 @@
             "frameHeight": 576,
             "fps": 12,
             "loop": true
-          },
-          "boxMask": {
-            "type": "circle",
-            "animation": {
-              "enabled": false,
-              "duration": 3,
-              "loop": true,
-              "pingpong": true,
-              "move": [
-                0.25,
-                0,
-                0
-              ],
-              "rotate": [
-                0,
-                0,
-                0
-              ],
-              "scale": [
-                1,
-                1,
-                1
-              ]
-            },
-            "enabled": true,
-            "mode": "inside",
-            "position": [
-              -0.36106891182985995,
-              -1.2045862070238753,
-              0.2574953116249737
-            ],
-            "rotation": [
-              90,
-              0,
-              0
-            ],
-            "size": [
-              1,
-              1,
-              0.27300000670859986
-            ],
-            "scope": "object"
           }
+        },
+        {
+          "scaleLinked": false,
+          "tapEnabled": true,
+          "shadow": false,
+          "id": "7b2f9a69-f43a-4c16-bd1c-fc0d57926541",
+          "kind": "glb",
+          "src": "b9cdf60b-6d2b-4019-bad2-97a7f48c9118.glb",
+          "name": "kabe.glb",
+          "markerId": "c5c1c5ae-b2a9-4dce-b901-32325cce64f6",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": false,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1
+          },
+          "position": [
+            0,
+            1.2799369421946176,
+            0.9111214605345306
+          ],
+          "rotation": [
+            90,
+            0,
+            0
+          ],
+          "scale": [
+            10,
+            3,
+            3
+          ]
+        },
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": false,
+          "id": "ec24dbfc-e46d-4644-a25c-b578b6034d41",
+          "kind": "glb",
+          "src": "5bdd2b5a-df98-4e0e-967b-46d0507b8d2c.glb",
+          "name": "grass_4m_webxr.glb",
+          "markerId": "c5c1c5ae-b2a9-4dce-b901-32325cce64f6",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": false,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1
+          },
+          "position": [
+            0,
+            -1.0408340855860843e-17,
+            0.021172191786030498
+          ],
+          "rotation": [
+            90,
+            0,
+            0
+          ],
+          "scale": [
+            5,
+            5,
+            5
+          ]
         }
       ]
     }
