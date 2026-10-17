@@ -16,7 +16,7 @@ def gl(name,result,*args):return c.CFUNCTYPE(result,*args)(e.eglGetProcAddress(n
 create=gl('glCreateShader',c.c_uint,c.c_uint);source=gl('glShaderSource',None,c.c_uint,I,c.POINTER(c.c_char_p),P);compile=gl('glCompileShader',None,c.c_uint);status=gl('glGetShaderiv',None,c.c_uint,c.c_uint,P);log=gl('glGetShaderInfoLog',None,c.c_uint,I,P,P)
 def shader(kind,text):
  s=create(kind);raw=c.c_char_p(text.encode());source(s,1,c.byref(raw),None);compile(s);ok=I();status(s,0x8B81,c.byref(ok));buf=c.create_string_buffer(8192);log(s,8192,None,buf);assert ok.value,buf.value.decode();return s
-cp=gl('glCreateProgram',c.c_uint);attach=gl('glAttachShader',None,c.c_uint,c.c_uint);link=gl('glLinkProgram',None,c.c_uint);pstatus=gl('glGetProgramiv',None,c.c_uint,c.c_uint,P);use=gl('glUseProgram',None,c.c_uint);loc=gl('glGetUniformLocation',I,c.c_uint,c.c_char_p);u1=gl('glUniform1f',None,I,c.c_float);um=gl('glUniformMatrix4fv',None,I,I,c.c_ubyte,P)
+cp=gl('glCreateProgram',c.c_uint);attach=gl('glAttachShader',None,c.c_uint,c.c_uint);link=gl('glLinkProgram',None,c.c_uint);pstatus=gl('glGetProgramiv',None,c.c_uint,c.c_uint,P);use=gl('glUseProgram',None,c.c_uint);loc=gl('glGetUniformLocation',I,c.c_uint,c.c_char_p);u3=gl('glUniform3f',None,I,c.c_float,c.c_float,c.c_float);u1=gl('glUniform1f',None,I,c.c_float);um=gl('glUniformMatrix4fv',None,I,I,c.c_ubyte,P)
 gen=gl('glGenBuffers',None,I,P);bind=gl('glBindBuffer',None,c.c_uint,c.c_uint);data=gl('glBufferData',None,c.c_uint,c.c_ssize_t,P,c.c_uint);aloc=gl('glGetAttribLocation',I,c.c_uint,c.c_char_p);enable=gl('glEnableVertexAttribArray',None,c.c_uint);pointer=gl('glVertexAttribPointer',None,c.c_uint,I,c.c_uint,c.c_ubyte,I,P)
 clearcolor=gl('glClearColor',None,c.c_float,c.c_float,c.c_float,c.c_float);clear=gl('glClear',None,c.c_uint);draw=gl('glDrawArrays',None,c.c_uint,I,I);read=gl('glReadPixels',None,I,I,I,I,c.c_uint,c.c_uint,P)
 # Packed-alpha shader uses an opaque white 1x1 texture.
@@ -27,10 +27,20 @@ for index,s in enumerate(json.load(open(sys.argv[1] if len(sys.argv)>1 else '/tm
  p=cp();attach(p,shader(0x8B31,s['vertexShader']));attach(p,shader(0x8B30,s['fragmentShader']));link(p);ok=I();pstatus(p,0x8B82,c.byref(ok));assert ok.value;use(p)
  for name in ['modelMatrix','modelViewMatrix','projectionMatrix','artMaskInverse']:um(loc(p,name.encode()),1,0,identity)
  b=I();gen(1,c.byref(b));bind(0x8892,b.value);data(0x8892,c.sizeof(vertices),vertices,0x88E4);a=aloc(p,b'position');enable(a);pointer(a,3,0x1406,0,0,None)
- for shape in [1,2,3]:
+ u3(loc(p,b'artMaskEye'),0,0,1)
+ for shape in [1,2,3,4]:
   for outside in [0,1]:
    for name,value in [('artMaskActive',1),('artMaskType',shape),('artMaskOutside',outside)]:u1(loc(p,name.encode()),value)
    clearcolor(0,0,0,0);clear(0x4000);draw(4,0,6);center=(c.c_ubyte*4)();corner=(c.c_ubyte*4)();read(32,32,1,1,0x1908,0x1401,center);read(18,18,1,1,0x1908,0x1401,corner)
-   assert bool(center[3])==(outside==0) and bool(corner[3])==(outside==1),(index,shape,outside,list(center),list(corner))
+   assert bool(center[3])==(outside==0) and bool(corner[3])==((outside==0) if shape==4 else (outside==1)),(index,shape,outside,list(center),list(corner))
    results.append([index,shape,outside])
+ # Behind-window geometry twice the aperture width: its center-right part must
+ # remain visible through the window despite lying outside the old prism.
+ deep=(c.c_float*18)(-1,-1,-2,1,-1,-2,1,1,-2,-1,-1,-2,1,1,-2,-1,1,-2)
+ data(0x8892,c.sizeof(deep),deep,0x88E4);view=(c.c_float*16)(.5,0,0,0,0,.5,0,0,0,0,0,0,0,0,0,1);um(loc(p,b'modelViewMatrix'),1,0,view)
+ for shape in [3,4]:
+  u1(loc(p,b'artMaskType'),shape);u1(loc(p,b'artMaskOutside'),0)
+  for eye_x,expected in [(0,True),(2,False)]:
+   u3(loc(p,b'artMaskEye'),eye_x,0,2);clear(0x4000);draw(4,0,6);pixel=(c.c_ubyte*4)();read(40,32,1,1,0x1908,0x1401,pixel)
+   assert bool(pixel[3])==expected,(index,shape,eye_x,list(pixel));results.append([index,shape,'perspective',eye_x])
 print(json.dumps({'passed':len(results),'renderer':'headless EGL/GLES2 Mesa','checks':results}))

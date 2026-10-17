@@ -1,3 +1,4 @@
+import {sceneMaskSources} from './box-mask-policy.js';
 import {createBoxMask,updateBoxMask,applyBoxMask,boxMaskAllows} from './box-mask.js';
 import {ActionSequence} from './action-sequence.js';
 import * as THREE from 'three';
@@ -51,8 +52,14 @@ export class MediaScene {
     }catch(error){video?.pause();video?.removeAttribute('src');dispose(group);texture?.dispose();throw error;}
   }
   apply(spec){const item=this.items.get(spec.id);if(!item)return;item.spec=spec;item.group.position.fromArray(spec.position);item.group.rotation.set(...spec.rotation.map(v=>THREE.MathUtils.degToRad(v)));item.group.scale.fromArray(spec.scale);this.updateItemMask(item);item.motion.traverse(o=>{if(o.isMesh)o.castShadow=spec.shadow===true;if(o.customDepthMaterial)o.customDepthMaterial.opacity=(spec.opacity??1)*(item.fade??1);for(const m of [].concat(o.material||[])){m.userData.artBase??={opacity:m.opacity,transparent:m.transparent,depthWrite:m.depthWrite};const opacity=(spec.opacity??1)*(item.fade??1);if(m.uniforms?.artOpacity)m.uniforms.artOpacity.value=opacity;else m.opacity=m.userData.artBase.opacity*opacity;m.transparent=m.userData.artBase.transparent||opacity<1;m.depthWrite=opacity<1?false:m.userData.artBase.depthWrite;m.needsUpdate=true;}});}
-  updateItemMask(item){updateBoxMask(item.mask,item.spec,item.group.parent,item.maskTime||0);applyBoxMask(item.motion,item.mask);}
-  updateMasks(){for(const item of this.items.values())if(item.spec.boxMask?.enabled||item.mask.enabled)this.updateItemMask(item);}
+  updateItemMask(item){const source=this.items.get(this.maskSources?.get(item.spec.id))||item;if(this.maskCamera&&item.mask.uniforms?.artMaskEye)this.maskCamera.getWorldPosition(item.mask.uniforms.artMaskEye.value);updateBoxMask(item.mask,source.spec,source.group.parent,source.maskTime||0);applyBoxMask(item.motion,item.mask);}
+  updateMasks(project,camera){if(project)this.maskSources=sceneMaskSources(project);if(camera)this.maskCamera=camera;for(const item of this.items.values())if(item.spec.boxMask?.enabled||item.mask.enabled||this.maskSources?.has(item.spec.id))this.updateItemMask(item);}
+  maskReceiver(receiver,objectId){
+    const source=this.items.get(this.maskSources?.get(objectId));if(!source&&!receiver.userData.portalMaskState)return;
+    const state=receiver.userData.portalMaskState??=createBoxMask();
+    if(this.maskCamera)this.maskCamera.getWorldPosition(state.uniforms.artMaskEye.value);
+    updateBoxMask(state,source?.spec||{},source?.group.parent||receiver.parent,source?.maskTime||0);applyBoxMask(receiver,state);
+  }
   hitVisible(hit){let node=hit.object;while(node&&!node.userData.objectId)node=node.parent;const item=this.items.get(node?.userData.objectId);return !!item&&boxMaskAllows(item.mask,hit.point);}
   configure(item, interaction=item.spec.interaction){if(item.video)item.video.loop=interaction?.loop??(item.spec.loop!==false);if(!item.mixer)return;item.mixer.stopAllAction();const name=interaction?.clip||'all';if(name!=='all'&&!item.clips.some(c=>c.name===name))throw new Error('GLBアニメーションがありません: '+name);for(const clip of item.clips){if(name!=='all'&&clip.name!==name)continue;const action=item.mixer.clipAction(clip);action.reset();action.setLoop(interaction?.loop===false?THREE.LoopOnce:THREE.LoopRepeat,interaction?.loop===false?1:Infinity);action.clampWhenFinished=true;action.play();}}
   restart(id){const i=this.items.get(id);if(!i)return Promise.resolve();i.time=0;if(i.video)i.video.currentTime=0;this.configure(i);i.playing=true;return this.sync(i);}

@@ -2,12 +2,12 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import vm from 'node:vm';
-import {validateBoxMask,maskPointVisible,maskPose,normalizedMaskInside,defaultMaskAnimation} from '../studio/box-mask-policy.js';
+import {validateBoxMask,maskPointVisible,maskPose,normalizedMaskInside,defaultMaskAnimation,portalPointInside,sceneMaskSources} from '../studio/box-mask-policy.js';
 import {validateScene,toProject,requiredAssets} from '../studio/schema.js';
 const mask=()=>({type:'box',enabled:true,mode:'inside',position:[0,0,.25],rotation:[0,0,0],size:[.5,.5,.5]});
 test('box mask schema validates both modes and rejects invalid dimensions or coordinates',()=>{
  validateBoxMask(undefined);validateBoxMask(mask());validateBoxMask({...mask(),mode:'outside'});
- for(const change of [{enabled:1},{mode:'other'},{type:'sphere'},{position:[0,0]},{rotation:[0,Infinity,0]},{size:[1,0,1]},{size:[1,-1,1]}])assert.throws(()=>validateBoxMask({...mask(),...change}));
+ for(const change of [{enabled:1},{scope:'invalid'},{scope:'scene'},{mode:'other'},{type:'sphere'},{position:[0,0]},{rotation:[0,Infinity,0]},{size:[1,0,1]},{size:[1,-1,1]}])assert.throws(()=>validateBoxMask({...mask(),...change}));
 });
 test('all three media retain independent mask settings through project save/load with no new asset dependency',async()=>{
  const input=JSON.parse(await readFile(new URL('../public/scenes/demo-interactive/scene.json',import.meta.url)));const p=toProject(input),before=requiredAssets(p),objects=p.scenes.flatMap(s=>s.objects);
@@ -23,7 +23,7 @@ test('inside/outside picking rejects clipped fragments but accepts visible porti
  assert.equal(maskPointVisible([.1,.9,.2,.8,.3,.7],'outside'),false);
 });
 async function runtime(){
- const source=await readFile(new URL('../studio/box-mask.js',import.meta.url),'utf8'),ctx={maskPointVisible,maskPose,normalizedMaskInside};vm.createContext(ctx);vm.runInContext(source.replace(/^import .*;\n/gm,'').replace(/export function /g,'function ')+';globalThis.api={applyBoxMask,boxMaskAllows,updateBoxMask};',ctx);return ctx.api;
+ const source=await readFile(new URL('../studio/box-mask.js',import.meta.url),'utf8'),ctx={maskPointVisible,maskPose,normalizedMaskInside,portalPointInside};vm.createContext(ctx);vm.runInContext(source.replace(/^import .*;\n/gm,'').replace(/export function /g,'function ')+';globalThis.api={applyBoxMask,boxMaskAllows,updateBoxMask};',ctx);return ctx.api;
 }
 test('all visible materials and custom shadow materials receive clipping; disable restores full rendering',async()=>{
  const api=await runtime(),materials=[{},{isShaderMaterial:true}],depth={},distance={},node={material:materials,customDepthMaterial:depth,customDistanceMaterial:distance},root={traverse:fn=>fn(node)},planes=Array.from({length:6},()=>({})),state={enabled:true,planes,mode:'inside'};
@@ -38,7 +38,7 @@ test('runtime hit filtering uses the same world planes for both mask modes',asyn
 test('box frame follows marker/group parent but excludes the artwork motion transform',async()=>{
  const source=await readFile(new URL('../studio/box-mask.js',import.meta.url),'utf8'),calls=[];
  const state={position:{fromArray:v=>calls.push(['position',...v])},size:{fromArray:v=>calls.push(['size',...v])},rotation:{set:(...v)=>calls.push(['rotation',...v])},quaternion:{setFromEuler(){}},matrix:{compose(){},premultiply:m=>calls.push(['parent',m])},planes:Array.from({length:6},()=>({set(n,c){this.n=n;this.c=c;return this;},applyMatrix4(m){this.matrix=m;return this;},negate(){this.c=-this.c;return this;}}))};
- const ctx={THREE:{MathUtils:{degToRad:d=>d*Math.PI/180},Vector3:class{constructor(...v){this.values=v;}}},maskPointVisible,maskPose,normalizedMaskInside};vm.createContext(ctx);vm.runInContext(source.replace(/^import .*;\n/gm,'').replace(/export function /g,'function ')+';globalThis.update=updateBoxMask;',ctx);
+ const ctx={THREE:{MathUtils:{degToRad:d=>d*Math.PI/180},Vector3:class{constructor(...v){this.values=v;}}},maskPointVisible,maskPose,normalizedMaskInside,portalPointInside};vm.createContext(ctx);vm.runInContext(source.replace(/^import .*;\n/gm,'').replace(/export function /g,'function ')+';globalThis.update=updateBoxMask;',ctx);
  const parent={matrixWorld:'shared marker anchor',updateWorldMatrix(){}};ctx.update(state,{boxMask:{...mask(),rotation:[0,0,90]}},parent);
  assert.deepEqual(calls.find(c=>c[0]==='parent'),['parent','shared marker anchor']);assert.ok(Math.abs(calls.find(c=>c[0]==='rotation')[3]-Math.PI/2)<1e-10);assert.equal(state.planes.length,6);assert.ok(state.planes.every(p=>p.matrix===state.matrix&&p.c===.5));
 });
@@ -78,7 +78,7 @@ test('curve mask shader hooks preserve existing alpha/depth hooks and share unif
  for(const vertexShader of ['void main(){vec3 transformed=position;\n#include <project_vertex>\n}','void main(){vec4 mvPosition=modelViewMatrix*vec4(position,1.0);gl_Position=projectionMatrix*mvPosition;}']){
  const shader={uniforms:{},vertexShader,fragmentShader:'void main(){gl_FragColor=vec4(1.0);}'};material.onBeforeCompile(shader);assert.match(shader.vertexShader,/vArtMaskWorld=\(modelMatrix\*/);assert.match(shader.fragmentShader,/original packed alpha depth/);assert.match(shader.fragmentShader,/insideMask/);assert.equal(shader.uniforms.artMaskInverse,state.uniforms.artMaskInverse);
  }
- assert.equal(material.customProgramCacheKey(),'original-key|ararart-shapes-011');
+ assert.equal(material.customProgramCacheKey(),'original-key|ararart-portals-0111');
 });
 test('curved and planar masks with animation survive authored project serialization',async()=>{
  const p=toProject(JSON.parse(await readFile(new URL('../public/scenes/demo-interactive/scene.json',import.meta.url)))),o=p.scenes.flatMap(s=>s.objects)[0];
@@ -86,4 +86,28 @@ test('curved and planar masks with animation survive authored project serializat
   o.boxMask={...mask(),type,name:'動く窓',animation:{...defaultMaskAnimation(),enabled:true}};
   validateScene(p);const restored=toProject(JSON.parse(JSON.stringify(p)));assert.deepEqual(restored.scenes.flatMap(s=>s.objects)[0].boxMask,o.boxMask);
  }
+});
+test('peephole is perspective-correct: depth world is visible through the aperture despite being outside the old extrusion',()=>{
+ assert.equal(portalPointInside('rectangle',[0,0,2],[.8,0,-2]),true);
+ assert.equal(portalPointInside('circle',[0,0,2],[.8,0,-2]),true);
+ assert.equal(portalPointInside('rectangle',[0,0,2],[1.2,0,-2]),false);
+ assert.equal(portalPointInside('circle',[0,0,2],[.8,.8,-2]),false);
+ // Looking sideways shifts what is visible behind the same window.
+ assert.equal(portalPointInside('rectangle',[2,0,2],[.8,0,-2]),false);
+ // Objects between the eye and window, or parallel rays, are not inside the portal.
+ assert.equal(portalPointInside('rectangle',[0,0,2],[0,0,1]),false);
+ assert.equal(portalPointInside('rectangle',[0,0,0],[1,0,0]),false);
+});
+test('common window targets every scene artwork in space mode and same-marker artwork in marker mode',()=>{
+ const p={experienceMode:'marker',scenes:[{objects:[{id:'window',markerId:'a',boxMask:{...mask(),type:'circle',scope:'scene'}},{id:'glb',markerId:'a'},{id:'webm',markerId:'a'},{id:'sprite',markerId:'b'}]},{objects:[{id:'other',markerId:'a'}]}]};
+ let sources=sceneMaskSources(p);assert.equal(sources.get('glb'),'window');assert.equal(sources.get('webm'),'window');assert.equal(sources.has('sprite'),false);assert.equal(sources.has('other'),false);
+ p.experienceMode='space';sources=sceneMaskSources(p);assert.equal(sources.get('sprite'),'window');p.scenes[0].objects[0].boxMask.enabled=false;assert.equal(sceneMaskSources(p).size,0);
+});
+test('common window runtime uses source frame and animation time for all media, then releases on removal',async()=>{
+ const source=await readFile(new URL('../studio/media.js',import.meta.url),'utf8'),calls=[];
+ const ctx={URL,sceneMaskSources,createBoxMask:()=>({}),updateBoxMask:(state,spec,parent,time)=>{state.enabled=!!spec.boxMask?.enabled;calls.push({spec,parent,time});},applyBoxMask(){}};vm.createContext(ctx);vm.runInContext(source.replace(/^import .*;\n/gm,'').replace('export class MediaScene','class MediaScene').replace("new URL('../', import.meta.url)","new URL('https://example.test/')")+';globalThis.Media=MediaScene;',ctx);
+ const a={id:'a',markerId:'one',boxMask:{...mask(),type:'rectangle',scope:'scene'}},b={id:'b',markerId:'one'},p={scenes:[{objects:[a,b]}]},media=Object.create(ctx.Media.prototype);
+ media.items=new Map([['a',{spec:a,maskTime:3,group:{parent:'window frame'},mask:{},motion:{}}],['b',{spec:b,maskTime:20,group:{parent:'artwork frame'},mask:{},motion:{}}]]);
+ media.updateMasks(p);assert.equal(calls.length,2);assert.equal(calls[1].spec,a);assert.equal(calls[1].parent,'window frame');assert.equal(calls[1].time,3);
+ const receiver={userData:{},parent:'ground frame'};media.maskReceiver(receiver,'b');assert.equal(calls.at(-1).spec,a);assert.equal(calls.at(-1).parent,'window frame');delete a.boxMask;media.updateMasks(p);media.maskReceiver(receiver,'b');assert.equal(receiver.userData.portalMaskState.enabled,false);assert.equal(media.items.get('b').mask.enabled,false);
 });

@@ -1,6 +1,7 @@
 export function validateBoxMask(mask){
  if(mask===undefined)return;
  if(!mask||!MASK_TYPES.includes(mask.type)||typeof mask.enabled!=='boolean'||!['inside','outside'].includes(mask.mode))throw new Error('マスクの設定が不正です。');
+ if(mask.scope!==undefined&&(!['object','scene'].includes(mask.scope)||mask.scope==='scene'&&!['circle','rectangle'].includes(mask.type)))throw new Error('共通窓は円・四角に設定してください。');
  if(mask.name!==undefined&&(typeof mask.name!=='string'||mask.name.length>100))throw new Error('マスク名が不正です。');
  if(mask.animation!==undefined){const a=mask.animation;if(!a||typeof a.enabled!=='boolean'||typeof a.loop!=='boolean'||typeof a.pingpong!=='boolean'||!Number.isFinite(a.duration)||a.duration<.1||a.duration>60)throw new Error('マスクのアニメーション設定が不正です。');for(const key of ['move','rotate','scale'])if(!Array.isArray(a[key])||a[key].length!==3||a[key].some(v=>!Number.isFinite(v)||Math.abs(v)>(key==='rotate'?3600:100)||(key==='scale'&&(v<.01||v>10))))throw new Error('マスクのアニメーション変形が不正です。');}
  for(const key of ['position','rotation','size']){
@@ -21,4 +22,17 @@ export function normalizedMaskInside(type,p){
  if(type==='ellipsoid')return p.reduce((s,v)=>s+v*v,0)<=.25+1e-7;
  if(type==='cylinder'||type==='circle')return p[0]*p[0]+p[1]*p[1]<=.25+1e-7&&(type==='circle'||Math.abs(p[2])<=.5+1e-7);
  return p.every((v,i)=>type==='rectangle'&&i===2||Math.abs(v)<=.5+1e-7);
+}
+// Project the eye-to-fragment segment onto the window's local XY plane.
+export function portalPointInside(type,eye,point){
+ const dz=point[2]-eye[2];if(Math.abs(dz)<1e-7)return false;
+ const t=-eye[2]/dz;if(t<0||t>1)return false;
+ const x=eye[0]+t*(point[0]-eye[0]),y=eye[1]+t*(point[1]-eye[1]);
+ return type==='rectangle'?Math.abs(x)<=.5+1e-7&&Math.abs(y)<=.5+1e-7:x*x+y*y<=.25+1e-7;
+}
+export function sceneMaskSources(project){
+ const sources=new Map();for(const scene of project?.scenes||[])for(const o of scene.objects){
+  const owner=scene.objects.find(s=>s.boxMask?.enabled&&s.boxMask.scope==='scene'&&['circle','rectangle'].includes(s.boxMask.type)&&(project.experienceMode==='space'||s.markerId===o.markerId));
+  if(owner)sources.set(o.id,owner.id);
+ }return sources;
 }
