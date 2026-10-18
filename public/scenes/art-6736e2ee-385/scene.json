@@ -1,8 +1,8 @@
 {
   "version": 2,
   "id": "art-6736e2ee-385",
-  "title": "ARARART",
-  "revision": "afc93a43-8845-48ff-ab69-df5843ff35cf",
+  "title": "ARARART_002",
+  "revision": "5b7d2205-4079-443b-92ac-bf312e1fe4f0",
   "trackingTarget": "584e50a3-4b90-4cb5-8ecf-55c4faa68337.mind",
   "maxTrack": 1,
   "markers": [
@@ -27,11 +27,11 @@
         {
           "scaleLinked": true,
           "tapEnabled": true,
-          "shadow": true,
-          "id": "7aa8704f-4d7f-45e5-be13-697016a83a2c",
+          "shadow": false,
+          "id": "613ee771-d3a9-4801-9bd0-de665441165d",
           "kind": "glb",
-          "src": "ef3b7ed9-eb90-4e68-b557-e73cf430898e.glb",
-          "name": "nature_studio_v1_6_8_8_animated.glb",
+          "src": "c656003c-77c2-4a9c-b12f-29fc768dd1d6.glb",
+          "name": "nature_studio_v1_6_8_8_animated (2).glb",
           "markerId": "eece3c12-74e0-4d3f-a179-add1f9599ce5",
           "autoplay": true,
           "interaction": {
@@ -47,18 +47,18 @@
           },
           "position": [
             0,
-            0,
-            0.4587312963030532
+            2.7755575615628914e-17,
+            0.2594569807286245
           ],
           "rotation": [
-            0,
+            90,
             0,
             0
           ],
           "scale": [
-            0.74,
-            0.74,
-            0.74
+            1,
+            1,
+            1
           ]
         }
       ]
