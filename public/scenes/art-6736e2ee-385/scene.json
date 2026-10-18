@@ -1,0 +1,69 @@
+{
+  "version": 2,
+  "id": "art-6736e2ee-385",
+  "title": "ARARART",
+  "revision": "afc93a43-8845-48ff-ab69-df5843ff35cf",
+  "trackingTarget": "584e50a3-4b90-4cb5-8ecf-55c4faa68337.mind",
+  "maxTrack": 1,
+  "markers": [
+    {
+      "id": "eece3c12-74e0-4d3f-a179-add1f9599ce5",
+      "name": "8H7N2YA69t4H3HjNX6RZRww7IcTNO6nQ.jpg",
+      "image": "eece3c12-74e0-4d3f-a179-add1f9599ce5.jpg",
+      "aspect": 1,
+      "targetIndex": 0
+    }
+  ],
+  "sounds": [],
+  "initialSceneId": "scene-1",
+  "scenes": [
+    {
+      "id": "scene-1",
+      "name": "シーン1",
+      "autoNextSeconds": 0,
+      "nextSceneId": null,
+      "markerLost": "continue",
+      "objects": [
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": true,
+          "id": "7aa8704f-4d7f-45e5-be13-697016a83a2c",
+          "kind": "glb",
+          "src": "ef3b7ed9-eb90-4e68-b557-e73cf430898e.glb",
+          "name": "nature_studio_v1_6_8_8_animated.glb",
+          "markerId": "eece3c12-74e0-4d3f-a179-add1f9599ce5",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": true,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1
+          },
+          "position": [
+            0,
+            0,
+            0.4587312963030532
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            0.74,
+            0.74,
+            0.74
+          ]
+        }
+      ]
+    }
+  ],
+  "experienceMode": "space",
+  "spaceScale": 1
+}
