@@ -2,7 +2,7 @@
   "version": 2,
   "id": "art-6736e2ee-385",
   "title": "ARARART_002",
-  "revision": "5b7d2205-4079-443b-92ac-bf312e1fe4f0",
+  "revision": "91ba1fc3-f77a-4db4-b744-438fce799be7",
   "trackingTarget": "584e50a3-4b90-4cb5-8ecf-55c4faa68337.mind",
   "maxTrack": 1,
   "markers": [
@@ -27,11 +27,11 @@
         {
           "scaleLinked": true,
           "tapEnabled": true,
-          "shadow": false,
-          "id": "613ee771-d3a9-4801-9bd0-de665441165d",
+          "shadow": true,
+          "id": "beb0adf0-b044-4de4-93fc-09c2a1115a5d",
           "kind": "glb",
-          "src": "c656003c-77c2-4a9c-b12f-29fc768dd1d6.glb",
-          "name": "nature_studio_v1_6_8_8_animated (2).glb",
+          "src": "b83ddd23-c965-4796-a62b-f5b35b258257.glb",
+          "name": "002_ar.glb",
           "markerId": "eece3c12-74e0-4d3f-a179-add1f9599ce5",
           "autoplay": true,
           "interaction": {
@@ -47,11 +47,11 @@
           },
           "position": [
             0,
-            2.7755575615628914e-17,
-            0.2594569807286245
+            5.551115123125783e-17,
+            0.3993645059586717
           ],
           "rotation": [
-            90,
+            100,
             0,
             0
           ],
