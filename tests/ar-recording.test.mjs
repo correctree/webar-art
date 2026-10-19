@@ -60,3 +60,17 @@ test('dedicated stop button is enabled only while recording and remains separate
  let stopped=0;ui.recorder.stop=()=>{stopped++;ui.recorder.onState('stopping');};get('capture-stop').onclick({stopPropagation(){}});assert.equal(stopped,1);assert.equal(get('capture-stop').hidden,true);
  ui.recorder.onState('idle');assert.equal(get('capture-button').disabled,false);
 });
+test('browser timers retain the Window receiver through default timer callbacks during start, stop and timeout',()=>{
+ const oldSet=globalThis.setTimeout,oldClear=globalThis.clearTimeout,timers=new Map(),ready=[],errors=[];let next=0;
+ globalThis.setTimeout=function(fn,ms){assert.equal(this,globalThis,'Window.setTimeout must receive Window');const id=++next;timers.set(id,{fn,ms});return id;};
+ globalThis.clearTimeout=function(id){assert.equal(this,globalThis,'Window.clearTimeout must receive Window');timers.delete(id);};
+ class Recorder{static isTypeSupported(t){return t==='video/mp4';}constructor(s,o){this.state='inactive';this.mimeType=o.mimeType;}start(){this.state='recording';}stop(){this.state='inactive';}}
+ const stage={getBoundingClientRect:()=>({left:0,top:0,width:390,height:800})},output={getContext:()=>({}),captureStream:()=>({getTracks:()=>[{stop(){}}]})};
+ try{
+  const r=new ARRecording({Recorder,createCanvas:()=>output,onReady:blob=>ready.push(blob),onError:e=>errors.push(e.message)});
+  r.start({stage,canvas:stage});assert.equal(r.state,'recording');assert.equal([...timers.values()][0].ms,30000);
+  r.stop();assert.equal(r.state,'stopping');assert.equal(r.recorder.state,'inactive');assert.equal([...timers.values()][0].ms,10000);
+  r.recorder.ondataavailable({data:new Blob(['video'])});r.recorder.onstop();assert.equal(r.state,'idle');assert.equal(ready[0].size,5);assert.equal(timers.size,0);
+  r.start({stage,canvas:stage});[...timers.values()].find(t=>t.ms===30000).fn();assert.equal(r.state,'stopping');[...timers.values()].find(t=>t.ms===10000).fn();assert.equal(r.state,'idle');assert.equal(timers.size,0);assert.match(errors[0],/10秒/);
+ }finally{globalThis.setTimeout=oldSet;globalThis.clearTimeout=oldClear;}
+});

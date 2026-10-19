@@ -4,11 +4,11 @@ export function recordingMime(Recorder){
 }
 export function containRect(width,height,targetWidth,targetHeight){const scale=Math.min(targetWidth/width,targetHeight/height);return {x:(targetWidth-width*scale)/2,y:(targetHeight-height*scale)/2,scale};}
 export class ARRecording {
- constructor({Recorder=globalThis.MediaRecorder,createCanvas=()=>document.createElement('canvas'),onState=()=>{},onReady=()=>{},onError=()=>{},maxMs=30000,maxBytes=64*1024*1024,finalizeMs=10000,setTimer=setTimeout,clearTimer=clearTimeout,now=()=>performance.now()}={}){
+ constructor({Recorder=globalThis.MediaRecorder,createCanvas=()=>document.createElement('canvas'),onState=()=>{},onReady=()=>{},onError=()=>{},maxMs=30000,maxBytes=64*1024*1024,finalizeMs=10000,setTimer=(...args)=>globalThis.setTimeout(...args),clearTimer=id=>globalThis.clearTimeout(id),now=()=>performance.now()}={}){
   Object.assign(this,{Recorder,createCanvas,onState,onReady,onError,maxMs,maxBytes,finalizeMs,setTimer,clearTimer,now});this.state='idle';this.events=[];
  }
  log(type,value={}){this.events.push({time:new Date().toISOString(),type,value});if(this.events.length>100)this.events.shift();}
- diagnostic(){return {version:'recording-0.12.1',state:this.state,nativeState:this.recorder?.state,mime:this.recorder?.mimeType,bytes:this.session?.bytes||0,frames:this.session?.frames||0,userAgent:globalThis.navigator?.userAgent,events:this.events};}
+ diagnostic(){return {version:'recording-0.12.2',state:this.state,nativeState:this.recorder?.state,mime:this.recorder?.mimeType,bytes:this.session?.bytes||0,frames:this.session?.frames||0,userAgent:globalThis.navigator?.userAgent,events:this.events};}
  start({stage,canvas,background=null}){
   if(this.state!=='idle')throw new Error('録画の処理中です。');if(!this.Recorder)throw new Error('このブラウザーはアプリ内録画に対応していません。端末の画面収録をご利用ください。');
   const rect=stage.getBoundingClientRect();if(!(rect.width>0&&rect.height>0))throw new Error('AR画面の準備ができていません。');
