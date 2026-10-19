@@ -48,3 +48,6 @@ test('permission failure and scene startup exceptions stop the engine', () => {
     assert.equal(s.adapter.running, false); assert.equal(s.stops(), 1); assert.equal(s.events.length, 1);
   }
 });
+test('post-render hook is available after AR rendering and is disabled after stop',()=>{
+ const s=setup();let frames=0;s.adapter.onRender=()=>frames++;s.adapter.start();s.module().onRender();assert.equal(frames,1);s.adapter.stop();s.module().onRender();assert.equal(frames,1);
+});

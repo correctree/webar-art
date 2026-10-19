@@ -2,8 +2,8 @@ import {surfaceHit, targetMatches} from './policy.js';
 
 // Uses the documented 8th Wall camera pipeline; no synthetic camera or pose fallback.
 export class XRAdapter {
-  constructor(xr, {canvas, mode, target, name, onScene, onFrame, onStatus, onImage, onError}) {
-    Object.assign(this, {xr, canvas, mode, target, name, onScene, onFrame, onStatus, onImage, onError});
+  constructor(xr, {canvas, mode, target, name, onScene, onFrame, onRender, onStatus, onImage, onError}) {
+    Object.assign(this, {xr, canvas, mode, target, name, onScene, onFrame, onRender, onStatus, onImage, onError});
     this.running = false; this.stream = null;
   }
   start() {
@@ -37,6 +37,7 @@ export class XRAdapter {
             if (this.mode === 'world' && reality?.trackingStatus) this.onStatus?.(reality.trackingStatus);
             this.onFrame?.();
           }),
+          onRender: guard(() => this.onRender?.()),
           listeners: [
             {event: 'reality.imagefound', process: image},
             {event: 'reality.imageupdated', process: image},
