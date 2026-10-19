@@ -2,7 +2,7 @@
   "version": 2,
   "id": "art-20b5f109-d09",
   "title": "ARARART",
-  "revision": "0bce647b-7e7d-48be-ba29-5fdf39ae555b",
+  "revision": "ee89a6e4-9cf3-46b0-aa94-c9ab9c2afa6d",
   "trackingTarget": "c2efe255-0d45-4c6c-9440-6262706c089f.mind",
   "maxTrack": 1,
   "markers": [
@@ -127,9 +127,9 @@
             0
           ],
           "scale": [
-            0.4,
-            0.4,
-            0.4
+            0.3499999999999999,
+            0.3499999999999999,
+            0.3499999999999999
           ],
           "sprite": {
             "columns": 4,
@@ -143,5 +143,6 @@
         }
       ]
     }
-  ]
+  ],
+  "experienceMode": "space"
 }
