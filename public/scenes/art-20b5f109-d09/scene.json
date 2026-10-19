@@ -2,7 +2,7 @@
   "version": 2,
   "id": "art-20b5f109-d09",
   "title": "ARARART",
-  "revision": "f4499e74-3c6a-4889-918f-a69a24e869f0",
+  "revision": "0bce647b-7e7d-48be-ba29-5fdf39ae555b",
   "trackingTarget": "c2efe255-0d45-4c6c-9440-6262706c089f.mind",
   "maxTrack": 1,
   "markers": [
@@ -28,9 +28,51 @@
           "scaleLinked": true,
           "tapEnabled": true,
           "shadow": false,
-          "id": "d95a3693-f191-4da9-b20a-6516ab1c3095",
+          "id": "a1f979e0-ac43-42e1-87d2-0176a8802120",
+          "kind": "video",
+          "src": "32c2eb9c-9063-4c52-83cb-d87269004f36.webm",
+          "name": "bg_01_mov.webm",
+          "markerId": "0c0b1f70-1974-4378-bac3-8df804558988",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": true,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1
+          },
+          "position": [
+            -0.25079283154816046,
+            0,
+            0.001
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "fallback": {
+            "src": "a0f700f4-1001-4f54-bf1a-6a6c84af4cf8.mp4",
+            "packedAlpha": true
+          },
+          "loop": true
+        },
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": false,
+          "id": "1af60004-8b4d-4897-874e-9c3b3a1666db",
           "kind": "sprite",
-          "src": "b0a4d27c-27fd-455c-bb98-bf60c0a62043.png",
+          "src": "eb92fc89-257c-4b42-a0da-a310e0c19763.png",
           "name": "01_chara-sprite-package.zip",
           "markerId": "0c0b1f70-1974-4378-bac3-8df804558988",
           "autoplay": true,
@@ -58,7 +100,7 @@
                 {
                   "type": "move",
                   "offset": [
-                    1,
+                    0.5,
                     0,
                     0
                   ],
@@ -68,16 +110,16 @@
                 },
                 {
                   "type": "hide",
-                  "delay": 0,
+                  "delay": 1,
                   "fade": 2
                 }
               ]
             }
           },
           "position": [
-            -0.3050214785804512,
-            -0.018404108696681746,
-            0.08159589130331826
+            -0.21532950320917624,
+            0.006553691644463288,
+            0.1065536916444633
           ],
           "rotation": [
             45,
@@ -85,75 +127,16 @@
             0
           ],
           "scale": [
-            0.3,
-            0.3,
-            0.3
+            0.4,
+            0.4,
+            0.4
           ],
           "sprite": {
             "columns": 4,
             "rows": 2,
             "frames": 7,
-            "frameWidth": 1024,
-            "frameHeight": 1024,
-            "fps": 3,
-            "loop": true
-          }
-        },
-        {
-          "scaleLinked": true,
-          "tapEnabled": true,
-          "shadow": false,
-          "id": "67ecc302-b727-4606-a592-8b6bffddf73e",
-          "kind": "sprite",
-          "src": "ae8e5f8e-a2cc-46f2-b48c-c9fb29836681.png",
-          "name": "bg_01_mov-sprite-package.zip",
-          "markerId": "0c0b1f70-1974-4378-bac3-8df804558988",
-          "autoplay": true,
-          "interaction": {
-            "action": "none",
-            "clip": "all",
-            "loop": true,
-            "effect": "none",
-            "duration": 1,
-            "soundId": null,
-            "volume": 1,
-            "nextSceneId": null,
-            "delay": 1,
-            "startTrigger": "scene",
-            "sequence": {
-              "enabled": true,
-              "retrigger": "restart",
-              "finish": "keep",
-              "actions": [
-                {
-                  "type": "show",
-                  "delay": 0,
-                  "fade": 2
-                }
-              ]
-            }
-          },
-          "position": [
-            -0.25,
-            0,
-            0.001
-          ],
-          "rotation": [
-            0,
-            0,
-            0
-          ],
-          "scale": [
-            0.5,
-            0.5,
-            0.5
-          ],
-          "sprite": {
-            "columns": 4,
-            "rows": 5,
-            "frames": 19,
-            "frameWidth": 600,
-            "frameHeight": 600,
+            "frameWidth": 512,
+            "frameHeight": 512,
             "fps": 4,
             "loop": true
           }
