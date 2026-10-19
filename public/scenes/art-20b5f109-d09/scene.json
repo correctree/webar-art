@@ -1,0 +1,164 @@
+{
+  "version": 2,
+  "id": "art-20b5f109-d09",
+  "title": "ARARART",
+  "revision": "d436312c-818f-40bc-8c06-4d6350374118",
+  "trackingTarget": "c2efe255-0d45-4c6c-9440-6262706c089f.mind",
+  "maxTrack": 1,
+  "markers": [
+    {
+      "id": "0c0b1f70-1974-4378-bac3-8df804558988",
+      "name": "mk_01-02.jpg",
+      "image": "0c0b1f70-1974-4378-bac3-8df804558988.jpg",
+      "aspect": 0.46846846846846846,
+      "targetIndex": 0
+    }
+  ],
+  "sounds": [],
+  "initialSceneId": "scene-1",
+  "scenes": [
+    {
+      "id": "scene-1",
+      "name": "シーン1",
+      "autoNextSeconds": 0,
+      "nextSceneId": null,
+      "markerLost": "continue",
+      "objects": [
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": false,
+          "id": "d95a3693-f191-4da9-b20a-6516ab1c3095",
+          "kind": "sprite",
+          "src": "b0a4d27c-27fd-455c-bb98-bf60c0a62043.png",
+          "name": "01_chara-sprite-package.zip",
+          "markerId": "0c0b1f70-1974-4378-bac3-8df804558988",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": true,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1,
+            "startTrigger": "scene",
+            "sequence": {
+              "enabled": true,
+              "retrigger": "restart",
+              "finish": "keep",
+              "actions": [
+                {
+                  "type": "show",
+                  "delay": 0,
+                  "fade": 2
+                },
+                {
+                  "type": "move",
+                  "offset": [
+                    1,
+                    0,
+                    0
+                  ],
+                  "duration": 10,
+                  "repeat": 1,
+                  "pingpong": false
+                },
+                {
+                  "type": "hide",
+                  "delay": 0,
+                  "fade": 2
+                }
+              ]
+            }
+          },
+          "position": [
+            -0.3050214785804512,
+            -0.018404108696681746,
+            0.08159589130331826
+          ],
+          "rotation": [
+            45,
+            0,
+            0
+          ],
+          "scale": [
+            0.3,
+            0.3,
+            0.3
+          ],
+          "sprite": {
+            "columns": 4,
+            "rows": 2,
+            "frames": 7,
+            "frameWidth": 1024,
+            "frameHeight": 1024,
+            "fps": 3,
+            "loop": true
+          }
+        },
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": false,
+          "id": "67ecc302-b727-4606-a592-8b6bffddf73e",
+          "kind": "sprite",
+          "src": "ae8e5f8e-a2cc-46f2-b48c-c9fb29836681.png",
+          "name": "bg_01_mov-sprite-package.zip",
+          "markerId": "0c0b1f70-1974-4378-bac3-8df804558988",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": true,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1,
+            "startTrigger": "scene",
+            "sequence": {
+              "enabled": true,
+              "retrigger": "restart",
+              "finish": "keep",
+              "actions": [
+                {
+                  "type": "show",
+                  "delay": 0,
+                  "fade": 2
+                }
+              ]
+            }
+          },
+          "position": [
+            -0.25,
+            0,
+            0.001
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "sprite": {
+            "columns": 4,
+            "rows": 5,
+            "frames": 19,
+            "frameWidth": 600,
+            "frameHeight": 600,
+            "fps": 4,
+            "loop": true
+          }
+        }
+      ]
+    }
+  ]
+}
