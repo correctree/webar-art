@@ -26,7 +26,10 @@ export class MediaScene {
         if(data.animations.length){mixer=new THREE.AnimationMixer(data.scene);clips=data.animations;}
       } else {
         let ratio=1,material;
-        if(spec.kind==='sprite') {
+        if(spec.kind==='image') {
+          texture=await new THREE.TextureLoader().loadAsync(this.resolveURL(spec.src));ratio=texture.image.width/texture.image.height;texture.colorSpace=THREE.SRGBColorSpace;
+          material=new THREE.MeshBasicMaterial({map:texture,side:THREE.DoubleSide});
+        } else if(spec.kind==='sprite') {
           const s=spriteSpec(spec.sprite);texture=await new THREE.TextureLoader().loadAsync(this.resolveURL(spec.src));
           if(texture.image.width!==s.frameWidth*s.columns||texture.image.height!==s.frameHeight*s.rows)throw new Error('Spriteシート寸法とJSONが一致しません。');
           texture.repeat.set(1/s.columns,1/s.rows);ratio=s.frameWidth/s.frameHeight;
@@ -67,8 +70,8 @@ export class MediaScene {
   setGate(id,gate){const i=this.items.get(id);if(!i)return;i.gate=gate;this.sync(i).catch(e=>this.onPlaybackError?.(e));}
   sync(i){const run=this.playing&&i.playing&&i.gate&&!i.paused;if(i.video){if(run)return i.video.play();i.video.pause();}return Promise.resolve();}
   allowTap(o){const r=this.items.get(o.id)?.runner;return !(o.interaction.sequence?.enabled&&r?.active&&o.interaction.sequence.retrigger==='ignore');}
-  effect(id){const i=this.items.get(id);if(!i)return;const q=i.spec.interaction.sequence;if(q?.enabled){i.effectTime=null;if(i.runner?.active&&q.retrigger==='stop'){i.runner.active=false;return;}if(i.runner?.active&&q.retrigger==='ignore')return;i.runner=new ActionSequence(q,a=>this.onAction?.(i.spec,a),{visible:!(i.spec.interaction.startTrigger==='scene'&&q.actions[0]?.type==='show')});i.runner.tap();}else{i.runner=null;i.effectTime=0;}}
-  reset(id){const i=this.items.get(id);if(!i)return;i.time=0;i.maskTime=0;i.effectTime=null;i.runner=null;i.motion.visible=!(i.spec.interaction.startTrigger==='scene'&&i.spec.interaction.sequence?.enabled&&i.spec.interaction.sequence.actions[0]?.type==='show');i.paused=false;this.setFade(i,i.motion.visible?1:0);i.followCamera=false;i.motion.position.set(0,0,0);i.motion.rotation.set(0,0,0);i.motion.scale.setScalar(1);if(i.video){i.video.pause();i.video.currentTime=0;i.video.loop=i.spec.interaction?.loop??true;}this.configure(i);i.playing=i.spec.autoplay!==false;}
+  effect(id){const i=this.items.get(id);if(!i)return;const q=i.spec.interaction.sequence;if(q?.enabled){i.effectTime=null;if(i.runner?.active&&q.retrigger==='stop'){i.runner.active=false;return;}if(i.runner?.active&&q.retrigger==='ignore')return;i.runner=new ActionSequence(q,a=>this.onAction?.(i.spec,a),{visible:!(i.spec.interaction.startTrigger==='scene'&&['show','showMove'].includes(q.actions[0]?.type))});i.runner.tap();}else{i.runner=null;i.effectTime=0;}}
+  reset(id){const i=this.items.get(id);if(!i)return;i.time=0;i.maskTime=0;i.effectTime=null;i.runner=null;i.motion.visible=!(i.spec.interaction.startTrigger==='scene'&&i.spec.interaction.sequence?.enabled&&['show','showMove'].includes(i.spec.interaction.sequence.actions[0]?.type));i.paused=false;this.setFade(i,i.motion.visible?1:0);i.followCamera=false;i.motion.position.set(0,0,0);i.motion.rotation.set(0,0,0);i.motion.scale.setScalar(1);if(i.video){i.video.pause();i.video.currentTime=0;i.video.loop=i.spec.interaction?.loop??true;}this.configure(i);i.playing=i.spec.autoplay!==false;}
   primeVideos(){return Promise.allSettled([...this.items.values()].filter(i=>i.video).map(i=>i.video.play().then(()=>{if(!this.playing||!i.playing||!i.gate||i.paused)i.video.pause();})));}
   play(){this.playing=true;return Promise.allSettled([...this.items.values()].map(i=>this.sync(i)));}
   pause(){this.playing=false;for(const i of this.items.values())i.video?.pause();}
