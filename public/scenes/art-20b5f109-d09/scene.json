@@ -2,7 +2,7 @@
   "version": 2,
   "id": "art-20b5f109-d09",
   "title": "ARARART",
-  "revision": "ee89a6e4-9cf3-46b0-aa94-c9ab9c2afa6d",
+  "revision": "33cfa21a-9f64-4965-a13c-3e6296b3dd7f",
   "trackingTarget": "c2efe255-0d45-4c6c-9440-6262706c089f.mind",
   "maxTrack": 1,
   "markers": [
@@ -43,10 +43,23 @@
             "soundId": null,
             "volume": 1,
             "nextSceneId": null,
-            "delay": 1
+            "delay": 1,
+            "startTrigger": "scene",
+            "sequence": {
+              "enabled": true,
+              "retrigger": "restart",
+              "finish": "keep",
+              "actions": [
+                {
+                  "type": "show",
+                  "delay": 0,
+                  "fade": 2
+                }
+              ]
+            }
           },
           "position": [
-            -0.25079283154816046,
+            -0.2498643100352222,
             0,
             0.001
           ],
@@ -96,30 +109,14 @@
                   "type": "show",
                   "delay": 0,
                   "fade": 2
-                },
-                {
-                  "type": "move",
-                  "offset": [
-                    0.5,
-                    0,
-                    0
-                  ],
-                  "duration": 10,
-                  "repeat": 1,
-                  "pingpong": false
-                },
-                {
-                  "type": "hide",
-                  "delay": 1,
-                  "fade": 2
                 }
               ]
             }
           },
           "position": [
             -0.21532950320917624,
-            0.006553691644463288,
-            0.1065536916444633
+            0.011449148337351188,
+            0.10165823495157539
           ],
           "rotation": [
             45,
@@ -137,6 +134,107 @@
             "frames": 7,
             "frameWidth": 512,
             "frameHeight": 512,
+            "fps": 4,
+            "loop": true
+          }
+        },
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": false,
+          "id": "7ff45d71-bf27-44d8-a5e2-204493988bcb",
+          "kind": "video",
+          "src": "8037c445-a00b-4a12-b82d-1a55ddbd935d.webm",
+          "name": "bg_02_mov.webm",
+          "markerId": "0c0b1f70-1974-4378-bac3-8df804558988",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": true,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1,
+            "startTrigger": "scene",
+            "sequence": {
+              "enabled": true,
+              "retrigger": "restart",
+              "finish": "keep",
+              "actions": [
+                {
+                  "type": "show",
+                  "delay": 2,
+                  "fade": 2
+                }
+              ]
+            }
+          },
+          "position": [
+            0.250163853836552,
+            0,
+            0.001
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "fallback": {
+            "src": "f24e425e-74fc-4bc6-b036-edfd3fc28701.mp4",
+            "packedAlpha": true
+          },
+          "loop": true
+        },
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": false,
+          "id": "a3c63e78-fa27-4368-88a9-8cb906a71e29",
+          "kind": "sprite",
+          "src": "3e87c1f9-db7a-455c-b84b-20497b3193b6.png",
+          "name": "02_chara-sprite-package.zip",
+          "markerId": "0c0b1f70-1974-4378-bac3-8df804558988",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": true,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1
+          },
+          "position": [
+            0.2495035145938309,
+            0.003472659312001282,
+            0.10347265931200128
+          ],
+          "rotation": [
+            45,
+            0,
+            0
+          ],
+          "scale": [
+            0.3,
+            0.3,
+            0.3
+          ],
+          "sprite": {
+            "columns": 4,
+            "rows": 2,
+            "frames": 7,
+            "frameWidth": 1024,
+            "frameHeight": 1024,
             "fps": 4,
             "loop": true
           }
