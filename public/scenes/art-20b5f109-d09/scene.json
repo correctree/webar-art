@@ -2,7 +2,7 @@
   "version": 2,
   "id": "art-20b5f109-d09",
   "title": "ARARART",
-  "revision": "ba9691de-f99f-4b98-94ea-ac839433a3f8",
+  "revision": "80b1017d-b837-43d6-8b50-d15f5567cf6a",
   "trackingTarget": "c2efe255-0d45-4c6c-9440-6262706c089f.mind",
   "maxTrack": 1,
   "markers": [
@@ -256,5 +256,5 @@
     }
   ],
   "experienceMode": "space",
-  "spaceScale": 1
+  "spaceScale": 2
 }
