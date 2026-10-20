@@ -1,6 +1,6 @@
 import {sceneMaskSources} from './box-mask-policy.js';
 import {createBoxMask,updateBoxMask,applyBoxMask,boxMaskAllows} from './box-mask.js';
-import {ActionSequence,startsWithAppearance} from './action-sequence.js';
+import {ActionSequence,startsWithAppearance,startsHidden} from './action-sequence.js';
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {DRACOLoader} from 'three/addons/loaders/DRACOLoader.js';
@@ -69,9 +69,10 @@ export class MediaScene {
   setPlaying(id,playing){const i=this.items.get(id);if(!i)return Promise.resolve();i.playing=playing;return this.sync(i);}
   setGate(id,gate){const i=this.items.get(id);if(!i)return;i.gate=gate;this.sync(i).catch(e=>this.onPlaybackError?.(e));}
   sync(i){const run=this.playing&&i.playing&&i.gate&&!i.paused;if(i.video){if(run)return i.video.play();i.video.pause();}return Promise.resolve();}
-  allowTap(o){const r=this.items.get(o.id)?.runner;return !(o.interaction.sequence?.enabled&&r?.active&&o.interaction.sequence.retrigger==='ignore');}
-  effect(id){const i=this.items.get(id);if(!i)return;const q=i.spec.interaction.sequence;if(q?.enabled){i.effectTime=null;if(i.runner?.active&&q.retrigger==='stop'){i.runner.active=false;return;}if(i.runner?.active&&q.retrigger==='ignore')return;i.runner=new ActionSequence(q,a=>this.onAction?.(i.spec,a),{visible:!(i.spec.interaction.startTrigger==='scene'&&startsWithAppearance(q.actions))});i.runner.tap();}else{i.runner=null;i.effectTime=0;}}
-  reset(id){const i=this.items.get(id);if(!i)return;i.time=0;i.maskTime=0;i.effectTime=null;i.runner=null;i.motion.visible=!(i.spec.interaction.startTrigger==='scene'&&i.spec.interaction.sequence?.enabled&&startsWithAppearance(i.spec.interaction.sequence.actions));i.paused=false;this.setFade(i,i.motion.visible?1:0);i.followCamera=false;i.motion.position.set(0,0,0);i.motion.rotation.set(0,0,0);i.motion.scale.setScalar(1);if(i.video){i.video.pause();i.video.currentTime=0;i.video.loop=i.spec.interaction?.loop??true;}this.configure(i);i.playing=i.spec.autoplay!==false;}
+  allowTap(o){const r=this.items.get(o.id)?.runner;return r?.waitingFor==='tap'||!(o.interaction.sequence?.enabled&&r?.active&&o.interaction.sequence.retrigger==='ignore');}
+  effect(id,kind='tap'){const i=this.items.get(id);if(!i)return;const q=i.spec.interaction.sequence;if(q?.enabled){i.effectTime=null;if(!i.runner)i.runner=new ActionSequence(q,a=>this.onAction?.(i.spec,a),{visible:!startsHidden(i.spec),groupTriggers:true,firstTrigger:i.spec.interaction.startTrigger||'tap'});i.runner.signal(kind);}else{i.runner=null;i.effectTime=0;}}
+
+  reset(id){const i=this.items.get(id);if(!i)return;i.time=0;i.maskTime=0;i.effectTime=null;i.runner=null;i.motion.visible=!startsHidden(i.spec);i.paused=false;this.setFade(i,i.motion.visible?1:0);i.followCamera=false;i.motion.position.set(0,0,0);i.motion.rotation.set(0,0,0);i.motion.scale.setScalar(1);if(i.video){i.video.pause();i.video.currentTime=0;i.video.loop=i.spec.interaction?.loop??true;}this.configure(i);i.playing=i.spec.autoplay!==false;}
   primeVideos(){return Promise.allSettled([...this.items.values()].filter(i=>i.video).map(i=>i.video.play().then(()=>{if(!this.playing||!i.playing||!i.gate||i.paused)i.video.pause();})));}
   play(){this.playing=true;return Promise.allSettled([...this.items.values()].map(i=>this.sync(i)));}
   pause(){this.playing=false;for(const i of this.items.values())i.video?.pause();}
