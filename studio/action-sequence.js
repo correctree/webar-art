@@ -11,7 +11,7 @@ export function actionChannels(a){
  return ({move:['position'],scale:['scale'],show:['alpha','visible'],hide:['alpha','visible'],sound:['sound'],wait:[]})[a.type]||[];
 }
 export function validateGroup(a,sounds=new Set(),scenes=new Set(),enabled=false){
- if(!a||a.type!=='parallel'||!Array.isArray(a.actions)||a.actions.length<2||a.actions.length>24)throw Error('同時再生グループは2〜24アクションです。');
+ if(!a||a.type!=='parallel'||!Array.isArray(a.actions)||a.actions.length<1||a.actions.length>24)throw Error('ACTIONグループは1〜24アクションです。');
  const used=new Set();
  for(const child of a.actions){
   if(!child||!['move','rotate','scale','show','hide','wait','sound','camera'].includes(child.type))throw Error('このアクションは同時再生グループに入れられません。');
@@ -58,4 +58,20 @@ export class ActionSequence {
  if(!complete)break;this.index++;this.elapsed=0;this.start=null;this.branches=null;
  }
  this.pose.paused=this.active&&this.spec.actions[this.index]?.type==='pause';return copy(this.pose);}
+}
+
+// Transactional layer moves: validate a copy before changing the authored sequence.
+export function moveActionLayer(actions,from,to){
+ const next=structuredClone(actions);
+ const arrayAt=group=>{if(group===null)return next;const g=next[group];if(g?.type!=='parallel')throw Error('移動先のACTIONがありません。');return g.actions;};
+ const source=arrayAt(from.group),target=arrayAt(to.group),item=source[from.index];
+ if(!item||!Number.isInteger(to.index)||to.index<0||to.index>target.length)throw Error('移動位置が不正です。');
+ if(to.group!==null&&item.type==='parallel')throw Error('ACTIONグループは別のACTION内へ入れられません。');
+ if(from.group===null&&to.group===from.index)throw Error('自分自身には移動できません。');
+ const index=source===target&&from.index<to.index?to.index-1:to.index;
+ source.splice(from.index,1);target.splice(index,0,item);
+ const result=next.filter(a=>a.type!=='parallel'||a.actions.length);
+ validateSequence({...defaultSequence(),actions:result});
+ if(result.some((a,i)=>a.type==='scene'&&i!==result.length-1))throw Error('シーン切替は最後に配置してください。');
+ return result;
 }
