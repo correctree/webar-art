@@ -2,7 +2,7 @@
   "version": 2,
   "id": "art-20b5f109-d09",
   "title": "ARARART",
-  "revision": "35d67096-904e-4886-81c3-7db150a060a7",
+  "revision": "239ce224-2158-4666-910b-362fa69ac841",
   "trackingTarget": "98d7d014-5923-477b-ac80-190733c42729.mind",
   "maxTrack": 2,
   "markers": [
@@ -25,400 +25,12 @@
   "initialSceneId": "14f4eca0-2344-4928-b4b9-bca6093dfd74",
   "scenes": [
     {
-      "id": "scene-1",
-      "name": "pp01-02",
-      "autoNextSeconds": 0,
-      "nextSceneId": null,
-      "markerLost": "continue",
-      "objects": [
-        {
-          "scaleLinked": true,
-          "tapEnabled": true,
-          "shadow": false,
-          "id": "a1f979e0-ac43-42e1-87d2-0176a8802120",
-          "kind": "video",
-          "src": "32c2eb9c-9063-4c52-83cb-d87269004f36.webm",
-          "name": "bg_01_mov.webm",
-          "markerId": "0c0b1f70-1974-4378-bac3-8df804558988",
-          "autoplay": true,
-          "interaction": {
-            "action": "none",
-            "clip": "all",
-            "loop": true,
-            "effect": "none",
-            "duration": 1,
-            "soundId": null,
-            "volume": 1,
-            "nextSceneId": null,
-            "delay": 1,
-            "startTrigger": "scene",
-            "sequence": {
-              "enabled": true,
-              "retrigger": "restart",
-              "finish": "keep",
-              "actions": [
-                {
-                  "type": "show",
-                  "delay": 0,
-                  "fade": 2
-                }
-              ]
-            }
-          },
-          "position": [
-            -0.2498643100352222,
-            0,
-            0.001
-          ],
-          "rotation": [
-            0,
-            0,
-            0
-          ],
-          "scale": [
-            0.5,
-            0.5,
-            0.5
-          ],
-          "fallback": {
-            "src": "a0f700f4-1001-4f54-bf1a-6a6c84af4cf8.mp4",
-            "packedAlpha": true
-          },
-          "loop": true
-        },
-        {
-          "scaleLinked": true,
-          "tapEnabled": true,
-          "shadow": false,
-          "id": "1af60004-8b4d-4897-874e-9c3b3a1666db",
-          "kind": "sprite",
-          "src": "eb92fc89-257c-4b42-a0da-a310e0c19763.png",
-          "name": "01_chara-sprite-package.zip",
-          "markerId": "0c0b1f70-1974-4378-bac3-8df804558988",
-          "autoplay": true,
-          "interaction": {
-            "action": "none",
-            "clip": "all",
-            "loop": true,
-            "effect": "none",
-            "duration": 1,
-            "soundId": null,
-            "volume": 1,
-            "nextSceneId": null,
-            "delay": 1,
-            "startTrigger": "scene",
-            "sequence": {
-              "enabled": true,
-              "retrigger": "restart",
-              "finish": "keep",
-              "actions": [
-                {
-                  "type": "show",
-                  "delay": 0,
-                  "fade": 2
-                }
-              ]
-            }
-          },
-          "position": [
-            -0.21532950320917624,
-            0.011449148337351188,
-            0.10165823495157539
-          ],
-          "rotation": [
-            45,
-            0,
-            0
-          ],
-          "scale": [
-            0.3499999999999999,
-            0.3499999999999999,
-            0.3499999999999999
-          ],
-          "sprite": {
-            "columns": 4,
-            "rows": 2,
-            "frames": 7,
-            "frameWidth": 512,
-            "frameHeight": 512,
-            "fps": 4,
-            "loop": true
-          }
-        },
-        {
-          "scaleLinked": true,
-          "tapEnabled": true,
-          "shadow": false,
-          "id": "7ff45d71-bf27-44d8-a5e2-204493988bcb",
-          "kind": "video",
-          "src": "8037c445-a00b-4a12-b82d-1a55ddbd935d.webm",
-          "name": "bg_02_mov.webm",
-          "markerId": "0c0b1f70-1974-4378-bac3-8df804558988",
-          "autoplay": true,
-          "interaction": {
-            "action": "none",
-            "clip": "all",
-            "loop": true,
-            "effect": "none",
-            "duration": 1,
-            "soundId": null,
-            "volume": 1,
-            "nextSceneId": null,
-            "delay": 1,
-            "startTrigger": "scene",
-            "sequence": {
-              "enabled": true,
-              "retrigger": "restart",
-              "finish": "keep",
-              "actions": [
-                {
-                  "type": "show",
-                  "delay": 2,
-                  "fade": 2
-                }
-              ]
-            }
-          },
-          "position": [
-            0.250163853836552,
-            0,
-            0.001
-          ],
-          "rotation": [
-            0,
-            0,
-            0
-          ],
-          "scale": [
-            0.5,
-            0.5,
-            0.5
-          ],
-          "fallback": {
-            "src": "f24e425e-74fc-4bc6-b036-edfd3fc28701.mp4",
-            "packedAlpha": true
-          },
-          "loop": true
-        },
-        {
-          "scaleLinked": true,
-          "tapEnabled": true,
-          "shadow": false,
-          "id": "a3c63e78-fa27-4368-88a9-8cb906a71e29",
-          "kind": "sprite",
-          "src": "3e87c1f9-db7a-455c-b84b-20497b3193b6.png",
-          "name": "02_chara-sprite-package.zip",
-          "markerId": "0c0b1f70-1974-4378-bac3-8df804558988",
-          "autoplay": true,
-          "interaction": {
-            "action": "none",
-            "clip": "all",
-            "loop": true,
-            "effect": "none",
-            "duration": 1,
-            "soundId": null,
-            "volume": 1,
-            "nextSceneId": null,
-            "delay": 1,
-            "startTrigger": "scene",
-            "sequence": {
-              "enabled": true,
-              "retrigger": "restart",
-              "finish": "keep",
-              "actions": [
-                {
-                  "type": "show",
-                  "delay": 2,
-                  "fade": 2
-                }
-              ]
-            }
-          },
-          "position": [
-            0.2495035145938309,
-            0.003472659312001282,
-            0.10347265931200128
-          ],
-          "rotation": [
-            45,
-            0,
-            0
-          ],
-          "scale": [
-            0.3,
-            0.3,
-            0.3
-          ],
-          "sprite": {
-            "columns": 4,
-            "rows": 2,
-            "frames": 7,
-            "frameWidth": 1024,
-            "frameHeight": 1024,
-            "fps": 4,
-            "loop": true
-          }
-        }
-      ]
-    },
-    {
-      "id": "4fc8615f-b8ce-4f5c-9e24-29f4c023bcd5",
-      "name": "扉",
-      "autoNextSeconds": 0,
-      "nextSceneId": null,
-      "markerLost": "continue",
-      "objects": [
-        {
-          "scaleLinked": true,
-          "tapEnabled": true,
-          "shadow": false,
-          "id": "9b28be61-ec60-48e3-9d6b-890917cf4fd2",
-          "kind": "image",
-          "src": "4f646719-fc69-4666-980b-50af3b86046d.jpg",
-          "name": "tobira.jpg",
-          "markerId": "657d5984-58eb-4f5a-8653-f61cbc85625e",
-          "autoplay": true,
-          "interaction": {
-            "action": "none",
-            "clip": "all",
-            "loop": false,
-            "effect": "none",
-            "duration": 1,
-            "soundId": null,
-            "volume": 1,
-            "nextSceneId": null,
-            "delay": 1,
-            "startTrigger": "scene",
-            "sequence": {
-              "enabled": true,
-              "retrigger": "restart",
-              "finish": "keep",
-              "actions": [
-                {
-                  "type": "parallel",
-                  "actions": [
-                    {
-                      "type": "show",
-                      "delay": 0,
-                      "fade": 2
-                    },
-                    {
-                      "type": "scale",
-                      "factors": [
-                        10,
-                        10,
-                        10
-                      ],
-                      "linked": true,
-                      "duration": 1,
-                      "repeat": 1,
-                      "pingpong": false
-                    }
-                  ],
-                  "trigger": "scene"
-                },
-                {
-                  "type": "scene",
-                  "sceneId": "scene-1",
-                  "trigger": "tap"
-                }
-              ]
-            }
-          },
-          "position": [
-            0,
-            0,
-            0.1
-          ],
-          "rotation": [
-            0,
-            0,
-            0
-          ],
-          "scale": [
-            0.1,
-            0.1,
-            0.1
-          ]
-        }
-      ]
-    },
-    {
       "id": "14f4eca0-2344-4928-b4b9-bca6093dfd74",
       "name": "表紙",
       "autoNextSeconds": 0,
       "nextSceneId": null,
       "markerLost": "continue",
       "objects": [
-        {
-          "scaleLinked": true,
-          "tapEnabled": true,
-          "shadow": false,
-          "id": "22aa4e81-be2c-4e28-9a8e-92bd7951c106",
-          "kind": "video",
-          "src": "a81febe7-8ae3-43e9-ac8d-41c4b16e5c7f.webm",
-          "name": "cover_01.webm",
-          "markerId": "657d5984-58eb-4f5a-8653-f61cbc85625e",
-          "autoplay": false,
-          "interaction": {
-            "action": "none",
-            "clip": "all",
-            "loop": false,
-            "effect": "none",
-            "duration": 1,
-            "soundId": null,
-            "volume": 1,
-            "nextSceneId": null,
-            "delay": 1,
-            "startTrigger": "scene",
-            "sequence": {
-              "enabled": true,
-              "retrigger": "restart",
-              "finish": "keep",
-              "actions": [
-                {
-                  "type": "show",
-                  "delay": 2,
-                  "fade": 2,
-                  "trigger": "scene"
-                },
-                {
-                  "type": "mediaPlay",
-                  "start": "restart",
-                  "loop": false,
-                  "wait": false,
-                  "clip": "all",
-                  "trigger": "previous"
-                },
-                {
-                  "type": "scene",
-                  "sceneId": "4fc8615f-b8ce-4f5c-9e24-29f4c023bcd5",
-                  "trigger": "tap"
-                }
-              ]
-            }
-          },
-          "position": [
-            0,
-            0,
-            0.001
-          ],
-          "rotation": [
-            0,
-            0,
-            0
-          ],
-          "scale": [
-            1,
-            1,
-            1
-          ],
-          "fallback": {
-            "src": "15d48ee1-c2b1-48e6-8b50-e5cede0a06db.mp4",
-            "packedAlpha": true
-          },
-          "loop": true
-        },
         {
           "scaleLinked": true,
           "tapEnabled": true,
@@ -469,7 +81,456 @@
             0.3,
             0.3
           ],
+          "displayMode": "front",
+          "visible": true
+        },
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": false,
+          "id": "d6295255-814d-487c-930d-10c3bbae8324",
+          "kind": "video",
+          "src": "f100050a-114a-4bca-99be-330499a3921f.webm",
+          "name": "00_cover.webm",
+          "markerId": "657d5984-58eb-4f5a-8653-f61cbc85625e",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": false,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1,
+            "sequence": {
+              "enabled": true,
+              "retrigger": "restart",
+              "finish": "keep",
+              "actions": [
+                {
+                  "type": "parallel",
+                  "trigger": "scene",
+                  "actions": [
+                    {
+                      "type": "show",
+                      "delay": 2,
+                      "fade": 2
+                    }
+                  ]
+                },
+                {
+                  "type": "mediaPlay",
+                  "start": "restart",
+                  "loop": false,
+                  "wait": false,
+                  "clip": "all",
+                  "trigger": "previous"
+                },
+                {
+                  "type": "scene",
+                  "sceneId": "4fc8615f-b8ce-4f5c-9e24-29f4c023bcd5",
+                  "trigger": "tap"
+                }
+              ]
+            }
+          },
+          "position": [
+            0,
+            0,
+            0.001
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "fallback": {
+            "src": "b8b7b011-4679-41af-8f62-168876c1627f.mp4",
+            "packedAlpha": true
+          },
+          "loop": true
+        },
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": false,
+          "id": "5e9f31fb-bc6b-4678-91bf-a2206684d678",
+          "kind": "image",
+          "src": "5ababfe1-f3de-453a-a86e-d78c33b83929.png",
+          "name": "chara_00.png",
+          "markerId": "657d5984-58eb-4f5a-8653-f61cbc85625e",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": false,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1,
+            "startTrigger": "scene",
+            "sequence": {
+              "enabled": true,
+              "retrigger": "restart",
+              "finish": "keep",
+              "actions": [
+                {
+                  "type": "show",
+                  "delay": 6,
+                  "fade": 2,
+                  "trigger": "scene"
+                }
+              ]
+            }
+          },
+          "position": [
+            0,
+            -0.1522532849568613,
+            0.1597224188568084
+          ],
+          "rotation": [
+            45,
+            0,
+            0
+          ],
+          "scale": [
+            0.5,
+            0.5,
+            0.5
+          ],
           "displayMode": "front"
+        }
+      ]
+    },
+    {
+      "id": "4fc8615f-b8ce-4f5c-9e24-29f4c023bcd5",
+      "name": "扉",
+      "autoNextSeconds": 0,
+      "nextSceneId": null,
+      "markerLost": "continue",
+      "objects": [
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": false,
+          "id": "9b28be61-ec60-48e3-9d6b-890917cf4fd2",
+          "kind": "image",
+          "src": "4f646719-fc69-4666-980b-50af3b86046d.jpg",
+          "name": "tobira.jpg",
+          "markerId": "657d5984-58eb-4f5a-8653-f61cbc85625e",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": false,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1,
+            "startTrigger": "scene",
+            "sequence": {
+              "enabled": true,
+              "retrigger": "restart",
+              "finish": "keep",
+              "actions": [
+                {
+                  "type": "parallel",
+                  "actions": [
+                    {
+                      "type": "scale",
+                      "factors": [
+                        9.5,
+                        9.5,
+                        9.5
+                      ],
+                      "linked": true,
+                      "duration": 1,
+                      "repeat": 1,
+                      "pingpong": false
+                    },
+                    {
+                      "type": "show",
+                      "delay": 0,
+                      "fade": 2
+                    }
+                  ],
+                  "trigger": "scene"
+                },
+                {
+                  "type": "scene",
+                  "sceneId": "scene-1",
+                  "trigger": "tap"
+                }
+              ]
+            }
+          },
+          "position": [
+            0,
+            0,
+            0.00043076373521264144
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            0.1,
+            0.1,
+            0.1
+          ]
+        }
+      ]
+    },
+    {
+      "id": "scene-1",
+      "name": "01-02",
+      "autoNextSeconds": 0,
+      "nextSceneId": null,
+      "markerLost": "continue",
+      "objects": [
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": false,
+          "id": "a1f979e0-ac43-42e1-87d2-0176a8802120",
+          "kind": "video",
+          "src": "32c2eb9c-9063-4c52-83cb-d87269004f36.webm",
+          "name": "bg_01_mov.webm",
+          "markerId": "0c0b1f70-1974-4378-bac3-8df804558988",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": true,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1,
+            "startTrigger": "scene",
+            "sequence": {
+              "enabled": true,
+              "retrigger": "restart",
+              "finish": "keep",
+              "actions": [
+                {
+                  "type": "show",
+                  "delay": 0,
+                  "fade": 2,
+                  "trigger": "scene"
+                }
+              ]
+            }
+          },
+          "position": [
+            -0.5,
+            0,
+            0.001
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "fallback": {
+            "src": "a0f700f4-1001-4f54-bf1a-6a6c84af4cf8.mp4",
+            "packedAlpha": true
+          },
+          "loop": true
+        },
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": false,
+          "id": "1af60004-8b4d-4897-874e-9c3b3a1666db",
+          "kind": "sprite",
+          "src": "eb92fc89-257c-4b42-a0da-a310e0c19763.png",
+          "name": "01_chara-sprite-package.zip",
+          "markerId": "0c0b1f70-1974-4378-bac3-8df804558988",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": true,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1,
+            "startTrigger": "scene",
+            "sequence": {
+              "enabled": true,
+              "retrigger": "restart",
+              "finish": "keep",
+              "actions": [
+                {
+                  "type": "show",
+                  "delay": 0,
+                  "fade": 2,
+                  "trigger": "scene"
+                }
+              ]
+            }
+          },
+          "position": [
+            -0.524932730264479,
+            0.011449148337351188,
+            0.1401680806800144
+          ],
+          "rotation": [
+            45,
+            0,
+            0
+          ],
+          "scale": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "sprite": {
+            "columns": 4,
+            "rows": 2,
+            "frames": 7,
+            "frameWidth": 512,
+            "frameHeight": 512,
+            "fps": 4,
+            "loop": true
+          }
+        },
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": false,
+          "id": "7ff45d71-bf27-44d8-a5e2-204493988bcb",
+          "kind": "video",
+          "src": "8037c445-a00b-4a12-b82d-1a55ddbd935d.webm",
+          "name": "bg_02_mov.webm",
+          "markerId": "0c0b1f70-1974-4378-bac3-8df804558988",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": true,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1,
+            "startTrigger": "scene",
+            "sequence": {
+              "enabled": true,
+              "retrigger": "restart",
+              "finish": "keep",
+              "actions": [
+                {
+                  "type": "show",
+                  "delay": 5,
+                  "fade": 2,
+                  "trigger": "scene"
+                }
+              ]
+            }
+          },
+          "position": [
+            0.5,
+            0,
+            0.001
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "fallback": {
+            "src": "f24e425e-74fc-4bc6-b036-edfd3fc28701.mp4",
+            "packedAlpha": true
+          },
+          "loop": true
+        },
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": false,
+          "id": "a3c63e78-fa27-4368-88a9-8cb906a71e29",
+          "kind": "sprite",
+          "src": "3e87c1f9-db7a-455c-b84b-20497b3193b6.png",
+          "name": "02_chara-sprite-package.zip",
+          "markerId": "0c0b1f70-1974-4378-bac3-8df804558988",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": true,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1,
+            "startTrigger": "scene",
+            "sequence": {
+              "enabled": true,
+              "retrigger": "restart",
+              "finish": "keep",
+              "actions": [
+                {
+                  "type": "show",
+                  "delay": 5,
+                  "fade": 2,
+                  "trigger": "scene"
+                }
+              ]
+            }
+          },
+          "position": [
+            0.485893324325925,
+            0.003472659312001282,
+            0.17626125017762623
+          ],
+          "rotation": [
+            45,
+            0,
+            0
+          ],
+          "scale": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "sprite": {
+            "columns": 4,
+            "rows": 2,
+            "frames": 7,
+            "frameWidth": 1024,
+            "frameHeight": 1024,
+            "fps": 4,
+            "loop": true
+          }
         }
       ]
     }
