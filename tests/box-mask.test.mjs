@@ -1,3 +1,4 @@
+import {applyDisplayPolicy} from '../studio/display-policy.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
@@ -51,7 +52,7 @@ test('MediaScene GLB, Sprite and packed-alpha video constructors all connect vis
  const texture=()=>({image:{width:64,height:64},repeat:{set(){}},offset:{set(){}}});
  const THREE={Group,Vector3:V,Box3:class{setFromObject(){return this;}getSize(){return new V(1,1,1);}getCenter(){return new V();}},TextureLoader:class{async loadAsync(){return texture();}},VideoTexture:class{constructor(){Object.assign(this,texture());}},MeshBasicMaterial:Material,ShaderMaterial,MeshDepthMaterial:Material,Mesh,PlaneGeometry:class{},MathUtils:{degToRad:d=>d*Math.PI/180}};
  const video={videoWidth:128,videoHeight:64,setAttribute(){},load(){this.onloadedmetadata?.();},pause(){},play(){return Promise.resolve();}};
- const ctx={THREE,URL,setTimeout,clearTimeout,document:{createElement:()=>({...video})},GLTFLoader:class{setDRACOLoader(){}async loadAsync(){const scene=new Group();scene.add(new Mesh({},new Material()));return {scene,animations:[]};}},DRACOLoader:class{setDecoderPath(){}},createBoxMask:()=>({enabled:false,planes:Array.from({length:6},()=>({}))}),updateBoxMask:(state,spec)=>{state.enabled=spec.boxMask.enabled;state.mode=spec.boxMask.mode;},applyBoxMask:api.applyBoxMask,patchPackedAlphaDepth(){},spriteSpec:s=>s,spriteFrame:()=>({x:0,y:0})};
+ const ctx={applyDisplayPolicy,THREE,URL,setTimeout,clearTimeout,document:{createElement:()=>({...video})},GLTFLoader:class{setDRACOLoader(){}async loadAsync(){const scene=new Group();scene.add(new Mesh({},new Material()));return {scene,animations:[]};}},DRACOLoader:class{setDecoderPath(){}},createBoxMask:()=>({enabled:false,planes:Array.from({length:6},()=>({}))}),updateBoxMask:(state,spec)=>{state.enabled=spec.boxMask.enabled;state.mode=spec.boxMask.mode;},applyBoxMask:api.applyBoxMask,patchPackedAlphaDepth(){},spriteSpec:s=>s,spriteFrame:()=>({x:0,y:0})};
  vm.createContext(ctx);const source=await readFile(new URL('../studio/media.js',import.meta.url),'utf8');vm.runInContext(source.replace(/^import .*;\n/gm,'').replace('export class MediaScene','class MediaScene').replace("new URL('../', import.meta.url)","new URL('https://example.test/')")+';globalThis.Media=MediaScene;',ctx);
  const media=new ctx.Media(()=>'',new URL('https://example.test/'));
  for(const kind of ['glb','sprite','video']){
