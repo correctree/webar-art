@@ -2,7 +2,7 @@
   "version": 2,
   "id": "art-20b5f109-d09",
   "title": "ARARART",
-  "revision": "d3bfebda-5446-478f-b0e2-9f8eae46c6d5",
+  "revision": "c7eab317-7116-4028-8019-4bac6f62e679",
   "trackingTarget": "98d7d014-5923-477b-ac80-190733c42729.mind",
   "maxTrack": 2,
   "markers": [
@@ -583,6 +583,11 @@
                   "delay": 2,
                   "fade": 2,
                   "trigger": "scene"
+                },
+                {
+                  "type": "scene",
+                  "sceneId": "966c70f6-016a-482e-ac52-05bf1cd519b6",
+                  "trigger": "tap"
                 }
               ]
             }
@@ -736,6 +741,11 @@
                       "clip": "all"
                     }
                   ]
+                },
+                {
+                  "type": "scene",
+                  "sceneId": "966c70f6-016a-482e-ac52-05bf1cd519b6",
+                  "trigger": "tap"
                 }
               ]
             }
@@ -832,6 +842,366 @@
             "fps": 4,
             "loop": true
           }
+        }
+      ]
+    },
+    {
+      "id": "966c70f6-016a-482e-ac52-05bf1cd519b6",
+      "name": "05-06",
+      "autoNextSeconds": 0,
+      "nextSceneId": null,
+      "markerLost": "continue",
+      "objects": [
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": true,
+          "id": "1a213f76-14f5-4449-bb51-e4782b89e0b2",
+          "kind": "video",
+          "src": "8d8f5ceb-d8de-440d-8f20-dcdc5e172ddb.webm",
+          "name": "bg_05_mov.webm",
+          "markerId": "0c0b1f70-1974-4378-bac3-8df804558988",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": false,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1,
+            "startTrigger": "scene",
+            "sequence": {
+              "enabled": true,
+              "retrigger": "restart",
+              "finish": "keep",
+              "actions": [
+                {
+                  "type": "parallel",
+                  "trigger": "scene",
+                  "actions": [
+                    {
+                      "type": "show",
+                      "delay": 2,
+                      "fade": 2
+                    },
+                    {
+                      "type": "mediaPlay",
+                      "start": "restart",
+                      "loop": true,
+                      "wait": false,
+                      "clip": "all"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "position": [
+            -0.4998592142448525,
+            0,
+            0.001
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "fallback": {
+            "src": "55177072-0aff-4d85-8042-9eaff6d8a409.mp4",
+            "packedAlpha": true
+          },
+          "loop": true,
+          "displayMode": "depth"
+        },
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": false,
+          "id": "54ff9a03-065d-4661-885f-3da840cf929e",
+          "kind": "video",
+          "src": "1e3c0b5f-bd44-40fd-9150-88d3583e9223.webm",
+          "name": "bg_06.webm",
+          "markerId": "0c0b1f70-1974-4378-bac3-8df804558988",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": false,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1,
+            "startTrigger": "scene",
+            "sequence": {
+              "enabled": true,
+              "retrigger": "restart",
+              "finish": "keep",
+              "actions": [
+                {
+                  "type": "parallel",
+                  "trigger": "scene",
+                  "actions": [
+                    {
+                      "type": "mediaPlay",
+                      "start": "restart",
+                      "loop": true,
+                      "wait": false,
+                      "clip": "all"
+                    },
+                    {
+                      "type": "show",
+                      "delay": 5,
+                      "fade": 2
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "position": [
+            0.49966190871004684,
+            0,
+            0.001
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "fallback": {
+            "src": "17170480-650e-4a55-b2c1-bc589db99d44.mp4",
+            "packedAlpha": true
+          },
+          "loop": true
+        },
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": false,
+          "id": "e3fbca41-5320-4178-b170-d35fb41263fb",
+          "kind": "sprite",
+          "src": "3a2799b5-9bc4-43a4-96d3-f9f2be739f2d.png",
+          "name": "chara_5a-sprite-package.zip",
+          "markerId": "0c0b1f70-1974-4378-bac3-8df804558988",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": false,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1,
+            "startTrigger": "scene",
+            "sequence": {
+              "enabled": true,
+              "retrigger": "restart",
+              "finish": "keep",
+              "actions": [
+                {
+                  "type": "parallel",
+                  "trigger": "scene",
+                  "actions": [
+                    {
+                      "type": "show",
+                      "delay": 2,
+                      "fade": 2
+                    },
+                    {
+                      "type": "mediaPlay",
+                      "start": "restart",
+                      "loop": true,
+                      "wait": false,
+                      "clip": "all"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "position": [
+            -0.288467069907845,
+            -0.37276612227176104,
+            0.11559175884157785
+          ],
+          "rotation": [
+            45,
+            0,
+            0
+          ],
+          "scale": [
+            0.5,
+            0.5,
+            0.5
+          ],
+          "sprite": {
+            "columns": 4,
+            "rows": 1,
+            "frames": 3,
+            "frameWidth": 1024,
+            "frameHeight": 1024,
+            "fps": 10,
+            "loop": true
+          },
+          "displayMode": "front"
+        },
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": false,
+          "id": "d1bd63a7-f0ae-4872-844b-1edaea08fd64",
+          "kind": "sprite",
+          "src": "66e56ef2-2ec5-484a-b188-5b18cdb18b15.png",
+          "name": "chara_5b-sprite-package.zip",
+          "markerId": "0c0b1f70-1974-4378-bac3-8df804558988",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": false,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1,
+            "startTrigger": "scene",
+            "sequence": {
+              "enabled": true,
+              "retrigger": "restart",
+              "finish": "keep",
+              "actions": [
+                {
+                  "type": "show",
+                  "delay": 2,
+                  "fade": 0,
+                  "trigger": "previous"
+                },
+                {
+                  "type": "mediaPlay",
+                  "start": "restart",
+                  "loop": true,
+                  "wait": false,
+                  "clip": "all",
+                  "trigger": "scene"
+                }
+              ]
+            }
+          },
+          "position": [
+            -0.5119684220920342,
+            -0.17370662852202223,
+            0.4818795358764896
+          ],
+          "rotation": [
+            45,
+            0,
+            0
+          ],
+          "scale": [
+            0.9,
+            0.9,
+            0.9
+          ],
+          "sprite": {
+            "columns": 4,
+            "rows": 4,
+            "frames": 16,
+            "frameWidth": 1024,
+            "frameHeight": 1024,
+            "fps": 4,
+            "loop": true
+          }
+        },
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": false,
+          "id": "8adca990-917f-4aa2-9ff0-d91eab281c16",
+          "kind": "sprite",
+          "src": "77addaf7-71f8-49a4-ac8d-80832992cb26.png",
+          "name": "chara_6-sprite-package.zip",
+          "markerId": "0c0b1f70-1974-4378-bac3-8df804558988",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": false,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1,
+            "startTrigger": "scene",
+            "sequence": {
+              "enabled": true,
+              "retrigger": "restart",
+              "finish": "keep",
+              "actions": [
+                {
+                  "type": "parallel",
+                  "trigger": "scene",
+                  "actions": [
+                    {
+                      "type": "show",
+                      "delay": 5,
+                      "fade": 2
+                    },
+                    {
+                      "type": "mediaPlay",
+                      "start": "restart",
+                      "loop": true,
+                      "wait": false,
+                      "clip": "all"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "position": [
+            0.5171090342644646,
+            0.23177981831326533,
+            0.28743871701226664
+          ],
+          "rotation": [
+            45,
+            0,
+            0
+          ],
+          "scale": [
+            0.8,
+            0.8,
+            0.8
+          ],
+          "sprite": {
+            "columns": 4,
+            "rows": 3,
+            "frames": 10,
+            "frameWidth": 800,
+            "frameHeight": 800,
+            "fps": 12,
+            "loop": true
+          },
+          "displayMode": "front"
         }
       ]
     }
