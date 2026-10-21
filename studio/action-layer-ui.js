@@ -6,18 +6,21 @@ export function renderActionLayers(rows,{object,project,clips=[],locked=false,sa
  rows.replaceChildren();if(!object)return;const q=object.interaction.sequence||defaultSequence();
  let migrated=false;q.actions=q.actions.map((a,index)=>{if(a.type==='showMove'){const move={...a,type:'move'};delete move.fade;delete move.delay;delete move.trigger;a={type:'parallel',actions:[{type:'show',delay:a.delay??0,fade:a.fade??0},move],trigger:a.trigger};migrated=true;}if(a.trigger===undefined){a.trigger=groupTrigger(q.actions,index,object.interaction.startTrigger||'tap');migrated=true;}return a;});if(migrated&&object.interaction.sequence)save();
  rows.append(node('p','各ACTIONで開始条件を選択。前のACTION完了後＝連続再生、タップ＝その位置で待機、シーン開始＝開始イベントを記録して順番に実行。枠内は同時再生。','hint'));
+ const feedback=node('p','','action-layer-feedback');feedback.setAttribute('role','status');rows.append(feedback);
  let dragging=null,target=null;const repaint=()=>renderActionLayers(rows,{object,project,clips,locked,save,status});
- const commit=fn=>{try{fn();save();repaint();}catch(e){status(e.message);}};
+ const commit=fn=>{try{fn();save();repaint();}catch(e){feedback.textContent=e.message;status(e.message);}};
  const bind=(el,fn)=>{el.dataset.actionDrop='true';el._actionDrop=fn;};
  const execute=(from,to)=>commit(()=>{q.actions=moveActionLayer(q.actions,from,to);});
  function handle(host,from,title){const h=node('span','⠿','action-drag-handle');h.setAttribute('role','button');h.setAttribute('aria-label',title+'をドラッグ');h.tabIndex=0;h.draggable=false;h.onpointerdown=e=>{if(locked||e.button!==0)return;e.preventDefault();e.stopPropagation();const x=e.clientX,y=e.clientY;let started=false;
  const find=ev=>{const el=document.elementFromPoint(ev.clientX,ev.clientY)?.closest('[data-action-drop]');return el&&rows.contains(el)?el:null;};
- const move=ev=>{if(!started&&Math.hypot(ev.clientX-x,ev.clientY-y)<6)return;started=true;dragging=from;ev.preventDefault();target?.classList.remove('action-drop');target=find(ev);target?.classList.add('action-drop');h.classList.add('action-dragging');};
+ const move=ev=>{if(!started&&Math.hypot(ev.clientX-x,ev.clientY-y)<6)return;started=true;dragging=from;ev.preventDefault();const pane=rows.closest?.('aside');if(pane?.getBoundingClientRect){const rect=pane.getBoundingClientRect();if(ev.clientY<rect.top+45)pane.scrollTop-=18;else if(ev.clientY>rect.bottom-45)pane.scrollTop+=18;}target?.classList.remove('action-drop');target=find(ev);target?.classList.add('action-drop');h.classList.add('action-dragging');};
  const clean=()=>{document.removeEventListener('pointermove',move);document.removeEventListener('pointerup',up);document.removeEventListener('pointercancel',cancel);target?.classList.remove('action-drop');h.classList.remove('action-dragging');};
  const up=ev=>{clean();if(started)find(ev)?._actionDrop?.(from);dragging=null;};const cancel=()=>{clean();dragging=null;};document.addEventListener('pointermove',move,{passive:false});document.addEventListener('pointerup',up);document.addEventListener('pointercancel',cancel);};host.append(h);}
  function button(host,text,fn){const b=node('button',text);b.type='button';b.disabled=locked;b.onclick=()=>commit(fn);host.append(b);}
  function gap(host,to,text){const g=node('div',text,'action-layer-gap');bind(g,from=>execute(from,to));host.append(g);}
- function join(from,index){if(from.group===null&&from.index===index)return;commit(()=>{const candidate=structuredClone(q.actions),a=candidate[index];if(a.type!=='parallel'){const child=structuredClone(a);delete child.trigger;candidate[index]={type:'parallel',trigger:a.trigger,actions:[child]};}q.actions=moveActionLayer(candidate,from,{group:index,index:candidate[index].actions.length});});}
+ function transfer(from,index){if(from.group===null&&from.index===index)return;const candidate=structuredClone(q.actions),a=candidate[index];if(a.type!=='parallel'){const child=structuredClone(a);delete child.trigger;candidate[index]={type:'parallel',trigger:a.trigger,actions:[child]};}q.actions=moveActionLayer(candidate,from,{group:index,index:candidate[index].actions.length});}
+ function join(from,index){commit(()=>transfer(from,index));}
+
  function selector(host,label,value,options,onChange){const l=node('label',label),input=node('select');for(const [v,text]of options){const o=node('option',text);o.value=v;input.append(o);}input.value=value;input.disabled=locked;input.onchange=()=>commit(()=>onChange(input.value));l.append(input);host.append(l);return input;}
  function layer(a,index,parent,host,rootIndex,isChild){
  const from={group:isChild?rootIndex:null,index:isChild?index:rootIndex},d=node('details','','action-layer action-card');d.open=openState.get(a)??false;d.ontoggle=()=>openState.set(a,d.open);const summary=node('summary','','action-layer-summary');handle(summary,from,labels[a.type]);summary.append(node('span',labels[a.type]));d.append(summary);
@@ -43,6 +46,7 @@ export function renderActionLayers(rows,{object,project,clips=[],locked=false,sa
  if(a.type==='sound'){select('音',a.soundId||'',[['','選択'],...project.sounds.map(s=>[s.id,s.name])],v=>a.soundId=v||null);number('音量',a.volume,0,1,.1,v=>a.volume=v);}
  if(a.type==='scene')select('切替先',a.sceneId,project.scenes.map(s=>[s.id,s.name]),v=>a.sceneId=v);
  if(a.type==='camera')select('向きの追従',String(a.enabled),[['true','開始'],['false','解除']],v=>a.enabled=v==='true');
+ const destination=node('select');destination.setAttribute('aria-label','アクションの移動先');destination.disabled=locked;const placeholder=node('option','移動先ACTIONを選択');placeholder.value='';destination.append(placeholder);q.actions.forEach((root,j)=>{if(j===rootIndex)return;const option=node('option','ACTION-'+String(j+1).padStart(2,'0'));option.value=String(j);destination.append(option);});destination.value='';panel.append(destination);button(panel,'選択したACTIONへ移動',()=>{if(destination.value==='')throw Error('移動先のACTIONを選択してください。');transfer(from,Number(destination.value));});
  const tools=node('div','','action-layer-tools');button(tools,'複製して次のACTIONへ',()=>{if(actionCount(q.actions)>=24)throw Error('24アクションまでです。');const clone=structuredClone(a);clone.trigger='previous';q.actions.splice(rootIndex+1,0,clone);});button(tools,'削除',()=>{parent.splice(index,1);if(isChild&&!parent.length)q.actions.splice(rootIndex,1);});panel.append(tools);host.append(d);
  }
  q.actions.forEach((entry,index)=>{

@@ -80,8 +80,9 @@ export function usesTrigger(o,kind){const i=o.interaction||{};if(!i.sequence?.en
 export function startsHidden(o){const i=o.interaction||{},q=i.sequence;return !!q?.enabled&&groupTrigger(q.actions,0,i.startTrigger||'tap')==='scene'&&startsWithAppearance(q.actions);}
 export function moveActionLayer(actions,from,to){
  const next=structuredClone(actions),at=g=>{if(g===null)return next;if(next[g]?.type!=='parallel')throw Error('ACTIONがありません。');return next[g].actions;};
- const src=at(from.group),dst=at(to.group),item=src[from.index];if(!item||!Number.isInteger(to.index)||to.index<0||to.index>dst.length)throw Error('移動位置が不正です。');if(to.group!==null&&item.type==='parallel')throw Error('ACTIONの入れ子はできません。');
+ const src=at(from.group),dst=at(to.group),item=src[from.index];if(!item||!Number.isInteger(to.index)||to.index<0||to.index>dst.length)throw Error('移動位置が不正です。');
  if(from.group===null&&to.group===from.index)throw Error('自分自身には移動できません。');
- const index=src===dst&&from.index<to.index?to.index-1:to.index;src.splice(from.index,1);dst.splice(index,0,item);if(to.group!==null)delete item.trigger;
+ const index=src===dst&&from.index<to.index?to.index-1:to.index;
+ if(to.group!==null&&item.type==='parallel'){src.splice(from.index,1);for(const child of item.actions)delete child.trigger;dst.splice(index,0,...item.actions);}else{src.splice(from.index,1);dst.splice(index,0,item);if(to.group!==null)delete item.trigger;}
  const result=next.filter(a=>a.type!=='parallel'||a.actions.length);validateSequence({...defaultSequence(),actions:result});if(result.some((a,i)=>a.type==='scene'&&i!==result.length-1))throw Error('シーン切替は最後に配置してください。');return result;
 }
