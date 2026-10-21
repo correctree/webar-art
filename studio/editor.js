@@ -1,3 +1,4 @@
+import {preparePublication,pollPublication} from './publication-client.js';
 import {renderSceneLayers} from './scene-layers.js';
 import {materialControlled} from './material-playback.js';
 import {prepareStaticImage} from './static-image.js';
@@ -20,7 +21,7 @@ import {STEPS,WORKSPACES,reactionText,exclusiveReaction,publicURL} from './workf
 import {createPairScene,compileMarkerSet} from './multi-marker.js';
 import {spriteSpec,validateScene,validatePackage,MAX_ASSET_BYTES,MAX_TOTAL_BYTES,sceneId,toProject,requiredAssets,defaultInteraction} from './schema.js';
 const $=id=>document.getElementById(id), status=text=>{$('status').textContent=text;};
-let savedFingerprint='',publishedFingerprint='',activeStep=0;
+let savedFingerprint='',publishedFingerprint='',activeStep=0,publicationWatching=false;
 const assets=new Map(), urls=new Map();let selected=null,markerMesh=null,shadowPlane=null,session=null,busy=false,publishedURL='';
 let project={version:2,id:'art-001',title:'ARARART',revision:'draft',trackingTarget:'pending.mind',maxTrack:1,markers:[],sounds:[],initialSceneId:'scene-1',scenes:[{id:'scene-1',name:'シーン1',autoNextSeconds:0,nextSceneId:null,markerLost:'continue',objects:[]}]};
 let scene=project.scenes[0],markerId=null,previewing=false,behavior=null;const audio=new AudioBank(name=>urls.get(name));
@@ -97,17 +98,33 @@ $('reload').onclick=()=>task(()=>loadPublished($('scene-id').value,new URL(sessi
 function download(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),30000);}
 $('save').onclick=()=>task(async()=>{if(selectedDirectory&&await selectedDirectory.requestPermission({mode:'readwrite'})!=='granted')throw new Error('保存先フォルダーへの書込みを許可してください。');const data=await snapshot(true);const zip=new JSZip();zip.file('scene.json',JSON.stringify(data.scene,null,2));for(const f of data.files)zip.file(f.name,f.content,{base64:true});const blob=await zip.generateAsync({type:'blob',compression:'DEFLATE'});if(selectedDirectory){const file=await selectedDirectory.getFileHandle(project.id+'-project.zip',{create:true});const writer=await file.createWritable();await writer.write(blob);await writer.close();}else download(blob,project.id+'-project.zip');await persistDraft();savedFingerprint=fingerprint();updateGuide();status('制作ZIPを'+(selectedDirectory?'指定フォルダーへ':'ダウンロードとして')+'保存しました。公開中の体験は更新していません。');});
 $('restore').onchange=()=>task(async()=>{const file=$('restore').files[0];if(!file)return;if(file.size>MAX_TOTAL_BYTES)throw new Error('ZIPは48MB以内です。');const zip=await JSZip.loadAsync(file);if(!zip.file('scene.json'))throw new Error('制作ZIPではありません。');const text=await zip.file('scene.json').async('string');if(text.length>1000000)throw new Error('シーンデータが大きすぎます。');const s=validateScene(JSON.parse(text),{draft:true});const names=requiredAssets(s);const files=[];for(const name of names){const entry=zip.file(name);if(!entry)throw new Error('素材が不足: '+name);const content=await entry.async('base64');if(content.length>MAX_ASSET_BYTES*4/3)throw new Error('素材サイズ超過');files.push({name,content});}await loadData({scene:s,files},true);await saveDraft();status('制作データを復元しました。');});
-async function task(fn){if(busy)return;busy=true;gizmo.enabled=false;const disabled=[...document.querySelectorAll('button,input,select')].map(e=>[e,e.disabled]);disabled.forEach(([e])=>e.disabled=true);try{await fn();}catch(e){status('処理を止めました: '+e.message);}finally{busy=false;gizmo.enabled=true;disabled.forEach(([e,was])=>e.disabled=was);syncFields();list();$('publish').disabled=!(session?.authenticated||session?.canLocalPublish);}}
+async function task(fn){if(busy)return;busy=true;gizmo.enabled=false;const disabled=[...document.querySelectorAll('button,input,select')].map(e=>[e,e.disabled]);disabled.forEach(([e])=>e.disabled=true);try{await fn();}catch(e){status('処理を止めました: '+e.message);}finally{busy=false;gizmo.enabled=true;disabled.forEach(([e,was])=>e.disabled=was);syncFields();list();$('publish').disabled=publicationWatching||!!sessionStorage.getItem('webar-publish-job')||!(session?.authenticated||session?.canLocalPublish);}}
 $('logout').onclick=()=>task(async()=>{const r=await fetch('/api/logout',{method:'POST',headers:{'X-CSRF-Token':session.csrf}});if(!r.ok)throw new Error('接続終了に失敗しました。');location.reload();});
 $('publish').onclick=()=>task(async()=>{
  if(!session?.authenticated&&!session?.canLocalPublish)throw new Error('公開サーバーでGitHubへ接続するか、localhostのStudioを開いてください。');
  for(const id of ['qr','public-link','copy','save-qr'])$(id).hidden=true;
  await persistDraft();savedFingerprint=fingerprint();const publicationFingerprint=fingerprint();
  const data=await snapshot();$('qr').hidden=true;$('public-link').hidden=true;$('copy').hidden=true;$('save-qr').hidden=true;status('GitHubへ送信しています…');
- const r=await fetch(session?.canLocalPublish&&!session?.authenticated?'/api/local-publish':'/api/publish',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':session.csrf},body:JSON.stringify({scene:data.scene,files:data.files})});const job=await r.json();if(!r.ok)throw new Error(job.error||'送信に失敗');
- sessionStorage.setItem('webar-publish-job',job.id);await watch(job.id);publishedFingerprint=publicationFingerprint;updateGuide();goStep(2);
+ const isLocal=session?.canLocalPublish&&!session?.authenticated;
+ const payload=isLocal?{scene:data.scene,files:data.files}:await preparePublication(data,{onProgress:status});
+ status(isLocal?'公開データを送信しています…':`変更素材 ${payload.files.length}点を送信します（${payload.reused.length}点は再利用）…`);
+ const r=await fetch(isLocal?'/api/local-publish':'/api/publish',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':session.csrf},body:JSON.stringify(payload),signal:AbortSignal.timeout(240000)});const job=await r.json();if(!r.ok)throw new Error(job.error||'送信に失敗');
+ sessionStorage.setItem('webar-publish-job',job.id);sessionStorage.setItem('webar-publish-fingerprint',publicationFingerprint);watch(job.id);
 });
-async function watch(id){for(let i=0;i<120;i++){const r=await fetch('/api/jobs/'+encodeURIComponent(id));const job=await r.json();if(!r.ok)throw new Error(job.error||'公開状態を取得できません');status(job.message);if(job.state==='failed'){sessionStorage.removeItem('webar-publish-job');throw new Error(job.message);}if(job.state==='ready'){publishedURL=job.url;await QRCode.toCanvas($('qr'),job.url,{width:240,margin:2,errorCorrectionLevel:'M'});$('qr').hidden=false;$('public-link').href=job.url;$('public-link').textContent=job.url;$('public-link').hidden=false;$('copy').hidden=false;$('save-qr').hidden=false;sessionStorage.removeItem('webar-publish-job');return;}await new Promise(r=>setTimeout(r,5000));}throw new Error('公開確認が継続中です。画面を再読込すると確認を再開します。');}
+function publicationState(job){
+ const elapsed=Number.isFinite(job.elapsed)?`（経過 ${Math.floor(job.elapsed/60)}分${job.elapsed%60}秒）`:'';
+ const text=(job.message||'公開を確認しています。')+elapsed;
+ $('publication-progress').textContent=text;$('publication-progress').hidden=false;
+ const link=$('publication-actions');if(job.actionsURL&&/^https:\/\/github\.com\//.test(job.actionsURL)){link.href=job.actionsURL;link.hidden=false;}
+ $('publication-recheck').hidden=false;$('publication-recheck').disabled=publicationWatching;status(text);
+}
+async function watch(id){
+ if(publicationWatching)return;publicationWatching=true;$('publish').disabled=true;publicationState({message:'公開状況を確認しています。確認中も編集できます。'});
+ try{const job=await pollPublication(id,{onStatus:publicationState});publishedURL=job.url;await QRCode.toCanvas($('qr'),job.url,{width:240,margin:2,errorCorrectionLevel:'M'});$('qr').hidden=false;$('public-link').href=job.url;$('public-link').textContent=job.url;$('public-link').hidden=false;$('copy').hidden=false;$('save-qr').hidden=false;publishedFingerprint=sessionStorage.getItem('webar-publish-fingerprint')||'';sessionStorage.removeItem('webar-publish-job');sessionStorage.removeItem('webar-publish-fingerprint');updateGuide();}
+ catch(e){if(e.terminal){sessionStorage.removeItem('webar-publish-job');sessionStorage.removeItem('webar-publish-fingerprint');}publicationState({message:e.message});}
+ finally{publicationWatching=false;$('publish').disabled=!!sessionStorage.getItem('webar-publish-job')||!(session?.authenticated||session?.canLocalPublish);$('publication-recheck').disabled=false;$('publication-recheck').hidden=!sessionStorage.getItem('webar-publish-job');}
+}
+
 $('copy').onclick=()=>navigator.clipboard.writeText(publishedURL).then(()=>status('URLをコピーしました。')).catch(()=>status('表示されたURLをコピーしてください。'));
 $('save-qr').onclick=()=>$('qr').toBlob(blob=>download(blob,project.id+'-qr.png'));
 function options(el,values,value){el.replaceChildren();for(const [id,label] of values){const o=document.createElement('option');o.value=id;o.textContent=label;el.append(o);}el.value=value||'';}
@@ -131,10 +148,10 @@ async function persistDraft(){clearTimeout(saveTimer);const seq=++draftSequence,
 function saveDraft(){clearTimeout(serverTimer);if(serverEnabled&&session?.authenticated&&!session?.canLocalPublish)serverTimer=setTimeout(()=>saveServerProject(true).catch(e=>{serverEnabled=false;status('Web自動保存を停止しました：'+e.message);}),3000);clearTimeout(saveTimer);if($('save-state'))$('save-state').textContent='変更を保存中…';updateGuide();saveTimer=setTimeout(()=>persistDraft().catch(e=>{status('自動保存できません。制作ZIPを保存してください：'+e.message);$('save-state').textContent='保存に失敗しました';}),400);}
 setupGuide();
 async function init(){try{const r=await fetch('/api/session');if(r.ok)session=await r.json();}catch{}
- $('publish').disabled=!(session?.authenticated||session?.canLocalPublish);$('login').hidden=!session?.oauthAvailable||session?.authenticated;$('logout').hidden=!session?.authenticated;$('connection').textContent=session?.authenticated?'GitHub接続済み: '+session.login+' → '+session.repository:session?.canConvert?'ローカル編集。直接公開にはGitHub接続が必要です。':'GitHub Pages上の編集。直接公開は公開サーバーで行ってください。';
+ $('publish').disabled=publicationWatching||!!sessionStorage.getItem('webar-publish-job')||!(session?.authenticated||session?.canLocalPublish);$('login').hidden=!session?.oauthAvailable||session?.authenticated;$('logout').hidden=!session?.authenticated;$('connection').textContent=session?.authenticated?'GitHub接続済み: '+session.login+' → '+session.repository:session?.canConvert?'ローカル編集。直接公開にはGitHub接続が必要です。':'GitHub Pages上の編集。直接公開は公開サーバーで行ってください。';
  try{const route=new URLSearchParams(location.search);if(route.has('new')){project.id='art-'+crypto.randomUUID().slice(0,12);$('scene-id').value=project.id;await persistDraft();}else if(route.has('project')){const id=route.get('project');if(!sceneId(id))throw new Error('プロジェクトIDが不正です。');const r=await fetch('/api/drafts/'+encodeURIComponent(id));const data=await r.json();if(!r.ok)throw new Error(data.error);await loadData(data,true);serverSavedAt=data.savedAt;serverEnabled=true;await persistDraft();}else{const db=await dbPromise;const data=await new Promise((resolve,reject)=>{const req=db.transaction('draft').objectStore('draft').get('current');req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});if(data?.scene&&(data.scene.version===2||data.scene?.marker&&data.scene.objects.length)){const files=[];for(const f of data.files)files.push({name:f.name,content:await encodeBlob(f.blob)});await loadData({scene:data.scene,files},true);status('前回のブラウザー保存を復元しました。公開中の体験とは別の編集データです。');}else await loadPublished('demo-interactive');}}catch(e){status('マーカー画像と作品を登録してください。'+e.message);}
  await refresh();updateGuide();await initProjectStorage();
- const job=sessionStorage.getItem('webar-publish-job');if(job&&(session?.authenticated||session?.canLocalPublish))task(()=>watch(job));
+ const job=sessionStorage.getItem('webar-publish-job');if(job&&(session?.authenticated||session?.canLocalPublish))watch(job);
 }
 init();
 
@@ -188,6 +205,9 @@ function setupGuide(){
  modeInput.onchange=()=>{const nextMode=modeInput.value;if(!['marker','space'].includes(nextMode))return;project.experienceMode=nextMode;endPreview();modeInput.value=nextMode;saveDraft();status('体験モードを「'+(nextMode==='space'?'空間配置':'マーカーAR')+'」に変更しました。保存してから公開してください。');};
  scaleInput.onchange=()=>{const n=Number($('space-scale').value);if(!Number.isFinite(n)||n<.01||n>10){syncFields();return status('全体倍率は0.01〜10です。');}project.spaceScale=n;saveDraft();};
  const publishCard=element('fieldset',{id:'project-publish-card',class:'publication-card'});publishCard.append(element('legend',{},'公開'));for(const node of publishNodes){if(node===publishHeading||node===info||info.contains(node))continue;if(node.nodeType===1&&node.tagName==='P'&&node.textContent.startsWith('GitHub Pages上では'))continue;publishCard.append(node);}
+ const progress=element('p',{id:'publication-progress',class:'hint',role:'status','aria-live':'polite'});progress.hidden=true;
+ const actionsLink=element('a',{id:'publication-actions',target:'_blank',rel:'noopener noreferrer'},'GitHub Actionsを開く');actionsLink.hidden=true;
+ const recheck=element('button',{id:'publication-recheck'},'公開状況を再確認');recheck.hidden=true;recheck.onclick=()=>{const id=sessionStorage.getItem('webar-publish-job');if(id)watch(id);};publishCard.append(progress,actionsLink,recheck);
  panels[4].replaceChildren(setup);panels[5].replaceChildren(element('p',{class:'hint'},'公開完了後のQRをiPhoneで開き、「ARを開始」。空間配置は目印に作品群を置き、マーカーARは登録画像へカメラを向けてください。'),print);publication.replaceChildren(publishHeading,info,panels[3],publishCard,panels[4],panels[5]);
  $('guided-save').onclick=()=>goStep(2);$('guided-publish').onclick=()=>goStep(2);goStep(0);
 }

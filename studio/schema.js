@@ -68,8 +68,7 @@ function validBase64(value) {
   }
   return true;
 }
-export function validatePackage(scene, files, options) {
-  validateScene(scene, options);
+export function validateAssetFiles(files) {
   if (!Array.isArray(files) || files.length>160) throw new Error('ファイル数が不正です。');
   const map=new Map(); let total=0;
   for(const file of files) {
@@ -79,8 +78,13 @@ export function validatePackage(scene, files, options) {
     total+=size;map.set(file.name,file);
   }
   if(total>MAX_TOTAL_BYTES)throw new Error('素材合計は48MB以内です。');
-  for(const name of requiredAssets(scene))if(!map.has(name))throw new Error('素材が不足: '+name);
-  return {scene,files,total};
+  return {files,total,map};
+}
+
+export function validatePackage(scene,files,options){
+ validateScene(scene,options);const {total,map}=validateAssetFiles(files);
+ for(const name of requiredAssets(scene))if(!map.has(name))throw new Error('素材が不足: '+name);
+ return {scene,files,total};
 }
 
 export function toProject(input, options) {
