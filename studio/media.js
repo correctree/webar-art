@@ -1,3 +1,4 @@
+import {staticImageMaterialOptions} from './static-image.js';
 import {sceneMaskSources} from './box-mask-policy.js';
 import {createBoxMask,updateBoxMask,applyBoxMask,boxMaskAllows} from './box-mask.js';
 import {ActionSequence,startsWithAppearance,startsHidden} from './action-sequence.js';
@@ -28,7 +29,7 @@ export class MediaScene {
         let ratio=1,material;
         if(spec.kind==='image') {
           texture=await new THREE.TextureLoader().loadAsync(this.resolveURL(spec.src));ratio=texture.image.width/texture.image.height;texture.colorSpace=THREE.SRGBColorSpace;
-          material=new THREE.MeshBasicMaterial({map:texture,side:THREE.DoubleSide});
+          material=new THREE.MeshBasicMaterial({map:texture,side:THREE.DoubleSide,...staticImageMaterialOptions(spec.src)});
         } else if(spec.kind==='sprite') {
           const s=spriteSpec(spec.sprite);texture=await new THREE.TextureLoader().loadAsync(this.resolveURL(spec.src));
           if(texture.image.width!==s.frameWidth*s.columns||texture.image.height!==s.frameHeight*s.rows)throw new Error('Spriteシート寸法とJSONが一致しません。');
