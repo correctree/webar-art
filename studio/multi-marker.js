@@ -20,5 +20,5 @@ export async function compileMarkerSet(blobs,{decode,compiler,onProgress}){
  if(!data?.length)throw new Error('認識データを生成できません。');
  const bytes=await compiler.exportData();if(!bytes?.byteLength)throw new Error('認識データが空です。');return bytes;
 }
-export function markerStates(project,sceneId,visible){const states=new Map();for(const s of project.scenes)for(const o of s.objects){const active=s.id===sceneId;states.set(o.id,{active,gate:active&&(s.markerLost==='continue'||visible.has(o.markerId))});}return states;}
-export function trackingSummary(project,sceneId,visible){const s=project.scenes.find(s=>s.id===sceneId),needed=new Set(s?.objects.map(o=>o.markerId)||[]),markers=project.markers.filter(m=>needed.has(m.id)&&visible.has(m.id));return{count:markers.length,limit:Math.min(project.maxTrack,needed.size),names:markers.map(m=>m.name)};}
+export function markerStates(project,sceneId,visible){const states=new Map();for(const s of project.scenes)for(const o of s.objects){const active=s.id===sceneId&&o.visible!==false;states.set(o.id,{active,gate:active&&(s.markerLost==='continue'||visible.has(o.markerId))});}return states;}
+export function trackingSummary(project,sceneId,visible){const s=project.scenes.find(s=>s.id===sceneId),needed=new Set(s?.objects.filter(o=>o.visible!==false).map(o=>o.markerId)||[]),markers=project.markers.filter(m=>needed.has(m.id)&&visible.has(m.id));return{count:markers.length,limit:Math.min(project.maxTrack,needed.size),names:markers.map(m=>m.name)};}

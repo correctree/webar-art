@@ -47,3 +47,5 @@ main.editor{height:calc(100dvh - 82px);min-height:520px}.editor>aside>.workflow-
 }
 body.studio-page #reaction-config,body.studio-page #sequence-card,body.studio-page #action-rows{max-height:none;overflow:visible}
 body.studio-page .action-layer-settings{overflow-wrap:anywhere}
+
+.scene-layer{display:grid;grid-template-columns:24px minmax(0,1fr);gap:4px 6px;border:1px solid #3d555c;border-radius:7px;padding:7px;margin:6px 0}.scene-layer.selected{border-color:#a4efc9;background:#203a36}.scene-layer small{grid-column:2;font-size:10px}.scene-layer-name{padding:4px 6px;text-align:left;overflow-wrap:anywhere;min-width:0}.scene-layer-handle{cursor:grab;touch-action:none;user-select:none;align-self:center}.scene-drop{outline:2px solid #70b6e8}.object-hidden>.object-name{opacity:.5}.object-visibility{font-size:11px;padding:4px 7px}.object-visibility[aria-pressed=false]{border-style:dashed;color:#aab8bc}#objects .object-row{grid-template-columns:minmax(0,1fr) auto}#objects .object-row .compact-tap{grid-column:1/-1}#scene-menu>summary{margin-bottom:4px}

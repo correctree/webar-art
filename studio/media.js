@@ -67,7 +67,7 @@ export class MediaScene {
     updateBoxMask(state,source?.spec||{},source?.group.parent||receiver.parent,source?.maskTime||0);applyBoxMask(receiver,state);
   }
   hitPriority(hit){let node=hit.object;while(node&&!node.userData.objectId)node=node.parent;return this.items.get(node?.userData.objectId)?.spec.displayMode==='front'?1:0;}
-  hitVisible(hit){let node=hit.object;while(node&&!node.userData.objectId)node=node.parent;const item=this.items.get(node?.userData.objectId);return !!item&&boxMaskAllows(item.mask,hit.point);}
+  hitVisible(hit){let node=hit.object;while(node&&!node.userData.objectId)node=node.parent;const item=this.items.get(node?.userData.objectId);return !!item&&item.spec.visible!==false&&boxMaskAllows(item.mask,hit.point);}
   configure(item, interaction=item.spec.interaction){if(item.video)item.video.loop=interaction?.loop??(item.spec.loop!==false);if(!item.mixer)return;item.mixer.stopAllAction();const name=interaction?.clip||'all';if(name!=='all'&&!item.clips.some(c=>c.name===name))throw new Error('GLBアニメーションがありません: '+name);for(const clip of item.clips){if(name!=='all'&&clip.name!==name)continue;const action=item.mixer.clipAction(clip);action.reset();action.setLoop(interaction?.loop===false?THREE.LoopOnce:THREE.LoopRepeat,interaction?.loop===false?1:Infinity);action.clampWhenFinished=true;action.play();}}
   restart(id){const i=this.items.get(id);if(!i||materialControlled(i.spec))return Promise.resolve();i.time=0;if(i.video)i.video.currentTime=0;this.configure(i);i.playing=true;return this.sync(i);}
   setPlaying(id,playing){const i=this.items.get(id);if(!i||materialControlled(i.spec))return Promise.resolve();i.playing=playing;return this.sync(i);}
