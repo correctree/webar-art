@@ -1,3 +1,4 @@
+import {materialPlayback,materialControlled,materialStartsManually} from './material-playback.js';
 import {staticImageMaterialOptions} from './static-image.js';
 import {sceneMaskSources} from './box-mask-policy.js';
 import {createBoxMask,updateBoxMask,applyBoxMask,boxMaskAllows} from './box-mask.js';
@@ -66,14 +67,15 @@ export class MediaScene {
   }
   hitVisible(hit){let node=hit.object;while(node&&!node.userData.objectId)node=node.parent;const item=this.items.get(node?.userData.objectId);return !!item&&boxMaskAllows(item.mask,hit.point);}
   configure(item, interaction=item.spec.interaction){if(item.video)item.video.loop=interaction?.loop??(item.spec.loop!==false);if(!item.mixer)return;item.mixer.stopAllAction();const name=interaction?.clip||'all';if(name!=='all'&&!item.clips.some(c=>c.name===name))throw new Error('GLBアニメーションがありません: '+name);for(const clip of item.clips){if(name!=='all'&&clip.name!==name)continue;const action=item.mixer.clipAction(clip);action.reset();action.setLoop(interaction?.loop===false?THREE.LoopOnce:THREE.LoopRepeat,interaction?.loop===false?1:Infinity);action.clampWhenFinished=true;action.play();}}
-  restart(id){const i=this.items.get(id);if(!i)return Promise.resolve();i.time=0;if(i.video)i.video.currentTime=0;this.configure(i);i.playing=true;return this.sync(i);}
-  setPlaying(id,playing){const i=this.items.get(id);if(!i)return Promise.resolve();i.playing=playing;return this.sync(i);}
+  restart(id){const i=this.items.get(id);if(!i||materialControlled(i.spec))return Promise.resolve();i.time=0;if(i.video)i.video.currentTime=0;this.configure(i);i.playing=true;return this.sync(i);}
+  setPlaying(id,playing){const i=this.items.get(id);if(!i||materialControlled(i.spec))return Promise.resolve();i.playing=playing;return this.sync(i);}
   setGate(id,gate){const i=this.items.get(id);if(!i)return;i.gate=gate;this.sync(i).catch(e=>this.onPlaybackError?.(e));}
   sync(i){const run=this.playing&&i.playing&&i.gate&&!i.paused;if(i.video){if(run)return i.video.play();i.video.pause();}return Promise.resolve();}
   allowTap(o){const r=this.items.get(o.id)?.runner;return r?.waitingFor==='tap'||!(o.interaction.sequence?.enabled&&r?.active&&o.interaction.sequence.retrigger==='ignore');}
-  effect(id,kind='tap'){const i=this.items.get(id);if(!i)return;const q=i.spec.interaction.sequence;if(q?.enabled){i.effectTime=null;if(!i.runner)i.runner=new ActionSequence(q,a=>this.onAction?.(i.spec,a),{visible:!startsHidden(i.spec),groupTriggers:true,firstTrigger:i.spec.interaction.startTrigger||'tap'});i.runner.signal(kind);}else{i.runner=null;i.effectTime=0;}}
+  effect(id,kind='tap'){const i=this.items.get(id);if(!i)return;const q=i.spec.interaction.sequence;if(q?.enabled){i.effectTime=null;if(!i.runner)i.runner=new ActionSequence(q,a=>['mediaPlay','mediaPause'].includes(a.type)?this.runMaterialAction(i,a):this.onAction?.(i.spec,a),{visible:!startsHidden(i.spec),groupTriggers:true,firstTrigger:i.spec.interaction.startTrigger||'tap'});i.runner.signal(kind);}else{i.runner=null;i.effectTime=0;}}
 
-  reset(id){const i=this.items.get(id);if(!i)return;i.time=0;i.maskTime=0;i.effectTime=null;i.runner=null;i.motion.visible=!startsHidden(i.spec);i.paused=false;this.setFade(i,i.motion.visible?1:0);i.followCamera=false;i.motion.position.set(0,0,0);i.motion.rotation.set(0,0,0);i.motion.scale.setScalar(1);if(i.video){i.video.pause();i.video.currentTime=0;i.video.loop=i.spec.interaction?.loop??true;}this.configure(i);i.playing=i.spec.autoplay!==false;}
+  runMaterialAction(item,action){try{return materialPlayback(item,action,{configure:(i,b)=>this.configure(i,b),sync:i=>this.sync(i),onError:e=>this.onPlaybackError?.(e)});}catch(e){this.onPlaybackError?.(e);return{failed:true,done:false};}}
+  reset(id){const i=this.items.get(id);if(!i)return;i.time=0;i.maskTime=0;i.mediaLoop=undefined;i.effectTime=null;i.runner=null;i.motion.visible=!startsHidden(i.spec);i.paused=false;this.setFade(i,i.motion.visible?1:0);i.followCamera=false;i.motion.position.set(0,0,0);i.motion.rotation.set(0,0,0);i.motion.scale.setScalar(1);if(i.video){i.video.pause();i.video.currentTime=0;i.video.loop=i.spec.interaction?.loop??true;}this.configure(i);i.playing=!materialStartsManually(i.spec)&&i.spec.autoplay!==false;}
   primeVideos(){return Promise.allSettled([...this.items.values()].filter(i=>i.video).map(i=>i.video.play().then(()=>{if(!this.playing||!i.playing||!i.gate||i.paused)i.video.pause();})));}
   play(){this.playing=true;return Promise.allSettled([...this.items.values()].map(i=>this.sync(i)));}
   pause(){this.playing=false;for(const i of this.items.values())i.video?.pause();}
@@ -84,7 +86,7 @@ export class MediaScene {
    if(i.runner&&this.playing&&i.gate){const runner=i.runner,p=runner.update(delta);if(i.runner!==runner)continue;mediaDelta=Math.max(0,delta-(runner.pausedDelta||0));i.motion.position.fromArray(p.position);if(!(p.paused&&i.followCamera))i.motion.rotation.set(...p.rotation);i.motion.scale.fromArray(p.scale);i.motion.visible=p.visible;i.followCamera=p.followCamera;i.paused=p.paused;this.setFade(i,p.alpha);}
    else if(i.paused)mediaDelta=0;
    if(wasPaused!==!!i.paused)this.sync(i).catch(e=>this.onPlaybackError?.(e));
-   const run=this.playing&&i.playing&&i.gate;if(run){i.time+=mediaDelta;i.mixer?.update(mediaDelta);}if(i.spec.kind==='sprite'){let time=i.time;const s=i.spec.sprite;if(i.spec.interaction?.loop===false)time=Math.min(time,(s.frames-1)/s.fps);const f=spriteFrame(time,{...s,loop:i.spec.interaction?.loop??s.loop});i.texture.offset.set(f.x,f.y);}
+   const run=this.playing&&i.playing&&i.gate;if(run){i.time+=mediaDelta;i.mixer?.update(mediaDelta);}if(i.spec.kind==='sprite'){let time=i.time;const s=i.spec.sprite;if((i.mediaLoop??i.spec.interaction?.loop)===false)time=Math.min(time,(s.frames-1)/s.fps);const f=spriteFrame(time,{...s,loop:i.mediaLoop??i.spec.interaction?.loop??s.loop});i.texture.offset.set(f.x,f.y);}
    if(i.effectTime!==null&&this.playing&&i.gate){i.effectTime+=delta;const spec=i.spec.interaction,d=spec.duration,t=Math.min(1,i.effectTime/d),wave=Math.sin(Math.PI*t);i.motion.position.set(0,0,spec.effect==='bounce'?wave*.25:0);i.motion.rotation.z=spec.effect==='rotate'?t*Math.PI*2:0;i.motion.scale.setScalar(spec.effect==='pulse'?1+wave*.3:1);if(t===1){i.effectTime=null;i.motion.position.set(0,0,0);i.motion.rotation.set(0,0,0);i.motion.scale.setScalar(1);}}
   }}
   remove(id){const item=this.items.get(id);if(!item)return;item.video?.pause();if(item.video){item.video.removeAttribute('src');item.video.load();}item.mixer?.stopAllAction();item.group.removeFromParent();dispose(item.group);item.texture?.dispose();this.items.delete(id);}

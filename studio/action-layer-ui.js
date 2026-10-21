@@ -1,12 +1,12 @@
 import {defaultSequence,defaultAction,actionCount,validateGroup,moveActionLayer,groupTrigger} from './action-sequence.js';
 const openState=new WeakMap();
-const labels={rotate:'回転',move:'移動',scale:'拡大・縮小（XYZ）',wait:'待つ',sound:'音',scene:'シーン切替',hide:'消える',show:'出現',camera:'カメラへ向きを追従',pause:'停止'};
+const labels={rotate:'回転',move:'移動',scale:'拡大・縮小（XYZ）',wait:'待つ',sound:'音',scene:'シーン切替',hide:'消える',show:'出現',camera:'カメラへ向きを追従',mediaPlay:'素材アニメーションを再生',mediaPause:'素材アニメーションを一時停止',pause:'停止'};
 function node(tag,text='',className=''){const n=document.createElement(tag);n.textContent=text;n.className=className;return n;}
-export function renderActionLayers(rows,{object,project,locked=false,save=()=>{},status=()=>{}}){
+export function renderActionLayers(rows,{object,project,clips=[],locked=false,save=()=>{},status=()=>{}}){
  rows.replaceChildren();if(!object)return;const q=object.interaction.sequence||defaultSequence();
  let migrated=false;q.actions=q.actions.map((a,index)=>{if(a.type==='showMove'){const move={...a,type:'move'};delete move.fade;delete move.delay;delete move.trigger;a={type:'parallel',actions:[{type:'show',delay:a.delay??0,fade:a.fade??0},move],trigger:a.trigger};migrated=true;}if(a.trigger===undefined){a.trigger=groupTrigger(q.actions,index,object.interaction.startTrigger||'tap');migrated=true;}return a;});if(migrated&&object.interaction.sequence)save();
  rows.append(node('p','各ACTIONで開始条件を選択。前のACTION完了後＝連続再生、タップ＝その位置で待機、シーン開始＝開始イベントを記録して順番に実行。枠内は同時再生。','hint'));
- let dragging=null,target=null;const repaint=()=>renderActionLayers(rows,{object,project,locked,save,status});
+ let dragging=null,target=null;const repaint=()=>renderActionLayers(rows,{object,project,clips,locked,save,status});
  const commit=fn=>{try{fn();save();repaint();}catch(e){status(e.message);}};
  const bind=(el,fn)=>{el.dataset.actionDrop='true';el._actionDrop=fn;};
  const execute=(from,to)=>commit(()=>{q.actions=moveActionLayer(q.actions,from,to);});
@@ -26,6 +26,14 @@ export function renderActionLayers(rows,{object,project,locked=false,save=()=>{}
  function change(fn){const old=structuredClone(a);try{fn();if(isChild)validateGroup(q.actions[rootIndex]);save();}catch(e){for(const k of Object.keys(a))delete a[k];Object.assign(a,old);status(e.message);repaint();}}
  function number(label,value,min,max,step,fn){const l=node('label',label),n=node('input');n.type='number';Object.assign(n,{value,min,max,step,disabled:locked});n.onchange=()=>{const v=Number(n.value);if(!Number.isFinite(v)||v<min||v>max){n.value=value;status('値は'+min+'〜'+max+'です。');return;}change(()=>fn(v));};l.append(n);panel.append(l);}
  const select=(label,value,opts,fn)=>{const l=node('label',label),n=node('select');for(const [v,t]of opts){const o=node('option',t);o.value=v;n.append(o);}n.value=value;n.disabled=locked;n.onchange=()=>change(()=>fn(n.value));l.append(n);panel.append(l);};
+ if(a.type==='mediaPlay'){
+ if(object.kind==='glb')select('GLBアニメーション',a.clip,[['all','全アニメーション'],...clips.map(c=>[c.name,c.name])],v=>a.clip=v);
+ select('開始位置',a.start,[['restart','先頭から'],['resume','続きから']],v=>a.start=v);
+ select('繰り返し',String(a.loop),[['false','1回'],['true','ループ']],v=>{a.loop=v==='true';if(a.loop)a.wait=false;repaint();});
+ select('次のACTIONへ',String(a.wait),a.loop?[['false','再生開始後すぐ']]:[['false','再生開始後すぐ'],['true','再生完了後']],v=>a.wait=v==='true');
+ panel.append(node('p','このレイヤーが素材の自動再生設定より優先されます。完了待ちは実際の終了を待ちます。ループ中は完了待ちを選べません。','hint'));
+ }
+ if(a.type==='mediaPause')panel.append(node('p','素材の再生だけを止めます。移動・回転などは継続します。','hint'));
  if(a.type==='move')a.offset.forEach((v,i)=>number('移動量 '+['X','Y','Z'][i],v,-100,100,.01,n=>a.offset[i]=n));
  if(a.type==='rotate'){select('回転軸',a.axis,[['x','X'],['y','Y'],['z','Z']],v=>a.axis=v);number('角度（度）',a.angle,-3600,3600,1,v=>a.angle=v);}
  if(a.type==='scale'){panel.append(node('p','1＝維持、2＝2倍、0.5＝半分。','hint'));button(panel,a.linked?'🔗 XYZ連動 ON':'⛓ XYZ連動 OFF',()=>a.linked=!a.linked);a.factors.forEach((v,i)=>number('倍率 '+['X','Y','Z'][i],v,.01,10,.1,n=>{if(a.linked){a.factors=[n,n,n];repaint();}else a.factors[i]=n;}));}
