@@ -2,7 +2,7 @@
   "version": 2,
   "id": "art-20b5f109-d09",
   "title": "ARARART",
-  "revision": "01f02a7f-2cef-490d-bb17-b3ecfab53ad5",
+  "revision": "d3bfebda-5446-478f-b0e2-9f8eae46c6d5",
   "trackingTarget": "98d7d014-5923-477b-ac80-190733c42729.mind",
   "maxTrack": 2,
   "markers": [
@@ -331,6 +331,11 @@
                   "delay": 0,
                   "fade": 2,
                   "trigger": "scene"
+                },
+                {
+                  "type": "scene",
+                  "sceneId": "9e47d98b-cbc9-4c62-a6cc-ccb1897af323",
+                  "trigger": "tap"
                 }
               ]
             }
@@ -354,7 +359,8 @@
             "src": "a0f700f4-1001-4f54-bf1a-6a6c84af4cf8.mp4",
             "packedAlpha": true
           },
-          "loop": true
+          "loop": true,
+          "visible": true
         },
         {
           "scaleLinked": true,
@@ -447,6 +453,11 @@
                   "delay": 5,
                   "fade": 2,
                   "trigger": "scene"
+                },
+                {
+                  "type": "scene",
+                  "sceneId": "9e47d98b-cbc9-4c62-a6cc-ccb1897af323",
+                  "trigger": "tap"
                 }
               ]
             }
@@ -533,8 +544,298 @@
           }
         }
       ]
+    },
+    {
+      "id": "9e47d98b-cbc9-4c62-a6cc-ccb1897af323",
+      "name": "03-04",
+      "autoNextSeconds": 0,
+      "nextSceneId": null,
+      "markerLost": "continue",
+      "objects": [
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": false,
+          "id": "4cc93798-9990-46ef-a314-29e7616f5715",
+          "kind": "video",
+          "src": "1d30db0c-0b2d-45ba-b6ba-d7d691f67dd8.webm",
+          "name": "bg_03_mov.webm",
+          "markerId": "657d5984-58eb-4f5a-8653-f61cbc85625e",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": true,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1,
+            "startTrigger": "scene",
+            "sequence": {
+              "enabled": true,
+              "retrigger": "restart",
+              "finish": "keep",
+              "actions": [
+                {
+                  "type": "show",
+                  "delay": 2,
+                  "fade": 2,
+                  "trigger": "scene"
+                }
+              ]
+            }
+          },
+          "position": [
+            -0.5006548625541105,
+            0,
+            0.001
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "fallback": {
+            "src": "044b5f42-3b76-4419-91aa-7ce7a88989c3.mp4",
+            "packedAlpha": true
+          },
+          "loop": true
+        },
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": false,
+          "id": "66d0de06-6910-47f0-84c3-e37ee59c3f05",
+          "kind": "sprite",
+          "src": "a7592c59-8ba7-4e7f-9051-292f4f31dff5.png",
+          "name": "03_chara-sprite-package.zip",
+          "markerId": "657d5984-58eb-4f5a-8653-f61cbc85625e",
+          "autoplay": false,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": false,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1,
+            "startTrigger": "scene",
+            "sequence": {
+              "enabled": true,
+              "retrigger": "restart",
+              "finish": "keep",
+              "actions": [
+                {
+                  "type": "parallel",
+                  "trigger": "scene",
+                  "actions": [
+                    {
+                      "type": "show",
+                      "delay": 2,
+                      "fade": 2
+                    },
+                    {
+                      "type": "mediaPlay",
+                      "start": "restart",
+                      "loop": true,
+                      "wait": false,
+                      "clip": "all"
+                    }
+                  ]
+                },
+                {
+                  "type": "move",
+                  "offset": [
+                    2,
+                    0,
+                    0
+                  ],
+                  "duration": 10,
+                  "repeat": 1,
+                  "pingpong": false,
+                  "trigger": "previous"
+                }
+              ]
+            }
+          },
+          "position": [
+            -1.148380207394986,
+            0.03574661950673713,
+            0.2138876292077962
+          ],
+          "rotation": [
+            45,
+            0,
+            0
+          ],
+          "scale": [
+            0.7,
+            0.7,
+            0.7
+          ],
+          "sprite": {
+            "columns": 4,
+            "rows": 1,
+            "frames": 3,
+            "frameWidth": 1024,
+            "frameHeight": 1024,
+            "fps": 4,
+            "loop": true
+          },
+          "displayMode": "front"
+        },
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": false,
+          "id": "492a9333-b1a0-4a04-b245-d9ea9a078c75",
+          "kind": "video",
+          "src": "c0c8ec31-f08d-4df2-890a-212dca36f13f.webm",
+          "name": "bg_04_mov.webm",
+          "markerId": "657d5984-58eb-4f5a-8653-f61cbc85625e",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": false,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1,
+            "startTrigger": "scene",
+            "sequence": {
+              "enabled": true,
+              "retrigger": "restart",
+              "finish": "keep",
+              "actions": [
+                {
+                  "type": "parallel",
+                  "trigger": "scene",
+                  "actions": [
+                    {
+                      "type": "show",
+                      "delay": 5,
+                      "fade": 2
+                    },
+                    {
+                      "type": "mediaPlay",
+                      "start": "restart",
+                      "loop": true,
+                      "wait": false,
+                      "clip": "all"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "position": [
+            0.5003595960130587,
+            0,
+            0.001
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "fallback": {
+            "src": "ef72c2f4-5495-43dd-9cf3-560b11fefef2.mp4",
+            "packedAlpha": true
+          },
+          "loop": true
+        },
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": false,
+          "id": "dd4865a2-8ba6-4218-9c5c-e48f8fa0aa30",
+          "kind": "sprite",
+          "src": "b12580ea-f151-47eb-9242-9c1a63d41082.png",
+          "name": "04_植物-sprite-package.zip",
+          "markerId": "657d5984-58eb-4f5a-8653-f61cbc85625e",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": false,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1,
+            "startTrigger": "scene",
+            "sequence": {
+              "enabled": true,
+              "retrigger": "restart",
+              "finish": "keep",
+              "actions": [
+                {
+                  "type": "parallel",
+                  "trigger": "scene",
+                  "actions": [
+                    {
+                      "type": "mediaPlay",
+                      "start": "restart",
+                      "loop": true,
+                      "wait": false,
+                      "clip": "all"
+                    },
+                    {
+                      "type": "show",
+                      "delay": 5,
+                      "fade": 2
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "position": [
+            0.7436200631403687,
+            -0.05185821680534991,
+            0.18292631171193224
+          ],
+          "rotation": [
+            45,
+            0,
+            0
+          ],
+          "scale": [
+            0.9,
+            0.9,
+            0.9
+          ],
+          "sprite": {
+            "columns": 4,
+            "rows": 2,
+            "frames": 6,
+            "frameWidth": 1024,
+            "frameHeight": 1024,
+            "fps": 4,
+            "loop": true
+          }
+        }
+      ]
     }
   ],
   "experienceMode": "space",
-  "spaceScale": 1
+  "spaceScale": 2
 }
