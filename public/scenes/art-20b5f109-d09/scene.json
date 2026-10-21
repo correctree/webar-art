@@ -2,7 +2,7 @@
   "version": 2,
   "id": "art-20b5f109-d09",
   "title": "ARARART",
-  "revision": "82c50ba6-6c75-4727-a927-35343278e893",
+  "revision": "f6ff980f-0dfe-4e8c-be76-2c9145b6f8b7",
   "trackingTarget": "98d7d014-5923-477b-ac80-190733c42729.mind",
   "maxTrack": 2,
   "markers": [
@@ -359,7 +359,7 @@
           "src": "a81febe7-8ae3-43e9-ac8d-41c4b16e5c7f.webm",
           "name": "cover_01.webm",
           "markerId": "657d5984-58eb-4f5a-8653-f61cbc85625e",
-          "autoplay": true,
+          "autoplay": false,
           "interaction": {
             "action": "none",
             "clip": "all",
@@ -381,6 +381,14 @@
                   "delay": 2,
                   "fade": 2,
                   "trigger": "scene"
+                },
+                {
+                  "type": "mediaPlay",
+                  "start": "restart",
+                  "loop": false,
+                  "wait": false,
+                  "clip": "all",
+                  "trigger": "previous"
                 }
               ]
             }
@@ -409,11 +417,11 @@
         {
           "scaleLinked": true,
           "tapEnabled": true,
-          "shadow": false,
-          "id": "01732db7-90bf-4969-813a-f6fcdb171e17",
-          "kind": "glb",
-          "src": "0814fb72-8eee-4d7d-94aa-f51b47d5eb24.glb",
-          "name": "00_title.glb",
+          "shadow": true,
+          "id": "c6ef516f-bbfa-41cb-a2dd-bf7e0e7d1a20",
+          "kind": "image",
+          "src": "6ae42721-d5d2-4d84-aff5-29c1cfe52de6.png",
+          "name": "00_title.png",
           "markerId": "0c0b1f70-1974-4378-bac3-8df804558988",
           "autoplay": true,
           "interaction": {
@@ -434,7 +442,7 @@
               "actions": [
                 {
                   "type": "show",
-                  "delay": 12,
+                  "delay": 10,
                   "fade": 2,
                   "trigger": "scene"
                 }
@@ -442,9 +450,9 @@
             }
           },
           "position": [
-            -0.1402348130072092,
-            0.17170194880119616,
-            0.20319393487808926
+            0.006446440924230495,
+            0.34774254082791356,
+            0.30385008478640574
           ],
           "rotation": [
             45,
@@ -452,10 +460,11 @@
             0
           ],
           "scale": [
-            0.6,
-            0.6,
-            0.6
-          ]
+            0.3,
+            0.3,
+            0.3
+          ],
+          "displayMode": "front"
         }
       ]
     }
