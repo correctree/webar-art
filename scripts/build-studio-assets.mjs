@@ -13,3 +13,4 @@ for(const pkg of ['mind-ar','jszip','qrcode']){
  if(!found)throw new Error(pkg+'のライセンスファイルが見つかりません。');
 }
 console.log('Studio demo assets and dependency licenses copied.');
+await cp('public/face-lab','dist/face-lab',{recursive:true});
