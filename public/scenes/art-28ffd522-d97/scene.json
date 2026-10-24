@@ -2,7 +2,7 @@
   "version": 2,
   "id": "art-28ffd522-d97",
   "title": "ARARART",
-  "revision": "7246d39f-6814-46d0-a896-be1e78792c72",
+  "revision": "005cc5b7-1f03-45ff-8e0c-669125a3a784",
   "trackingTarget": "pending.mind",
   "maxTrack": 1,
   "markers": [],
@@ -36,7 +36,23 @@
             "soundId": null,
             "volume": 1,
             "nextSceneId": null,
-            "delay": 1
+            "delay": 1,
+            "startTrigger": "scene",
+            "sequence": {
+              "enabled": true,
+              "retrigger": "restart",
+              "finish": "keep",
+              "actions": [
+                {
+                  "type": "mediaPlay",
+                  "start": "restart",
+                  "loop": true,
+                  "wait": false,
+                  "clip": "all",
+                  "trigger": "scene"
+                }
+              ]
+            }
           },
           "position": [
             0,
