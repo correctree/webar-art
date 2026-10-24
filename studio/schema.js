@@ -100,10 +100,10 @@ export function defaultInteraction(){return {action:'none',clip:'all',loop:false
 function namedId(item,seen,label){if(!sceneId(item?.id)||seen.has(item.id)||typeof item.name!=='string'||item.name.length>100)throw new Error(label+'ID・名前が不正・重複しています。');seen.add(item.id);}
 export function validateProject(p,{draft=false}={}){
   if(!p||p.version!==2||!sceneId(p.id)||typeof p.title!=='string'||p.title.length>100||typeof p.revision!=='string'||!/^[a-zA-Z0-9-]{1,80}$/.test(p.revision))throw new Error('プロジェクト形式が不正です。');
-  if(p.experienceMode!==undefined&&!['marker','space'].includes(p.experienceMode))throw new Error('体験モードが不正です。');
+  if(p.experienceMode!==undefined&&!['marker','space','face'].includes(p.experienceMode))throw new Error('体験モードが不正です。');
   if(p.spaceScale!==undefined&&(!Number.isFinite(p.spaceScale)||p.spaceScale<.01||p.spaceScale>10))throw new Error('空間配置の全体倍率は0.01〜10です。');
-  if(!assetPath(p.trackingTarget)||!p.trackingTarget.endsWith('.mind'))throw new Error('複数マーカーの認識データが必要です。');
-  if(!Array.isArray(p.markers)||p.markers.length<(draft?0:1)||p.markers.length>8)throw new Error('マーカーは1〜8枚です。');
+  if(p.experienceMode!=='face'&&(!assetPath(p.trackingTarget)||!p.trackingTarget.endsWith('.mind')))throw new Error('複数マーカーの認識データが必要です。');
+  if(!Array.isArray(p.markers)||p.markers.length<(draft||p.experienceMode==='face'?0:1)||p.markers.length>8)throw new Error('マーカーは1〜8枚です。');
   if(![1,2].includes(p.maxTrack)||p.maxTrack>Math.max(1,p.markers.length))throw new Error('同時追跡枚数が不正です。');
   if(p.trackingMode!==undefined&&!['stable','responsive'].includes(p.trackingMode))throw new Error('追跡モードが不正です。');
   if(p.shadowDirection!==undefined&&!['back','front','left','right'].includes(p.shadowDirection))throw new Error('影の方向が不正です。');
@@ -122,10 +122,11 @@ export function validateProject(p,{draft=false}={}){
     // Reuse the strict legacy media validation for each scene.
     if(!Array.isArray(s.objects))throw new Error('作品一覧が不正です。');
     if(!draft&&(!s.objects.length||s.objects.length>24))throw new Error('シーン「'+s.name+'」の作品数は'+s.objects.length+'です。1〜24作品を配置するか、不要なシーンを削除してください。');
-    if(!draft||s.objects.length)validateLegacy({version:1,id:p.id,title:p.title,revision:p.revision,marker:{image:p.markers[0].image,target:p.trackingTarget,aspect:p.markers[0].aspect},objects:s.objects});
+    if(!draft||s.objects.length)validateLegacy({version:1,id:p.id,title:p.title,revision:p.revision,marker:p.experienceMode==='face'?{image:'face-placeholder.png',target:'face-placeholder.mind',aspect:1}:{image:p.markers[0].image,target:p.trackingTarget,aspect:p.markers[0].aspect},objects:s.objects});
     for(const o of s.objects){
       if(allIds.has(o.id))throw new Error('シーンをまたぐ作品IDが重複しています。');allIds.add(o.id);total++;
-      if(!markers.has(o.markerId)||typeof o.autoplay!=='boolean')throw new Error('作品のマーカー・自動再生設定が不正です。');
+      if((p.experienceMode!=='face'&&!markers.has(o.markerId))||typeof o.autoplay!=='boolean')throw new Error('作品のマーカー・自動再生設定が不正です。');
+      if(p.experienceMode==='face'&&!['nose','head'].includes(o.faceAnchor))throw new Error('顔の配置先は鼻・頭上です。');
       const b=o.interaction;if(b?.startTrigger!==undefined&&!['tap','scene'].includes(b.startTrigger))throw Error('開始方法が不正です。');validateSequence(b?.sequence,sounds,scenes);if(b?.sequence?.enabled&&o.kind==='image'&&b.sequence.actions.flatMap(a=>a.type==='parallel'?a.actions:[a]).some(a=>['mediaPlay','mediaPause'].includes(a.type)))throw Error('素材アニメーションはGLB・動画・Spriteに設定してください。');
       if(!b||!['none','restart','toggle'].includes(b.action)||typeof b.clip!=='string'||b.clip.length>200||typeof b.loop!=='boolean'||!['none','rotate','bounce','pulse'].includes(b.effect))throw new Error('タップ反応が不正です。');
       if(!Number.isFinite(b.duration)||b.duration<.1||b.duration>60||!Number.isFinite(b.delay)||b.delay<0||b.delay>60||!Number.isFinite(b.volume)||b.volume<0||b.volume>1)throw new Error('反応の時間・音量が不正です。');

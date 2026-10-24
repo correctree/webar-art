@@ -32,7 +32,7 @@ export function portalPointInside(type,eye,point){
 }
 export function sceneMaskSources(project){
  const sources=new Map();for(const scene of project?.scenes||[])for(const o of scene.objects){
-  const owner=scene.objects.find(s=>s.boxMask?.enabled&&s.boxMask.scope==='scene'&&['circle','rectangle'].includes(s.boxMask.type)&&(project.experienceMode==='space'||s.markerId===o.markerId));
+  const owner=scene.objects.find(s=>s.boxMask?.enabled&&s.boxMask.scope==='scene'&&['circle','rectangle'].includes(s.boxMask.type)&&(project.experienceMode==='space'||(project.experienceMode==='face'?(s.faceAnchor||'nose')===(o.faceAnchor||'nose'):s.markerId===o.markerId)));
   if(owner)sources.set(o.id,owner.id);
  }return sources;
 }
