@@ -1,3 +1,5 @@
+import {applyAppVersion} from './version.js';
+applyAppVersion();
 import JSZip from 'jszip';
 const $=id=>document.getElementById(id);let session,projects=[],folders=[],filter='all',query='';
 function node(tag,text='',attrs={}){const e=document.createElement(tag);e.textContent=text;for(const[k,v]of Object.entries(attrs))e.setAttribute(k,v);return e;}
