@@ -1,0 +1,67 @@
+{
+  "version": 2,
+  "id": "art-28ffd522-d97",
+  "title": "ARARART",
+  "revision": "7246d39f-6814-46d0-a896-be1e78792c72",
+  "trackingTarget": "pending.mind",
+  "maxTrack": 1,
+  "markers": [],
+  "sounds": [],
+  "initialSceneId": "scene-1",
+  "scenes": [
+    {
+      "id": "scene-1",
+      "name": "シーン1",
+      "autoNextSeconds": 0,
+      "nextSceneId": null,
+      "markerLost": "continue",
+      "objects": [
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": false,
+          "id": "79d0e21e-5d59-40eb-8da5-105c080e0a59",
+          "kind": "video",
+          "src": "31416843-204d-46f1-ae3a-e767bc1c53a9.webm",
+          "name": "delete.webm",
+          "markerId": null,
+          "faceAnchor": "nose",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": false,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1
+          },
+          "position": [
+            0,
+            0,
+            0.1
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            1,
+            1,
+            1
+          ],
+          "fallback": {
+            "src": "31526970-168a-4729-b8f0-cbc4c0e8d2dd.mp4",
+            "packedAlpha": true
+          },
+          "loop": true
+        }
+      ]
+    }
+  ],
+  "experienceMode": "face",
+  "editorFaceAnchor": "nose"
+}
