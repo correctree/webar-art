@@ -54,3 +54,7 @@ body.studio-page{padding-bottom:72px}
 #scene-preview-tools.preview-tools{position:fixed;z-index:40;bottom:0;left:0;right:0;min-height:64px;display:flex;align-items:center;justify-content:center;gap:12px;padding:10px 18px;margin:0;background:#142124f5;border-top:1px solid #557278;box-shadow:0 -4px 14px #0003}
 #scene-preview-tools p{margin:0;font-size:12px}#scene-preview-tools strong{font-size:13px;max-width:25vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#scene-preview-tools button{min-width:92px}#preview-stop{border-color:#c58a83}.action-layer-feedback{position:sticky;top:0;z-index:3;padding:8px;background:#442b2b;border:1px solid #c58a83;border-radius:6px;color:#ffe0da}.action-layer-feedback:empty{display:none}
 @media(max-width:650px){#scene-preview-tools.preview-tools{gap:6px;padding:8px;min-height:64px}#scene-preview-tools p{display:none}#scene-preview-tools button{min-width:74px;padding:8px}#scene-preview-tools strong{max-width:35vw}}
+
+/* Reset view shares the persistent scene preview bar after Stop. */
+#scene-preview-tools #view-reset{min-width:0;white-space:nowrap}
+@media(max-width:480px){#scene-preview-tools strong{display:none}}
