@@ -1,0 +1,96 @@
+{
+  "version": 2,
+  "id": "art-b4d30b91-0a0",
+  "title": "ARARART",
+  "revision": "3ae004f6-c9ad-4960-8de9-7a4639d0520e",
+  "trackingTarget": "9d113b51-7b28-4d7a-9aec-5cdd7c9c32ed.mind",
+  "maxTrack": 1,
+  "markers": [
+    {
+      "id": "2ce6ae12-9b5f-4a60-824b-da5c5de3d65d",
+      "name": "038_mark.jpg",
+      "image": "2ce6ae12-9b5f-4a60-824b-da5c5de3d65d.jpg",
+      "aspect": 1,
+      "targetIndex": 0
+    }
+  ],
+  "sounds": [],
+  "initialSceneId": "scene-1",
+  "scenes": [
+    {
+      "id": "scene-1",
+      "name": "シーン1",
+      "autoNextSeconds": 0,
+      "nextSceneId": null,
+      "markerLost": "continue",
+      "objects": [
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": true,
+          "id": "7a084373-4ad2-4e74-a727-efeb97bf5b23",
+          "kind": "glb",
+          "src": "81bee2a0-4718-4a53-ac28-3cb3678b0750.glb",
+          "name": "chara_003.glb",
+          "markerId": "2ce6ae12-9b5f-4a60-824b-da5c5de3d65d",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": false,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1,
+            "startTrigger": "scene",
+            "sequence": {
+              "enabled": true,
+              "retrigger": "restart",
+              "finish": "keep",
+              "actions": [
+                {
+                  "type": "parallel",
+                  "trigger": "scene",
+                  "actions": [
+                    {
+                      "type": "mediaPlay",
+                      "start": "restart",
+                      "loop": true,
+                      "wait": false,
+                      "clip": "all"
+                    },
+                    {
+                      "type": "show",
+                      "delay": 0,
+                      "fade": 2.1
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "position": [
+            0,
+            0,
+            0.009989999064818844
+          ],
+          "rotation": [
+            90,
+            0,
+            0
+          ],
+          "scale": [
+            0.5,
+            0.5,
+            0.5
+          ]
+        }
+      ]
+    }
+  ],
+  "experienceMode": "space",
+  "editorMarkerId": "2ce6ae12-9b5f-4a60-824b-da5c5de3d65d",
+  "shadowDirection": "back"
+}
