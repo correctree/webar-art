@@ -1,3 +1,5 @@
+// Chrome reflection enhancement: preload before MediaScene/GLTFLoader usage.
+import './chrome-reflection-fix.js';
 import {isFace,placementKey,placementTargets,editingPlacement,setExperienceMode} from './face-policy.js';
 import {applyAppVersion} from './version.js';
 import {editingMarker,markerRemovalPlan,prepareMarkerRemoval} from './marker-management.js';
