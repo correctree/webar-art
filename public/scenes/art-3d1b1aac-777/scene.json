@@ -1,0 +1,86 @@
+{
+  "version": 2,
+  "id": "art-3d1b1aac-777",
+  "title": "ARARART_004",
+  "revision": "749defc4-f5b4-491e-b55f-7a5483bce9d9",
+  "trackingTarget": "9d113b51-7b28-4d7a-9aec-5cdd7c9c32ed.mind",
+  "maxTrack": 1,
+  "markers": [
+    {
+      "id": "2ce6ae12-9b5f-4a60-824b-da5c5de3d65d",
+      "name": "038_mark.jpg",
+      "image": "2ce6ae12-9b5f-4a60-824b-da5c5de3d65d.jpg",
+      "aspect": 1,
+      "targetIndex": 0
+    }
+  ],
+  "sounds": [],
+  "initialSceneId": "scene-1",
+  "scenes": [
+    {
+      "id": "scene-1",
+      "name": "シーン1",
+      "autoNextSeconds": 0,
+      "nextSceneId": null,
+      "markerLost": "continue",
+      "objects": [
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": true,
+          "id": "99b45692-7954-4fc5-967b-4df91b720adc",
+          "kind": "glb",
+          "src": "bedc272c-ee8d-458e-b974-31dfa8635cd1.glb",
+          "name": "ar004.glb",
+          "markerId": "2ce6ae12-9b5f-4a60-824b-da5c5de3d65d",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": false,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1,
+            "sequence": {
+              "enabled": true,
+              "retrigger": "restart",
+              "finish": "keep",
+              "actions": [
+                {
+                  "type": "mediaPlay",
+                  "start": "restart",
+                  "loop": true,
+                  "wait": false,
+                  "clip": "all",
+                  "trigger": "scene"
+                }
+              ]
+            }
+          },
+          "position": [
+            0,
+            0,
+            0.8649124195797104
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ],
+          "scale": [
+            0.5,
+            0.5,
+            0.5
+          ]
+        }
+      ]
+    }
+  ],
+  "experienceMode": "space",
+  "editorMarkerId": "2ce6ae12-9b5f-4a60-824b-da5c5de3d65d",
+  "shadowDirection": "back",
+  "spaceScale": 1
+}
