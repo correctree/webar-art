@@ -1,3 +1,4 @@
+import './chrome-reflection-fix.js';
 import {FaceRuntime} from './face-runtime.js';
 import {faceRuntimeProject} from './face-policy.js';
 import {installRecordingUI} from './ar-recording.js';
