@@ -2,7 +2,7 @@
   "version": 2,
   "id": "art-3d1b1aac-777",
   "title": "ARARART_004",
-  "revision": "749defc4-f5b4-491e-b55f-7a5483bce9d9",
+  "revision": "01f16201-d3e4-484c-a12f-2de03be45156",
   "trackingTarget": "9d113b51-7b28-4d7a-9aec-5cdd7c9c32ed.mind",
   "maxTrack": 1,
   "markers": [
@@ -28,10 +28,10 @@
           "scaleLinked": true,
           "tapEnabled": true,
           "shadow": true,
-          "id": "99b45692-7954-4fc5-967b-4df91b720adc",
+          "id": "279fcb60-6457-429e-b7f8-1b665eb27d74",
           "kind": "glb",
-          "src": "bedc272c-ee8d-458e-b974-31dfa8635cd1.glb",
-          "name": "ar004.glb",
+          "src": "936d8ad9-af4c-4b03-a935-f03c7fb0c6ca.glb",
+          "name": "liquid_chrome_5_1_2.glb",
           "markerId": "2ce6ae12-9b5f-4a60-824b-da5c5de3d65d",
           "autoplay": true,
           "interaction": {
@@ -44,18 +44,43 @@
             "volume": 1,
             "nextSceneId": null,
             "delay": 1,
+            "startTrigger": "scene",
             "sequence": {
               "enabled": true,
               "retrigger": "restart",
               "finish": "keep",
               "actions": [
                 {
-                  "type": "mediaPlay",
-                  "start": "restart",
-                  "loop": true,
-                  "wait": false,
-                  "clip": "all",
-                  "trigger": "scene"
+                  "type": "parallel",
+                  "trigger": "scene",
+                  "actions": [
+                    {
+                      "type": "mediaPlay",
+                      "start": "restart",
+                      "loop": true,
+                      "wait": false,
+                      "clip": "all"
+                    },
+                    {
+                      "type": "rotate",
+                      "axis": "z",
+                      "angle": 360,
+                      "duration": 5,
+                      "repeat": "infinite",
+                      "pingpong": false
+                    },
+                    {
+                      "type": "move",
+                      "offset": [
+                        0,
+                        0,
+                        0.35
+                      ],
+                      "duration": 3,
+                      "repeat": "infinite",
+                      "pingpong": true
+                    }
+                  ]
                 }
               ]
             }
@@ -63,7 +88,7 @@
           "position": [
             0,
             0,
-            0.8649124195797104
+            0.5691727879463815
           ],
           "rotation": [
             0,
