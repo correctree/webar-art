@@ -26,4 +26,15 @@ body.space-player .ar-ui p{margin:6px 0}body.space-player .ar-ui button{min-heig
  });
 })();
 </script>
+<script>
+(()=>{
+ let loaded=false;
+ const retry=document.createElement('button');retry.textContent='再読み込み';retry.hidden=true;
+ retry.onclick=()=>location.reload();document.getElementById('error').after(retry);
+ const failed=e=>{document.getElementById('status').textContent='読み込みを完了できませんでした。';document.getElementById('error').textContent=e.message||String(e);retry.hidden=false;};
+ const timer=setTimeout(()=>{if(!loaded)failed(new Error('プレイヤーの読み込みが完了しません。通信状態と公開ファイルを確認してください。'));},60000);
+ window.arBoot={loaded(){loaded=true;clearTimeout(timer);retry.hidden=true;},failed};
+ window.addEventListener('error',event=>{if(!loaded){clearTimeout(timer);failed(new Error('プレイヤーを読み込めません。'+(event.message||'公開ファイルの取得に失敗しました。')));}},true);
+})();
+</script>
 <script type="module" src="./studio/player.js"></script></body></html>
