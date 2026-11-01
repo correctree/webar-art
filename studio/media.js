@@ -94,4 +94,4 @@ export class MediaScene {
   remove(id){const item=this.items.get(id);if(!item)return;item.video?.pause();if(item.video){item.video.removeAttribute('src');item.video.load();}item.mixer?.stopAllAction();item.group.removeFromParent();dispose(item.group);item.texture?.dispose();this.items.delete(id);}
   dispose(){for(const id of [...this.items.keys()])this.remove(id);this.draco.dispose();}
 }
-function dispose(root){const ts=new Set();root.traverse(o=>{o.geometry?.dispose();o.customDepthMaterial?.dispose();for(const m of [].concat(o.material||[])){for(const t of Object.values(m))if(t?.isTexture)ts.add(t);m.dispose();}});for(const t of ts)t.dispose();}
+function dispose(root){const ts=new Set();root.traverse(o=>{o.geometry?.dispose();o.customDepthMaterial?.dispose();for(const m of [].concat(o.material||[])){for(const t of Object.values(m))if(t?.isTexture&&!t.userData?.ararartSharedReflection)ts.add(t);m.dispose();}});for(const t of ts)t.dispose();}

@@ -1,4 +1,5 @@
-import './chrome-reflection-fix.js';
+import {configureReflection} from './chrome-reflection-fix.js';
+import {playbackReflection} from './reflection-policy.js';
 import {FaceRuntime} from './face-runtime.js';
 import {faceRuntimeProject} from './face-policy.js';
 import {installRecordingUI} from './ar-recording.js';
@@ -28,7 +29,7 @@ function stop(){capture?.stop();capture?.setActive(false);epoch++;active=false;m
 try {
  const id=new URLSearchParams(location.search).get('scene')||'demo';if(!sceneId(id))throw new Error('体験IDが不正です。');
  const base=new URL('./scenes/'+id+'/',location.href),response=await prepare('作品情報を読み込んでいます',()=>fetch(new URL('scene.json',base),{cache:'no-store'}));if(!response.ok)throw new Error('公開作品が見つかりません。');
- project=toProject(await prepare('作品情報を解析しています',()=>response.json()));faceMode=project.experienceMode==='face';if(faceMode)project=faceRuntimeProject(project);worldMode=!faceMode&&(new URLSearchParams(location.search).get('mode')||project.experienceMode)==='space';$('title').textContent=project.title;
+ project=toProject(await prepare('作品情報を解析しています',()=>response.json()));configureReflection(playbackReflection(project.reflection,location.search));faceMode=project.experienceMode==='face';if(faceMode)project=faceRuntimeProject(project);worldMode=!faceMode&&(new URLSearchParams(location.search).get('mode')||project.experienceMode)==='space';$('title').textContent=project.title;
  for(const marker of (faceMode?[]:project.markers)){const a=document.createElement('a');a.href=new URL(marker.image,base);a.target='_blank';a.rel='noopener';a.textContent=marker.name+'を表示';$('markers').append(a,document.createElement('br'));}
  for(const s of project.scenes){const o=document.createElement('option');o.value=s.id;o.textContent=s.name;$('scenes').append(o);}
  let MindARThree;if(!faceMode&&!worldMode)({MindARThree}=await prepare('画像認識エンジンを読み込んでいます',()=>import('mind-ar/dist/mindar-image-three.prod.js')));

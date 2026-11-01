@@ -1,3 +1,4 @@
+import {validateReflection} from './reflection-policy.js';
 import {validateDisplay} from './display-policy.js';
 import {validateBoxMask} from './box-mask-policy.js';
 import {validateSequence} from './action-sequence.js';
@@ -99,6 +100,7 @@ export function toProject(input, options) {
 export function defaultInteraction(){return {action:'none',clip:'all',loop:false,effect:'none',duration:1,soundId:null,volume:1,nextSceneId:null,delay:1};}
 function namedId(item,seen,label){if(!sceneId(item?.id)||seen.has(item.id)||typeof item.name!=='string'||item.name.length>100)throw new Error(label+'ID・名前が不正・重複しています。');seen.add(item.id);}
 export function validateProject(p,{draft=false}={}){
+  validateReflection(p?.reflection);
   if(!p||p.version!==2||!sceneId(p.id)||typeof p.title!=='string'||p.title.length>100||typeof p.revision!=='string'||!/^[a-zA-Z0-9-]{1,80}$/.test(p.revision))throw new Error('プロジェクト形式が不正です。');
   if(p.experienceMode!==undefined&&!['marker','space','face'].includes(p.experienceMode))throw new Error('体験モードが不正です。');
   if(p.spaceScale!==undefined&&(!Number.isFinite(p.spaceScale)||p.spaceScale<.01||p.spaceScale>10))throw new Error('空間配置の全体倍率は0.01〜10です。');
