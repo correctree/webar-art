@@ -2,7 +2,7 @@
   "version": 2,
   "id": "art-3d1b1aac-777",
   "title": "ARARART_004",
-  "revision": "d1a31f52-272a-482b-bd94-b58b107b860e",
+  "revision": "00620e57-4f15-4785-b205-05eb6b406754",
   "trackingTarget": "9d113b51-7b28-4d7a-9aec-5cdd7c9c32ed.mind",
   "maxTrack": 1,
   "markers": [
@@ -100,7 +100,8 @@
             0.5,
             0.5
           ],
-          "visible": false
+          "visible": true,
+          "opacity": 1
         },
         {
           "scaleLinked": true,
@@ -388,5 +389,9 @@
   "experienceMode": "space",
   "editorMarkerId": "2ce6ae12-9b5f-4a60-824b-da5c5de3d65d",
   "shadowDirection": "back",
-  "spaceScale": 1
+  "spaceScale": 1,
+  "reflection": {
+    "profile": "studio",
+    "intensity": 2.05
+  }
 }
