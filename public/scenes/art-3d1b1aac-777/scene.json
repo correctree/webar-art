@@ -2,7 +2,7 @@
   "version": 2,
   "id": "art-3d1b1aac-777",
   "title": "ARARART_004",
-  "revision": "4fec7aa9-18be-46ef-94d8-22485ff3cfd4",
+  "revision": "74e04a8d-e9f7-4310-addd-2db11288fba0",
   "trackingTarget": "9d113b51-7b28-4d7a-9aec-5cdd7c9c32ed.mind",
   "maxTrack": 1,
   "markers": [
@@ -28,10 +28,10 @@
           "scaleLinked": true,
           "tapEnabled": true,
           "shadow": true,
-          "id": "279fcb60-6457-429e-b7f8-1b665eb27d74",
+          "id": "be344b97-3151-49da-bd4d-2166a4d870e7",
           "kind": "glb",
-          "src": "936d8ad9-af4c-4b03-a935-f03c7fb0c6ca.glb",
-          "name": "liquid_chrome_5_1_2.glb",
+          "src": "c654cab1-211c-4fa8-b513-079aa75530ee.glb",
+          "name": "ar005-3.glb",
           "markerId": "2ce6ae12-9b5f-4a60-824b-da5c5de3d65d",
           "autoplay": true,
           "interaction": {
@@ -44,43 +44,18 @@
             "volume": 1,
             "nextSceneId": null,
             "delay": 1,
-            "startTrigger": "scene",
             "sequence": {
               "enabled": true,
               "retrigger": "restart",
               "finish": "keep",
               "actions": [
                 {
-                  "type": "parallel",
-                  "trigger": "scene",
-                  "actions": [
-                    {
-                      "type": "mediaPlay",
-                      "start": "restart",
-                      "loop": true,
-                      "wait": false,
-                      "clip": "all"
-                    },
-                    {
-                      "type": "rotate",
-                      "axis": "z",
-                      "angle": 360,
-                      "duration": 5,
-                      "repeat": "infinite",
-                      "pingpong": false
-                    },
-                    {
-                      "type": "move",
-                      "offset": [
-                        0,
-                        0,
-                        0.35
-                      ],
-                      "duration": 3,
-                      "repeat": "infinite",
-                      "pingpong": true
-                    }
-                  ]
+                  "type": "mediaPlay",
+                  "start": "restart",
+                  "loop": true,
+                  "wait": false,
+                  "clip": "Armature|mixamo.com|Layer0.001",
+                  "trigger": "scene"
                 }
               ]
             }
@@ -88,10 +63,10 @@
           "position": [
             0,
             0,
-            0.5691727879463815
+            -0.01047910756630907
           ],
           "rotation": [
-            0,
+            90,
             0,
             0
           ],
@@ -99,289 +74,7 @@
             0.5,
             0.5,
             0.5
-          ],
-          "visible": false,
-          "opacity": 1
-        },
-        {
-          "scaleLinked": true,
-          "tapEnabled": true,
-          "shadow": true,
-          "id": "7df411f8-b0c7-45eb-9101-d1e3d6771a7e",
-          "kind": "glb",
-          "src": "1ce5ab2d-7f7c-4258-b6a4-a9a9a8eedcd2.glb",
-          "name": "ar004.glb",
-          "markerId": "2ce6ae12-9b5f-4a60-824b-da5c5de3d65d",
-          "autoplay": true,
-          "interaction": {
-            "action": "none",
-            "clip": "all",
-            "loop": false,
-            "effect": "none",
-            "duration": 1,
-            "soundId": null,
-            "volume": 1,
-            "nextSceneId": null,
-            "delay": 1,
-            "startTrigger": "scene",
-            "sequence": {
-              "enabled": true,
-              "retrigger": "restart",
-              "finish": "keep",
-              "actions": [
-                {
-                  "type": "parallel",
-                  "trigger": "scene",
-                  "actions": [
-                    {
-                      "type": "mediaPlay",
-                      "start": "restart",
-                      "loop": true,
-                      "wait": false,
-                      "clip": "all"
-                    },
-                    {
-                      "type": "move",
-                      "offset": [
-                        0,
-                        0,
-                        -1
-                      ],
-                      "duration": 2,
-                      "repeat": "infinite",
-                      "pingpong": true
-                    }
-                  ]
-                }
-              ]
-            }
-          },
-          "position": [
-            0,
-            0,
-            1
-          ],
-          "rotation": [
-            0,
-            0,
-            0
-          ],
-          "scale": [
-            0.5,
-            0.5,
-            0.5
-          ],
-          "opacity": 0.8
-        },
-        {
-          "scaleLinked": true,
-          "tapEnabled": true,
-          "shadow": true,
-          "id": "4e6c14f9-224b-48d2-a0de-60d3d9b51e2d",
-          "kind": "glb",
-          "src": "1ce5ab2d-7f7c-4258-b6a4-a9a9a8eedcd2.glb",
-          "name": "ar004.glb copy",
-          "markerId": "2ce6ae12-9b5f-4a60-824b-da5c5de3d65d",
-          "autoplay": true,
-          "interaction": {
-            "action": "none",
-            "clip": "all",
-            "loop": false,
-            "effect": "none",
-            "duration": 1,
-            "soundId": null,
-            "volume": 1,
-            "nextSceneId": null,
-            "delay": 1,
-            "startTrigger": "scene",
-            "sequence": {
-              "enabled": true,
-              "retrigger": "restart",
-              "finish": "keep",
-              "actions": [
-                {
-                  "type": "parallel",
-                  "trigger": "scene",
-                  "actions": [
-                    {
-                      "type": "mediaPlay",
-                      "start": "restart",
-                      "loop": true,
-                      "wait": false,
-                      "clip": "all"
-                    },
-                    {
-                      "type": "move",
-                      "offset": [
-                        0,
-                        0,
-                        1
-                      ],
-                      "duration": 2,
-                      "repeat": "infinite",
-                      "pingpong": true
-                    }
-                  ]
-                }
-              ]
-            }
-          },
-          "position": [
-            0,
-            0,
-            1
-          ],
-          "rotation": [
-            0,
-            0,
-            0
-          ],
-          "scale": [
-            0.5,
-            0.5,
-            0.5
-          ],
-          "opacity": 0.8
-        },
-        {
-          "scaleLinked": true,
-          "tapEnabled": true,
-          "shadow": true,
-          "id": "862b3363-d6de-4bf2-8a29-7a76dea2d1ac",
-          "kind": "glb",
-          "src": "1ce5ab2d-7f7c-4258-b6a4-a9a9a8eedcd2.glb",
-          "name": "ar004.glb copy copy",
-          "markerId": "2ce6ae12-9b5f-4a60-824b-da5c5de3d65d",
-          "autoplay": true,
-          "interaction": {
-            "action": "none",
-            "clip": "all",
-            "loop": false,
-            "effect": "none",
-            "duration": 1,
-            "soundId": null,
-            "volume": 1,
-            "nextSceneId": null,
-            "delay": 1,
-            "startTrigger": "scene",
-            "sequence": {
-              "enabled": true,
-              "retrigger": "restart",
-              "finish": "keep",
-              "actions": [
-                {
-                  "type": "parallel",
-                  "trigger": "scene",
-                  "actions": [
-                    {
-                      "type": "mediaPlay",
-                      "start": "restart",
-                      "loop": true,
-                      "wait": false,
-                      "clip": "all"
-                    },
-                    {
-                      "type": "move",
-                      "offset": [
-                        1,
-                        0,
-                        0
-                      ],
-                      "duration": 2,
-                      "repeat": "infinite",
-                      "pingpong": true
-                    }
-                  ]
-                }
-              ]
-            }
-          },
-          "position": [
-            0,
-            0,
-            1
-          ],
-          "rotation": [
-            0,
-            0,
-            0
-          ],
-          "scale": [
-            0.5,
-            0.5,
-            0.5
-          ],
-          "opacity": 0.8
-        },
-        {
-          "scaleLinked": true,
-          "tapEnabled": true,
-          "shadow": true,
-          "id": "21229366-cf29-4480-91a5-8b9a384da80f",
-          "kind": "glb",
-          "src": "1ce5ab2d-7f7c-4258-b6a4-a9a9a8eedcd2.glb",
-          "name": "ar004.glb copy copy copy",
-          "markerId": "2ce6ae12-9b5f-4a60-824b-da5c5de3d65d",
-          "autoplay": true,
-          "interaction": {
-            "action": "none",
-            "clip": "all",
-            "loop": false,
-            "effect": "none",
-            "duration": 1,
-            "soundId": null,
-            "volume": 1,
-            "nextSceneId": null,
-            "delay": 1,
-            "startTrigger": "scene",
-            "sequence": {
-              "enabled": true,
-              "retrigger": "restart",
-              "finish": "keep",
-              "actions": [
-                {
-                  "type": "parallel",
-                  "trigger": "scene",
-                  "actions": [
-                    {
-                      "type": "mediaPlay",
-                      "start": "restart",
-                      "loop": true,
-                      "wait": false,
-                      "clip": "all"
-                    },
-                    {
-                      "type": "move",
-                      "offset": [
-                        -1,
-                        0,
-                        0
-                      ],
-                      "duration": 2,
-                      "repeat": "infinite",
-                      "pingpong": true
-                    }
-                  ]
-                }
-              ]
-            }
-          },
-          "position": [
-            0,
-            0,
-            1
-          ],
-          "rotation": [
-            0,
-            0,
-            0
-          ],
-          "scale": [
-            0.5,
-            0.5,
-            0.5
-          ],
-          "opacity": 0.8
+          ]
         }
       ]
     }
