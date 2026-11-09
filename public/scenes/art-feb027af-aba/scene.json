@@ -1,0 +1,91 @@
+{
+  "version": 2,
+  "id": "art-feb027af-aba",
+  "title": "ARARART_006",
+  "revision": "f2cd59fe-b70c-4bb4-9ee7-8dd651a77246",
+  "trackingTarget": "9d113b51-7b28-4d7a-9aec-5cdd7c9c32ed.mind",
+  "maxTrack": 1,
+  "markers": [
+    {
+      "id": "2ce6ae12-9b5f-4a60-824b-da5c5de3d65d",
+      "name": "038_mark.jpg",
+      "image": "2ce6ae12-9b5f-4a60-824b-da5c5de3d65d.jpg",
+      "aspect": 1,
+      "targetIndex": 0
+    }
+  ],
+  "sounds": [],
+  "initialSceneId": "scene-1",
+  "scenes": [
+    {
+      "id": "scene-1",
+      "name": "シーン1",
+      "autoNextSeconds": 0,
+      "nextSceneId": null,
+      "markerLost": "continue",
+      "objects": [
+        {
+          "scaleLinked": true,
+          "tapEnabled": true,
+          "shadow": true,
+          "id": "82b3265b-6fa9-4f53-a7af-ada29811bd97",
+          "kind": "glb",
+          "src": "53399019-1f0c-4fa7-9f4e-1112e2c4c200.glb",
+          "name": "ar006.glb",
+          "markerId": "2ce6ae12-9b5f-4a60-824b-da5c5de3d65d",
+          "autoplay": true,
+          "interaction": {
+            "action": "none",
+            "clip": "all",
+            "loop": false,
+            "effect": "none",
+            "duration": 1,
+            "soundId": null,
+            "volume": 1,
+            "nextSceneId": null,
+            "delay": 1,
+            "startTrigger": "scene",
+            "sequence": {
+              "enabled": true,
+              "retrigger": "restart",
+              "finish": "keep",
+              "actions": [
+                {
+                  "type": "mediaPlay",
+                  "start": "restart",
+                  "loop": true,
+                  "wait": false,
+                  "clip": "Armature|mixamo.com|Layer0.001",
+                  "trigger": "scene"
+                }
+              ]
+            }
+          },
+          "position": [
+            0,
+            0,
+            -0.0014258992389314107
+          ],
+          "rotation": [
+            90,
+            0,
+            0
+          ],
+          "scale": [
+            0.5,
+            0.5,
+            0.5
+          ]
+        }
+      ]
+    }
+  ],
+  "experienceMode": "space",
+  "editorMarkerId": "2ce6ae12-9b5f-4a60-824b-da5c5de3d65d",
+  "shadowDirection": "back",
+  "spaceScale": 1,
+  "reflection": {
+    "profile": "classic",
+    "intensity": 1.6
+  }
+}
