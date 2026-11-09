@@ -2,7 +2,7 @@
   "version": 2,
   "id": "art-feb027af-aba",
   "title": "ARARART_006",
-  "revision": "f2cd59fe-b70c-4bb4-9ee7-8dd651a77246",
+  "revision": "8a7a6174-2c0b-4d02-a606-94c4f678ccd7",
   "trackingTarget": "9d113b51-7b28-4d7a-9aec-5cdd7c9c32ed.mind",
   "maxTrack": 1,
   "markers": [
@@ -67,9 +67,9 @@
             -0.0014258992389314107
           ],
           "rotation": [
+            89.9999999999998,
             90,
-            0,
-            0
+            1.5280970369807235e-13
           ],
           "scale": [
             0.5,
